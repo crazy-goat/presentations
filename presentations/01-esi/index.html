@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Blazingly Fast Websites with Parallel Composition</title>
+    <meta name="description" content="Blazingly Fast Websites with Parallel Composition">
+    <meta name="author" content="Piotr Hałas">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="/dist/reset.css">
+    <link rel="stylesheet" href="/dist/reveal.css">
+    <link rel="stylesheet" href="/dist/theme/league.css" id="theme">
+    <link rel="stylesheet" href="/plugin/highlight/monokai.css">
+</head>
+<body>
+<div class="reveal">
+    <div class="slides">
+        <section>
+            <h3>Blazingly Fast Websites with Parallel Composition</h3>
+            <p>
+                <small>Created by <a href="http://hakim.se">Piotr Hałas</a> from
+                    <a href="https://github.com/hakimel/reveal.js/graphs/contributors">Crazy Goat Software</a></small>
+            </p>
+        </section>
+        <section>
+            <h2>Agenda</h2>
+            <ol>
+                <li>WHOAMI</li>
+                <li class="fragment">What is page composition</li>
+                <li class="fragment">Evolution of available technologies</li>
+                <li class="fragment">Technology today - where we stand</li>
+                <li class="fragment">Live demo <span class="fragment"> - hope it works</span></li>
+                <li class="fragment">Looking Ahead: go-mesi project</li>
+                <li class="fragment">Q&A</li>
+            </ol>
+            <aside class="notes">
+                Shhh, these are your private notes 📝
+            </aside>
+        </section>
+        <section>
+            <h3>WHOAMI --env=dev</h3>
+            <ul>
+                <li>Professionally coding in PHP since 2007
+                    <ul>
+                        <li class="fragment">Symfony from version 1.0</li>
+                        <li class="fragment">Explored Slim and Zend frameworks.</li>
+                        <li class="fragment">Workerman/Webman i (Open)Swoole</li>
+                    </ul>
+                </li>
+                <li class="fragment">Hobby
+                    <ul>
+                        <li>C/C++ embedded, ESP-01/12, Arduino</li>
+                        <li class="fragment">Golang - tooling, PHP + Golang</li>
+                    </ul>
+                </li>
+                <li class="fragment">Small DevOps
+                    <span class="fragment"> - CI/CD</span><span class="fragment">, Docker</span><span class="fragment">, Systems Architecture</span>
+                </li>
+                <li class="fragment">Open Source contributor</li>
+                <li class="fragment">Engineering mindset over pure theory</li>
+            </ul>
+        </section>
+        <section>
+            <h3>WHOAMI --env=live</h3>
+        </section>
+    </div>
+</div>
+
+<script src="/dist/reveal.js"></script>
+<script src="/plugin/notes/notes.js"></script>
+<script src="/plugin/markdown/markdown.js"></script>
+<script src="/plugin/highlight/highlight.js"></script>
+<script>
+    Reveal.initialize({
+        hash: true,
+        slideNumber: 'c/t',
+        plugins: [RevealMarkdown, RevealHighlight, RevealNotes]
+    });
+</script>
+</body>
+</html>
