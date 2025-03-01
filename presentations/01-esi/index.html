@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="utf-8">
     <title>Blazingly Fast Websites with Parallel Composition</title>
@@ -17,15 +17,22 @@
 <body>
 <div class="reveal">
     <div class="slides">
-        <section>
-            <h3>Blazingly Fast Websites with Parallel Composition</h3>
+        <section data-auto-animate data-auto-animate-id="intro">
+            <h1 class="r-fit-text">Blazingly Fast</h1>
+        </section>
+        <section data-auto-animate data-auto-animate-id="intro">
+            <h1 class="r-fit-text">Blazingly Fast</h1>
+            <h3>Websites with Parallel Composition</h3>
             <p>
                 <small>Created by <a href="http://hakim.se">Piotr Hałas</a> from
                     <a href="https://github.com/hakimel/reveal.js/graphs/contributors">Crazy Goat Software</a></small>
             </p>
         </section>
-        <section>
-            <h2>Agenda</h2>
+        <section data-auto-animate data-auto-animate-id="agenda">
+            <h1 data-id="chapter_agenda" class="r-fit-text">Agenda</h1>
+        </section>
+        <section data-auto-animate data-auto-animate-id="agenda">
+            <h1 data-id="chapter_agenda">Agenda</h1>
             <ol>
                 <li>WHOAMI</li>
                 <li class="fragment">What is page composition</li>
@@ -64,6 +71,101 @@
         </section>
         <section>
             <h3>WHOAMI --env=live</h3>
+            <ul>
+                <li>Proud Husband and Father of Two Daughters</li>
+                <li class="fragment">Run a small farm Hałaśliwa Zagroda
+                    <ul>
+                        <li class="fragment">Farm animals: <span class="fragment">horse, donkeys, goats, sheep, pigs, ducks, geese, chickens,
+                            guinea fowl</span><span class="fragment">; domestic: dogs, cats, fish</span></li>
+                        <li class="fragment">We produce goat cheese and sell eggs<span
+                                class="fragment">, organize school trips</span><span
+                                class="fragment">, birthday parties for children</span>
+                        </li>
+                    </ul>
+                </li>
+                <li class="fragment">Passion for Woodworking</li>
+                <li class="fragment">Enjoy Welding Projects</li>
+                <li class="fragment">Love for Classic Vehicles</li>
+                <li class="fragment">Youtuber</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="riddle-1">
+            <h1 class="r-fit-text">The first riddle</h1>
+        </section>
+        <section data-auto-animate data-auto-animate-id="riddle-1">
+            <h1>The first riddle</h1>
+            <h3>Which animal is <span style="color: red">not</span> on our farm?</h3>
+        </section>
+        <section data-auto-animate data-auto-animate-id="riddle-1">
+            <h1>The first riddle</h1>
+            <h3>Which animal is <span style="color: red">not</span> on our farm?</h3>
+            <table>
+                <tbody>
+                <tr>
+                    <td>Horse</td>
+                    <td>Duck</td>
+                    <td>Dog</td>
+                </tr>
+                <tr>
+                    <td>Cat</td>
+                    <td>Goose</td>
+                    <td>Goat</td>
+                </tr>
+                <tr>
+                    <td>Donkey</td>
+                    <td>Fish</td>
+                    <td>Cow</td>
+                </tr>
+                </tbody>
+            </table>
+            <span style="display: none" data-id="answer-1">Cow</span>
+        </section>
+        <section data-auto-animate data-auto-animate-id="riddle-1">
+            <h1 class="r-fit-text"><span data-id="answer-1">Cow</span></h1>
+        </section>
+        <section>
+            <h1 class="r-fit-text">Page composition?</h1>
+        </section>
+        <section>
+            <h2>Page composition</h2>
+            <p>Page composition is now primarily associated with web development, referring to the process of assembling
+                a webpage from multiple independent components. This approach allows for better modularity, scalability,
+                and performance optimization.</p>
+        </section>
+        <section>
+            <h2>Page composition?</h2>
+            <p>
+                Page composition in reality, it is an old concept that has been used for centuries in:
+            </p>
+            <ul>
+                <li class="fragment"><strong>Books & Newspapers</strong> – Consistent layout with fixed sections
+                    like
+                    headers, footers, and sidebars.
+                </li>
+                <li class="fragment"><strong>Business Letterheads</strong> – Predefined structure with repeating
+                    elements (e.g., company logo, recipient details, footer).
+                </li>
+                <li class="fragment"><strong>Invoices</strong> - Structured format with recurring elements like
+                    company details, recipient information, and itemized lists.
+                </li>
+            </ul>
+        </section>
+        <section>
+            <h3>Page composition - books</h3>
+            <img class="stretch r-fit-text" src="assets/old_book.png">
+        </section>
+        <section>
+            <h3>Page composition - business letterhead</h3>
+            <img class="stretch r-fit-text" src="assets/business_letterhead.png">
+        </section>
+        <section>
+            <h3>Page composition - invoice</h3>
+            <img class="stretch" src="assets/invoice.png">
+        </section>
+        <section>
+            <h3>Page composition - web example</h3>
+            <img class="r-fit-text" src="assets/page-layout.png">
+            <small>https://webstyleguide.com/wsg3/6-page-structure/3-site-design.html</small>
         </section>
     </div>
 </div>
