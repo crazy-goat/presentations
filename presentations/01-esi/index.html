@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="/dist/reveal.css">
     <link rel="stylesheet" href="/dist/theme/league.css" id="theme">
     <link rel="stylesheet" href="/plugin/highlight/monokai.css">
+    <link rel="stylesheet" href="assets/history.css">
 </head>
 <body>
 <div class="reveal">
@@ -127,13 +128,18 @@
             <h1 class="r-fit-text">Page composition?</h1>
         </section>
         <section>
-            <h2>Page composition</h2>
+            <h2>Page composition?</h2>
             <p>Page composition is now primarily associated with web development, referring to the process of assembling
                 a webpage from multiple independent components. This approach allows for better modularity, scalability,
                 and performance optimization.</p>
         </section>
         <section>
-            <h2>Page composition?</h2>
+            <h3>Page composition - web example</h3>
+            <img class="r-fit-text" src="assets/page-layout.png">
+            <small>https://webstyleguide.com/wsg3/6-page-structure/3-site-design.html</small>
+        </section>
+        <section>
+            <h2>Page composition</h2>
             <p>
                 Page composition in reality, it is an old concept that has been used for centuries in:
             </p>
@@ -163,9 +169,199 @@
             <img class="stretch" src="assets/invoice.png">
         </section>
         <section>
-            <h3>Page composition - web example</h3>
-            <img class="r-fit-text" src="assets/page-layout.png">
-            <small>https://webstyleguide.com/wsg3/6-page-structure/3-site-design.html</small>
+            <h1 class="r-fit-text">History Overview</h1>
+        </section>
+        <section>
+            <h3> History Overview</h3>
+            <table class="main-table" style="font-size: 0.7em; table-layout: fixed">
+                <tr>
+                    <td class="bottom">
+                        <p class="description">Dark ages</p>
+                        <div class="icon-circle teal"></div>
+                        <div class="connector"></div>
+                    </td>
+                    <td class="bottom">
+                        <div class="year text-green">1993</div>
+                    </td>
+                    <td class="bottom">
+                        <p class="description">iFrame</p>
+                        <div class="icon-circle orange">
+                        </div>
+                        <div class="connector"></div>
+                    </td>
+                    <td class="bottom">
+                        <div class="year text-red">1999</div>
+                    </td>
+                    <td class="bottom">
+                        <p class="description">ESI</p>
+                        <div class="icon-circle purple"></div>
+                        <div class="connector"></div>
+                    </td>
+                    <td class="bottom">
+                        <div class="year text-blue">2010</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="teal">
+                        <div class="dot"></div>
+                    </td>
+                    <td class="green">
+                        <div class="dot"></div>
+                    </td>
+                    <td class="orange">
+                        <div class="dot"></div>
+                    </td>
+                    <td class="red">
+                        <div class="dot"></div>
+                    </td>
+                    <td class="purple">
+                        <div class="dot"></div>
+                    </td>
+                    <td class="blue">
+                        <div class="dot"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="top">
+                        <div class="year text-teal">&lt;1993</div>
+                    </td>
+                    <td class="top">
+                        <div class="connector"></div>
+                        <div class="icon-circle green">
+                        </div>
+                        <p class="description">CGI/SSI</p>
+                    </td>
+                    <td class="top">
+                        <div class="year text-orange">1997</div>
+                    </td>
+                    <td class="top">
+                        <div class="connector"></div>
+                        <div class="icon-circle red"></div>
+                        <p class="description">XMLHttpRequest</p>
+                    </td>
+                    <td class="top">
+                        <div class="year text-purple">2001</div>
+                    </td>
+                    <td class="top">
+                        <div class="connector"></div>
+                        <div class="icon-circle blue">
+                        </div>
+                        <p class="description">SPA frameworks</p>
+                    </td>
+                </tr>
+            </table>
+        </section>
+        <section data-auto-animate data-auto-animate-id="riddle-2">
+            <h1 class="r-fit-text">Second riddle</h1>
+        </section>
+        <section data-auto-animate data-auto-animate-id="riddle-2">
+            <h1>Second riddle</h1>
+            <h3>Which company created the iframe</h3>
+        </section>
+        <section data-auto-animate data-auto-animate-id="riddle-2">
+            <h1>Second riddle</h1>
+            <h3>Which company created the iframe</h3>
+            <p>Hint: Don't let the name fool you, it wasn't Apple</p>
+        </section>
+        <section data-auto-animate data-auto-animate-id="riddle-2">
+            <h1>Microsoft</h1>
+            <p>The <span class="red">&lt;iframe&gt;</span> element was introduced by Microsoft in 1997 as part of Internet Explorer 3.0. It officially became part of the HTML 4.0 standard, which was approved by the W3C (World Wide Web Consortium) in December 1997.</p>
+        </section>
+        <section>
+            <h1 class="r-fit-text">Technology Overview</h1>
+        </section>
+        <section>
+            <h3>Technology Overview</h3>
+            <p style="font-size: smaller;">Page composition can be categorized into four types based on where the assembly occurs: backend
+                composition, server-side composition, edge-side composition, and client-side composition. Each approach
+                determines where and how different components are combined to render the final webpage, impacting
+                performance, flexibility, and caching strategies.</p>
+            <img class="stretch" src="assets/technology.png">
+        </section>
+        <section>
+            <h3>Technology Overview - backend composition</h3>
+            <div style="font-size: smaller;">✅ Pros:
+                <ul>
+                    <li><strong>Easy Implementation</strong> – Simple to develop and maintain within a monolithic
+                        backend.
+                    </li>
+                    <li><strong>Strong Integration</strong> – Direct access to databases and business logic.</li>
+                </ul>
+            </div>
+            <div class="fragment" style="font-size: smaller;">❌ Cons:
+                <ul>
+                    <li><strong>Caching Challenges</strong> – Difficult to cache dynamic content efficiently.</li>
+                    <li><strong>Performance Issues</strong> – Most web languages are single-threaded, potentially
+                        causing bottlenecks.
+                    </li>
+                    <li><strong>Monolithic Architecture</strong> – Encourages tightly coupled systems, reducing
+                        flexibility and
+                        scalability.
+                    </li>
+                </ul>
+            </div>
+        </section>
+        <section>
+            <h3>Technology Overview - server side composition</h3>
+            <div style="font-size: 0.7em;">✅ Pros:
+                <ul>
+                    <li><strong>Improved Performance</strong> – Enables partial page caching, reducing backend load.
+                    </li>
+                    <li><strong>Efficient Content Assembly</strong> – Components are fetched in parallel, speeding up
+                        page rendering.
+                    </li>
+                    <li><strong>Multi-Language Support</strong> – Components can be written in different programming
+                        languages and integrated seamlessly.
+                    </li>
+                </ul>
+            </div>
+            <div class="fragment" style="font-size: 0.7em;">❌ Cons:
+                <ul>
+                    <li><strong>Limited Flexibility</strong> – Requires server-side support and specific configurations.
+                    </li>
+                    <li><strong>Increased Complexity</strong> – Managing dependencies between fragments can be
+                        challenging.
+                    </li>
+                    <li><strong>Security Risks</strong> – Incorrect configuration may introduce vulnerabilities, such as
+                        exposing internal services or enabling injection attacks.
+                    </li>
+                </ul>
+            </div>
+        </section>
+        <section>
+            <h3>Technology Overview - edge side composition</h3>
+            <div style="font-size: 0.7em;">✅ Pros:
+                <ul>
+                    <li><strong>Reduced Backend Load</strong> – Pages are partially assembled at the CDN level, reducing server strain.</li>
+                    <li><strong>Faster Content Delivery</strong> – Components can be cached closer to the user, improving response times.</li>
+                    <li><strong>Easy to Configure</strong> – Many CDNs offer built-in ESI support with minimal setup required.</li>
+                </ul>
+            </div>
+            <div class="fragment" style="font-size: 0.7em;">❌ Cons:
+                <ul>
+                    <li><strong>Limited Personalization</strong> – Cached content may not adapt well to user-specific data.</li>
+                    <li><strong>Complex Debugging</strong> – Issues may be harder to trace due to processing happening at the edge.</li>
+                    <li><strong>CDN Dependency</strong> – Requires a CDN with ESI support, limiting flexibility in infrastructure choices.</li>
+                    <li><strong>Additional Costs</strong> – CDN services with ESI support can come with extra fees.</li>
+                </ul>
+            </div>
+        </section>
+        <section>
+            <h3>Technology Overview - client side</h3>
+            <div style="font-size: 0.7em;">✅ Pros:
+                <ul>
+                    <li><strong>Lazy Loading</strong> – Loads only the necessary components, improving performance and user experience.</li>
+                    <li><strong>Frontend Rendering</strong> – Moves HTML generation from server to client, reducing backend complexity.</li>
+                    <li><strong>Flexible and Scalable</strong> – Works well with microservices and APIs, allowing independent frontend updates.</li>
+                </ul>
+            </div>
+            <div class="fragment" style="font-size: 0.7em;">❌ Cons:
+                <ul>
+                    <li><strong>Slower Initial Load</strong> – More processing happens in the browser, which may delay rendering.</li>
+                    <li><strong>SEO Challenges</strong> – Search engines may struggle to index client-rendered content without proper server-side support.</li>
+                    <li><strong>Inconsistent Performance</strong> – Heavily depends on the user’s device and network speed.</li>
+                </ul>
+            </div>
         </section>
     </div>
 </div>
