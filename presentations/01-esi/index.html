@@ -713,6 +713,64 @@ AddOutputFilter INCLUDES .php .shtml .html
             </div>
         </section>
         <section>
+            <h1 class="r-fit-text">Demo time</h1>
+        </section>
+        <section>
+            <h1>Try yourself</h1>
+            <p>You can run demo by pulling docker container</p>
+            <pre><code>docker run -p 8888:80 crazygoat/nginx-ssi-example</code></pre>
+            <p>And visit</p>
+            <pre><code>http://127.0.0.1:8888/</code></pre>
+        </section>
+        <section data-auto-animate="demo-1">
+            <h2>Original code</h2>
+            <pre><code  data-id="code-animation" style="font-size: 0.65em"><header><?php include "_component/header.php" ?></header>
+<div class="container">
+    <nav class="left-menu"><?php include "_component/left_menu.php" ?></nav>
+    <div class="content-area">
+        <div class="breadcrumbs"><?php include "_component/breadcrumbs.php" ?></div>
+        <div class="content">
+            <div class="content1"><?php include "_component/content.php" ?></div>
+            ...
+        </div>
+    </div>
+</div>
+<footer><?php include "_component/footer.php" ?></footer></code></pre>
+        </section>
+        <section data-auto-animate="demo-1">
+            <h2>SSI code</h2>
+            <pre><code  data-id="code-animation" style="font-size: 0.65em"><header><!--# include virtual="/_component/header.php" --></header>
+<div class="container">
+    <nav class="left-menu"><!--# include virtual="/_component/left_menu.php" --></nav>
+    <div class="content-area">
+        <div class="breadcrumbs"><!--# include virtual="/_component/breadcrumbs.php" --></div>
+        <div class="content">
+            <div class="content1"><!--# include virtual="/_component/content.php" --></div>
+            ...
+        </div>
+    </div>
+</div>
+<footer><!--# include virtual="/_component/footer.php" --></footer></code></pre>
+        </section>
+        <section>
+            <h2>Component code</h2>
+            <p>_component/breadcrumbs.php</p>
+            <pre><code style="font-size: 0.65em">&lt;?php usleep(100000); echo "Breadcrumbs";</code></pre>
+        </section>
+        <section>
+            <h2>nginx config</h2>
+            <pre><code style="font-size: 0.8em">server {
+    ...
+    ssi on;
+
+    location ~ \.php$ {
+        fastcgi_pass   php_fpm;
+        fastcgi_param  SCRIPT_FILENAME /var/www/$fastcgi_script_name;
+        include        fastcgi_params;
+    }
+}</code></pre>
+        </section>
+        <section>
             <h3>Technology Overview - server side composition</h3>
             <div style="font-size: 0.7em;">✅ Pros:
                 <ul>
