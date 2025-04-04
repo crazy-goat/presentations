@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historia Timeline - PowerPoint Prezentacja</title>
+    <style>
+        .main-table {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            border-collapse: collapse;
+        }
+
+        .timeline-table td {
+            width: 33.33%;
+            text-align: center;
+            vertical-align: middle;
+            padding: 10px;
+        }
+
+        /* Kółka z ikonami */
+        .icon-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .connector {
+            width: 2px;
+            height: 50px;
+            background-color: #ccc;
+            margin: 0px auto;
+        }
+
+        .year {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        .description {
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        /* Kropki na osi czasu */
+        .dot {
+            width: 12px;
+            height: 12px;
+            background-color: #999;
+            border-radius: 50%;
+            /*max-width: fit-content;*/
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Kolory */
+        .orange {
+            background-color: #F9A826;
+        }
+
+        .red {
+            background-color: #F05454;
+        }
+
+        .purple {
+            background-color: #9C27B0;
+        }
+
+        .blue {
+            background-color: #2196F3;
+        }
+
+        .teal {
+            background-color: #00BCD4;
+        }
+
+        .green {
+            background-color: #8BC34A;
+        }
+
+        .text-orange {
+            color: #F9A826;
+        }
+
+        .text-red {
+            color: #F05454;
+        }
+
+        .text-purple {
+            color: #9C27B0;
+        }
+
+        .text-blue {
+            color: #2196F3;
+        }
+
+        .text-teal {
+            color: #00BCD4;
+        }
+
+        .text-green {
+            color: #8BC34A;
+        }
+
+        .bottom {
+            vertical-align: bottom;
+        }
+
+        .top {
+            vertical-align: top;
+        }
+    </style>
+</head>
+<body>
+<table class="main-table">
+    <tr>
+        <td>
+            <p class="description">Dark ages</p>
+            <div class="icon-circle teal"></div>
+            <div class="connector"></div>
+        </td>
+        <td class="bottom">
+            <div class="year text-green">1993</div>
+        </td>
+        <td>
+            <p class="description">iFrame</p>
+            <div class="icon-circle orange">
+            </div>
+            <div class="connector"></div>
+        </td>
+        <td class="bottom">
+            <div class="year text-red">1999</div>
+        </td>
+        <td>
+            <p class="description">ESI</p>
+            <div class="icon-circle purple"></div>
+            <div class="connector"></div>
+        </td>
+        <td class="bottom">
+            <div class="year text-blue">2010</div>
+        </td>
+    </tr>
+    <tr>
+        <td class="teal">
+            <div class="dot"></div>
+        </td>
+        <td class="green">
+            <div class="dot"></div>
+        </td>
+        <td class="orange">
+            <div class="dot"></div>
+        </td>
+        <td class="red">
+            <div class="dot"></div>
+        </td>
+        <td class="purple">
+            <div class="dot"></div>
+        </td>
+        <td class="blue">
+            <div class="dot"></div>
+        </td>
+    </tr>
+    <tr>
+        <td class="top">
+            <div class="year text-teal">&lt;1993</div>
+        </td>
+        <td class="top">
+            <div class="connector"></div>
+            <div class="icon-circle green">
+            </div>
+            <p class="description">CGI/SSI</p>
+        </td>
+        <td class="top">
+            <div class="year text-orange">1997</div>
+        </td>
+        <td class="top">
+            <div class="connector"></div>
+            <div class="icon-circle red"></div>
+            <p class="description">XMLHttpRequest</p>
+        </td>
+        <td class="top">
+            <div class="year text-purple">2001</div>
+        </td>
+        <td class="top">
+            <div class="connector"></div>
+            <div class="icon-circle blue">
+            </div>
+            <p class="description">SPA frameworks</p>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

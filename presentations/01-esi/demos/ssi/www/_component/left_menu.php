@@ -1,4 +1,8 @@
-<?php usleep(100000);?>
+<?php
+if (!headers_sent()) {
+    header("Cache-Control: public, max-age=10");
+}
+usleep(100000);?>
 Left Menu
 
 <p><a href="/">Standard</a></p>

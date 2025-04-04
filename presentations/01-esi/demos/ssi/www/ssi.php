@@ -1,3 +1,10 @@
+<?php
+if (!headers_sent()) {
+    ob_implicit_flush();
+    ob_end_flush();
+    header("Cache-Control: no-cache, no-store");
+    flush();
+}?>
 <!DOCTYPE html>
 <html lang="pl">
 <head>

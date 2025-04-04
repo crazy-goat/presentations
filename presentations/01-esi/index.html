@@ -11,8 +11,8 @@
 
     <link rel="stylesheet" href="/dist/reset.css">
     <link rel="stylesheet" href="/dist/reveal.css">
-    <link rel="stylesheet" href="/dist/theme/league.css" id="theme">
-    <link rel="stylesheet" href="/plugin/highlight/monokai.css">
+    <link rel="stylesheet" href="/dist/theme/beige.css"  id="theme">
+    <link rel="stylesheet" href="/plugin/highlight/github-light-default.css">
     <link rel="stylesheet" href="assets/history.css">
 </head>
 <body>
@@ -678,7 +678,7 @@ AddOutputFilter INCLUDES .php .shtml .html
         <section>
             <h3>Nginx SSI</h3>
             <div>
-                <p>In Nginx, configuring Server Side Includes (SSI) is more complex because the ngx_http_ssi_module is not compiled by default and may need to be enabled during the build process.</p>
+                <p>In Nginx, configuring Server Side Includes (SSI) can be more complex because the ngx_http_ssi_module is not compiled by default on some distributions and may need to be enabled during the build process.</p>
                 <strong>Enable:</strong>
                 <pre><code>./configure --with-http_ssi_module</code></pre>
                 <strong>Config</strong>:
@@ -688,6 +688,7 @@ AddOutputFilter INCLUDES .php .shtml .html
 }
 </code></pre>
             </div>
+            <aside class="notes">Na szczęście w nowych wersjach alpine linux nginx jest skompilowany z tym modułem</aside>
         </section>
         <section>
             <h2>Basic usage</h2>
@@ -769,6 +770,19 @@ AddOutputFilter INCLUDES .php .shtml .html
         include        fastcgi_params;
     }
 }</code></pre>
+        </section>
+        <section>
+            <h3>Important limitations</h3>
+            <ul>
+                <li>All parameters to the component must be passed in the query string</li>
+                <li class="fragment">By default, headers from the main request are not passed</li>
+                <li class="fragment">Better prepare a looooot of PHP workers</li>
+                <li class="fragment">SSI requests can only be performed within the server*</li>
+                <li class="fragment">Using session can be problematic (session lock)</li>
+            </ul>
+        </section>
+        <section>
+            <h3>Important limitations</h3>
         </section>
         <section>
             <h3>Technology Overview - server side composition</h3>
