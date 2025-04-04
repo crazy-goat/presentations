@@ -14,12 +14,22 @@
     <link rel="stylesheet" href="/dist/theme/beige.css"  id="theme">
     <link rel="stylesheet" href="/plugin/highlight/github-light-default.css">
     <link rel="stylesheet" href="assets/history.css">
+    <style>
+        .highlight-code {
+            background-color: white;
+            color: #000;
+            font-weight: bold;
+            font-family: var(--r-code-font);
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15);
+        }
+    </style>
 </head>
 <body>
 <div class="reveal">
     <div class="slides">
         <section data-auto-animate data-auto-animate-id="intro">
             <h1 class="r-fit-text">Blazingly Fast</h1>
+            <aside class="notes">Planowałem tę prezentacje na 30 minut ale wyszło ponad 50 slajwód, więc będę mówił niesamowice szybko. No chyba żę mogę nagiąć trochę czas</aside>
         </section>
         <section data-auto-animate data-auto-animate-id="intro">
             <h1 class="r-fit-text">Blazingly Fast</h1>
@@ -28,6 +38,9 @@
                 <small>Created by <a href="http://hakim.se">Piotr Hałas</a> from
                     <a href="https://github.com/hakimel/reveal.js/graphs/contributors">Crazy Goat Software</a></small>
             </p>
+            <aside class="notes"><ul>
+                <li>Niesamowicie szybkie strony www korzystające z współbieżnej kompozycji</li>
+                <li>Nie szukam pracowników</li></ul> </aside>
         </section>
         <section data-auto-animate data-auto-animate-id="agenda">
             <h1 data-id="chapter_agenda" class="r-fit-text">Agenda</h1>
@@ -39,12 +52,12 @@
                 <li class="fragment">What is page composition</li>
                 <li class="fragment">Evolution of available technologies</li>
                 <li class="fragment">Technology today - where we stand</li>
-                <li class="fragment">Live demo <span class="fragment"> - hope it works</span></li>
+                <li class="fragment">Live demo <span class="fragment">x2</span><span class="fragment"> - hope it works</span></li>
                 <li class="fragment">Looking Ahead: go-mesi project</li>
                 <li class="fragment">Q&A</li>
             </ol>
             <aside class="notes">
-                Shhh, these are your private notes 📝
+                Oby był czas na Q&A
             </aside>
         </section>
         <section>
@@ -222,6 +235,7 @@
                     </td>
                 </tr>
             </table>
+            <aside class="notes">Jedyna opcja to pisanie własnego serwera www. Więc raczej nie było dynamicznych stron</aside>
         </section>
         <section data-transition="none">
             <h3> History Overview</h3>
@@ -280,6 +294,10 @@
                     </td>
                 </tr>
             </table>
+            <aside class="notes"><ul>
+                <li>CGI - Możliwość uruchamiania kodu np: liczniki.</li>
+                <li>SSI - Możliwość załączenia fragmentu html z innego pliku</li>
+            </ul></aside>
         </section>
         <section data-transition="none">
             <h3> History Overview</h3>
@@ -344,6 +362,7 @@
                     </td>
                 </tr>
             </table>
+            <aside class="notes">Znienawidzony iframe, po raz pierwszy pojawia się możliwość kompozycji na froncie</aside>
         </section>
         <section data-transition="none">
             <h3> History Overview</h3>
@@ -413,6 +432,7 @@
                     </td>
                 </tr>
             </table>
+            <aside class="notes">Protoplasta AJAX - wkońcu mamy możliwość częśćiowej aktualizacji zawartości strony</aside>
         </section>
         <section data-transition="none">
             <h3> History Overview</h3>
@@ -487,6 +507,7 @@
                     </td>
                 </tr>
             </table>
+            <aside class="notes">Wraz z pojawieniem się CDN mamy możliwość kompozycji stron blisko klienta</aside>
         </section>
         <section data-transition="none">
             <h3> History Overview</h3>
@@ -567,6 +588,7 @@
                     </td>
                 </tr>
             </table>
+            <aside class="notes">Kompozycja stron na podstawie json a nie html</aside>
         </section>
         <section data-auto-animate data-auto-animate-id="riddle-2">
             <h1 class="r-fit-text">Second riddle</h1>
@@ -585,6 +607,7 @@
             <p>The <span class="red">&lt;iframe&gt;</span> element was introduced by Microsoft in 1997 as part of
                 Internet Explorer 3.0. It officially became part of the HTML 4.0 standard, which was approved by the W3C
                 (World Wide Web Consortium) in December 1997.</p>
+            <aside class="notes">Iframe nadal chętnie jest używany do osadzania kontentu np: filmy z youtube na własnej stronie</aside>
         </section>
         <section>
             <h1 class="r-fit-text">Technology Overview</h1>
@@ -597,6 +620,12 @@
                 determines where and how different components are combined to render the final webpage, impacting
                 performance, flexibility, and caching strategies.</p>
             <img class="stretch" src="assets/technology.png">
+            <aside class="notes">
+                <ul>
+                    <li>W prezentacji zajmiemy się wyłącznie dwoma środkowymi kolumnami</li>
+                    <li>Jednak zanim to zrobimy omówimy szybko dwa pozostałe</li>
+                </ul>
+            </aside>
         </section>
         <section>
             <h3>Technology Overview - backend composition</h3>
@@ -688,7 +717,12 @@ AddOutputFilter INCLUDES .php .shtml .html
 }
 </code></pre>
             </div>
-            <aside class="notes">Na szczęście w nowych wersjach alpine linux nginx jest skompilowany z tym modułem</aside>
+            <aside class="notes">
+                <ul>
+                    <li>Na szczęście w nowych wersjach alpine linux nginx jest skompilowany z tym modułem</li>
+                    <li>W dalszej częsci wszystko co omówie dotyczy ssi dla nginx</li>
+                </ul>
+            </aside>
         </section>
         <section>
             <h2>Basic usage</h2>
@@ -725,7 +759,7 @@ AddOutputFilter INCLUDES .php .shtml .html
         </section>
         <section data-auto-animate="demo-1">
             <h2>Original code</h2>
-            <pre><code  data-id="code-animation" style="font-size: 0.65em"><header><?php include "_component/header.php" ?></header>
+            <pre><code  data-id="code-animation" style="font-size: 0.9em"><header><?php include "_component/header.php" ?></header>
 <div class="container">
     <nav class="left-menu"><?php include "_component/left_menu.php" ?></nav>
     <div class="content-area">
@@ -740,7 +774,7 @@ AddOutputFilter INCLUDES .php .shtml .html
         </section>
         <section data-auto-animate="demo-1">
             <h2>SSI code</h2>
-            <pre><code  data-id="code-animation" style="font-size: 0.65em"><header><!--# include virtual="/_component/header.php" --></header>
+            <pre><code  data-id="code-animation" style="font-size: 0.9em"><header><!--# include virtual="/_component/header.php" --></header>
 <div class="container">
     <nav class="left-menu"><!--# include virtual="/_component/left_menu.php" --></nav>
     <div class="content-area">
@@ -756,11 +790,11 @@ AddOutputFilter INCLUDES .php .shtml .html
         <section>
             <h2>Component code</h2>
             <p>_component/breadcrumbs.php</p>
-            <pre><code style="font-size: 0.65em">&lt;?php usleep(100000); echo "Breadcrumbs";</code></pre>
+            <pre><code>&lt;?php usleep(100000); echo "Breadcrumbs";</code></pre>
         </section>
         <section>
             <h2>nginx config</h2>
-            <pre><code style="font-size: 0.8em">server {
+            <pre><code>server {
     ...
     ssi on;
 
@@ -772,6 +806,21 @@ AddOutputFilter INCLUDES .php .shtml .html
 }</code></pre>
         </section>
         <section>
+            <h2>nginx config - cache</h2>
+            Nginx configuration:
+            <pre ><code style="font-size: 0.8em;">fastcgi_cache_path /tmp/nginx-cache levels=1 keys_zone=articles_cache:10m max_size=1024m inactive=1h;
+
+location ~/_component/*\.php$ {
+    fastcgi_cache_key $scheme$host$uri$request_method;
+    fastcgi_cache articles_cache;
+}</code>
+            </pre>
+            Cache ttl is controlled by Cache-Control Header:
+            <pre><code>header("Cache-Control: public, max-age=10");</code>
+            </pre>
+            <strong>Important!</strong> only public cache is stored
+        </section>
+        <section>
             <h3>Important limitations</h3>
             <ul>
                 <li>All parameters to the component must be passed in the query string</li>
@@ -780,9 +829,24 @@ AddOutputFilter INCLUDES .php .shtml .html
                 <li class="fragment">SSI requests can only be performed within the server*</li>
                 <li class="fragment">Using session can be problematic (session lock)</li>
             </ul>
+            <aside class="notes">*W przypadku nginx można te limitacje ominąć</aside>
         </section>
         <section>
-            <h3>Important limitations</h3>
+            <h3>Important limitations - remote requests</h3>
+            <p></p>
+            <pre><code>upstream components_backend {
+    server app1.server.internal:80;
+    server app2.server.internal:80;
+    ...
+}
+
+server {
+    location /_components/ {
+        proxy_pass http://components_backend;
+        proxy_set_header Host $host;
+        ...
+     }
+}</code></pre>
         </section>
         <section>
             <h3>Technology Overview - server side composition</h3>
@@ -808,8 +872,103 @@ AddOutputFilter INCLUDES .php .shtml .html
                     <li><strong>Security Risks</strong> – Incorrect configuration may introduce vulnerabilities, such as
                         exposing internal services or enabling injection attacks.
                     </li>
+                    <li><strong>Other challenges</strong> – timeouts, loops, error handling.
+                    </li>
                 </ul>
             </div>
+        </section>
+        <section><h1>Edge Side Include (ESI)</h1></section>
+        <section>
+            <h3>Edge Side Include (ESI)</h3>
+            <p>
+                Edge Side Includes (ESI) is a CDN feature that allows web pages to include content from other sources before being sent to the client.
+                It works by processing special ESI directives, such as:<pre><code>&lt;esi:include src="http://foo.bar/components/foo" /&gt;</code></pre>
+            which enable the inclusion of external subrequests.
+            </p>
+        </section>
+        <section>
+            <h3>ESI support</h3>
+            <div>
+                <h4>CDNs</h4>
+                <ul>
+                    <li><strong>Akamai</strong> - The original creator of ESI and provides full support.</li>
+                    <li><strong>Fastly</strong> - Strong ESI support, Varnish-based.</li>
+                    <li><strong>CloudFlare</strong> - Offers ESI through their Workers platform.</li>
+                    <li><strong>AWS CloudFront</strong> - Limited ESI support through Lambda@Edge functions.</li>
+                </ul>
+            </div>
+        </section>
+        <section>
+            <h3>ESI support</h3>
+            <div>
+                <h4>Cache</h4>
+                <ul>
+                    <li><strong>Varnish Cache</strong> - Robust ESI implementation including tags</li>
+                    <li><strong>Squid Cache</strong> - Basic ESI functionality includes</li>
+                </ul>
+            </div>
+        </section>
+        <section>
+            <h3>ESI support</h3>
+            <div>
+                <h4>Proxy & application servers</h4>
+                <ul>
+                    <li><strong>Traefik</strong> - via go-esi plugin</li>
+                    <li><strong>Caddy</strong> - via go-esi plugin</li>
+                    <li><strong>Roadrunner</strong> - via go-esi plugin</li>
+                </ul>
+            </div>
+        </section>
+        <section>
+            <h2>Basic usage</h2>
+            <div>
+                <p>Include request:</p>
+                <pre><code data-trim class="language-html">
+&lt;body&gt;
+    &lt;esi:include src="http://example.com/_component/v1/header" /&gt;
+    &lt;esi:include src="http://example.com/_component/v1/content" /&gt;
+    &lt;esi:include src="http://example.com/_component/v1/footer" /&gt;
+&lt;/body&gt;
+            </code></pre>
+            </div>
+        </section>
+        <section>
+            <h2>Basic Error Handling</h2>
+            Simple fallback with alt attributes:
+            <pre><code>&lt;esi:include src="http://example.com/_component/v2/header"
+             alt="http://example.com/_component/v1/header" /&gt;</code></pre>
+            <p>If <code class="highlight-code">/v2/header</code> fails, then load <code class="highlight-code">/v1/header</code>. Great for quick fallback.</p>
+        </section>
+        <section>
+            <h2>Advanced Fallback</h2>
+            Advanced fallback with <code class="highlight-code">&lt;esi:try&gt;</code> tag:
+            <pre><code style="font-size: 0.8em"><esi:try>
+  <esi:attempt>
+    <esi:include src="http://example.com/_component/v2/header" />
+  </esi:attempt>
+  <esi:except>
+    <div hx-get="http://example.com/_component/v1/header"
+
+         hx-trigger="load" hx-swap="outerHTML">
+      Loading guest box...
+    </div>
+  </esi:except>
+</esi:try>
+</code></pre>
+            <p>If <code class="highlight-code">/v2/header</code> fails, then load <code class="highlight-code">/v1/header</code> using htmx</p>
+        </section>
+        <section>
+            <h2>Detecting ESI Support</h2>
+            <p>Most CDN providers add special HTTP headers to let you know ESI is available and active. Most popular is <code class="highlight-code">Surrogate-Control</code>, example:</p>
+            <pre><code>Surrogate-Control: content="ESI/1.0"</code></pre>
+        </section>
+        <section>
+            <h2>Notifying CDN about ESI content</h2>
+            <p>Parsing server responses for esi tags can be demanding. That's why most CDNs only parse responses that have the <code class="highlight-code">Edge-Control</code> header set. Example:</p>
+            <pre><code>Edge-control: dca=esi</code></pre>
+        </section>
+        <section>
+            <h1 class="r-fit-text">Demo time</h1>
         </section>
         <section>
             <h3>Technology Overview - edge side composition</h3>
@@ -828,8 +987,7 @@ AddOutputFilter INCLUDES .php .shtml .html
             </div>
             <div class="fragment" style="font-size: 0.7em;">❌ Cons:
                 <ul>
-                    <li><strong>Limited Personalization</strong> – Cached content may not adapt well to user-specific
-                        data.
+                    <li><strong>Limited cache invalidation</strong> – Can be hard to invalid single cache item.
                     </li>
                     <li><strong>Complex Debugging</strong> – Issues may be harder to trace due to processing happening
                         at the edge.
@@ -850,6 +1008,7 @@ AddOutputFilter INCLUDES .php .shtml .html
 <script src="/plugin/highlight/highlight.js"></script>
 <script>
     Reveal.initialize({
+        width: 1280,
         hash: true,
         slideNumber: 'c/t',
         plugins: [RevealMarkdown, RevealHighlight, RevealNotes]

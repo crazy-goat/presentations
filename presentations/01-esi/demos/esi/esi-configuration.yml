@@ -1,0 +1,21 @@
+http:
+  routers:
+    nginx:
+      middlewares:
+        - esi
+      entrypoints:
+        - http
+      service: nginx
+      rule: Host(`localhost`)
+
+  services:
+    nginx:
+      loadBalancer:
+        servers:
+          - url: http://nginx
+        passHostHeader: false
+
+  middlewares:
+    esi:
+      plugin:
+        esi: {}
