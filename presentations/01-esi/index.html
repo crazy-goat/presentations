@@ -627,6 +627,32 @@
                 </ul>
             </aside>
         </section>
+        <section data-transition="slide-in fade-out">
+            <h3>Backend composition ✅ Pros</h3>
+            <p><strong>Easy Implementation</strong> – Simple to develop and maintain within a monolithic
+                backend.</p>
+            <img class="r-stretch" src="assets/backend/twig.png">
+        </section>
+        <section data-transition="fade">
+            <h3>Backend composition ✅ Pros</h3>
+            <p><strong>Strong Integration</strong> – Direct access to databases and business logic.</p>
+            <img class="r-stretch" src="assets/backend/easy-access.png">
+        </section>
+        <section data-transition="fade">
+            <h3>Backend composition ❌ Cons</h3>
+            <p><strong>Caching Challenges</strong> – Difficult to cache dynamic content efficiently.</p>
+            <img class="r-stretch" src="assets/backend/slow-cache.png">
+        </section>
+        <section data-transition="fade">
+            <h3>Backend composition ❌ Cons</h3>
+            <p><strong>Performance Issues</strong> – Most web languages are single-threaded.</p>
+            <img class="r-stretch" src="assets/backend/single-thread.png">
+        </section>
+        <section data-transition="fade slide-out">
+            <h3>Backend composition ❌ Cons</h3>
+            <p><strong>Monolithic Architecture</strong> – Encourages tightly coupled systems.</p>
+            <img class="r-stretch" src="assets/backend/monolith.png">
+        </section>
         <section>
             <h3>Technology Overview - backend composition</h3>
             <div style="font-size: smaller;">✅ Pros:
@@ -637,18 +663,56 @@
                     <li><strong>Strong Integration</strong> – Direct access to databases and business logic.</li>
                 </ul>
             </div>
-            <div class="fragment" style="font-size: smaller;">❌ Cons:
+            <div style="font-size: smaller;">❌ Cons:
                 <ul>
                     <li><strong>Caching Challenges</strong> – Difficult to cache dynamic content efficiently.</li>
                     <li><strong>Performance Issues</strong> – Most web languages are single-threaded, potentially
                         causing bottlenecks.
                     </li>
                     <li><strong>Monolithic Architecture</strong> – Encourages tightly coupled systems, reducing
-                        flexibility and
-                        scalability.
+                        flexibility and scalability.
                     </li>
                 </ul>
             </div>
+        </section>
+        <section>
+            <h1>What can we fix</h1>
+            <h2>Performance Issues</h2>
+            <h2>Monolithic Architecture</h2>
+        </section>
+        <section>
+            <img class="r-stretch" src="assets/client/slow.png">
+        </section>
+        <section data-transition="slide-in fade">
+            <h3>client side ✅ Pros</h3>
+            <p><strong>Lazy Loading</strong> – Loads only the necessary components, improving performance and
+                user experience.</p>
+            <img class="r-stretch" src="assets/client/lazy-load.png">
+        </section>
+        <section data-transition="fade">
+            <h3>client side ✅ Pros</h3>
+            <p><strong>Frontend Rendering</strong> – Moves HTML generation from server to client.</p>
+            <img class="r-stretch" src="assets/client/be-fe.png">
+        </section>
+        <section data-transition="fade">
+            <h3>client side ✅ Pros</h3>
+            <p><strong>Flexible and Scalable</strong> – Works well with microservices and APIs.</p>
+                <img class="r-stretch" src="assets/client/js-calls.png">
+        </section>
+        <section data-transition="fade">
+            <h3>client side ❌ Cons</h3>
+            <p><strong>Slower Initial Load</strong> – More processing happens in the browser.</p>
+            <img class="r-stretch" src="assets/client/initial-load.png">
+        </section>
+        <section data-transition="fade">
+            <h3>client side ❌ Cons</h3>
+            <p><strong>SEO Challenges</strong> – Search engines may struggle.</p>
+            <img class="r-stretch" src="assets/client/seo.png">
+        </section>
+        <section data-transition="fade-in slide-out">
+            <h3>client side ❌ Cons</h3>
+            <p><strong>Inconsistent Performance</strong> – Depends on user device and network</p>
+            <img class="r-stretch" src="assets/client/network.png">
         </section>
         <section>
             <h3>Technology Overview - client side</h3>
@@ -665,7 +729,7 @@
                     </li>
                 </ul>
             </div>
-            <div class="fragment" style="font-size: 0.7em;">❌ Cons:
+            <div style="font-size: 0.7em;">❌ Cons:
                 <ul>
                     <li><strong>Slower Initial Load</strong> – More processing happens in the browser, which may delay
                         rendering.
@@ -680,34 +744,34 @@
             </div>
         </section>
         <section>
+            <h1>What can we fix</h1>
+            <h2>Inconsistent Performance</h2>
+            <h2>Slower Initial Load</h2>
+            <p class="fragment">And SEO</p>
+        </section>
+        <section>
             <h1>Server Side Include (SSI)</h1>
+            <img class="r-stretch" src="assets/ssi/robot.png">
         </section>
         <section>
             <h3>Server Side Include (SSI)</h3>
             <p>
                 Server Side Includes (SSI) is a server-side feature that allows web pages to include content from other sources before being sent to the client.
-                It works by processing special SSI directives, such as:<pre><code><!--# include file="header.html" --></code></pre>
-                which enable the inclusion of external files or subrequests.
-                It is supported by Apache, LiteSpeed, Nginx and IIS servers
             </p>
+            <img src="assets/ssi/ssi.png" class="r-stretch">
         </section>
         <section>
-            <h3>Apache SSI</h3>
-            <div>
-                <p>In Apache, configuring Server Side Includes (SSI) is straightforward because the mod_include module is compiled by default and only needs to be activated.</p>
-                <strong>Enable:</strong>
-                <pre><code>a2enmod include</code></pre>
-                <strong>Config</strong>:
-                <pre>
-<code>Options +Includes
-AddOutputFilter INCLUDES .php .shtml .html
-</code></pre>
-            </div>
+            <h3>Server Side Include (SSI)</h3>
+            <p>
+            It works by processing special SSI directives, such as:<pre><code><!--# include file="header.html" --></code></pre>
+            which enable the inclusion of external files or subrequests.
+            It is supported by Apache, LiteSpeed, Nginx and IIS servers
+            </p>
         </section>
         <section>
             <h3>Nginx SSI</h3>
             <div>
-                <p>In Nginx, configuring Server Side Includes (SSI) can be more complex because the ngx_http_ssi_module is not compiled by default on some distributions and may need to be enabled during the build process.</p>
+                <p>In Nginx, configuring Server Side Includes (SSI) can be more complex because the <code class="highlight-code">ngx_http_ssi_module</code> is not compiled by default on some distributions and may need to be enabled during the build process.</p>
                 <strong>Enable:</strong>
                 <pre><code>./configure --with-http_ssi_module</code></pre>
                 <strong>Config</strong>:
@@ -848,21 +912,56 @@ server {
      }
 }</code></pre>
         </section>
+        <section data-transition="slide-in fade-out">
+            <h3>server side composition ✅ Pros</h3>
+            <p><strong>Efficient Content Assembly</strong> – Components are fetched in parallel</p>
+            <img class="r-stretch" src="assets/ssi/parallel.png">
+        </section>
+        <section data-transition="fade">
+            <h3>server side composition ✅ Pros</h3>
+            <p><strong>Improved Performance</strong> – partial page caching, reducing backend load.</p>
+            <img class="r-stretch" src="assets/ssi/cache.png">
+        </section>
+        <section data-transition="fade">
+            <h3>server side composition ✅ Pros</h3>
+            <p><strong>Multi-Language Support</strong> – Components in different languages</p>
+            <img class="r-stretch" src="assets/ssi/robot2.png">
+        </section>
+        <section data-transition="fade">
+            <h3>server side composition ❌ Cons</h3>
+            <p><strong>Limited Flexibility</strong> – Requires server-side support</p>
+            <img class="r-stretch" src="assets/ssi/support.png">
+        </section>
+        <section data-transition="fade">
+            <h3>server side composition ❌ Cons</h3>
+            <p><strong>Increased Complexity</strong> – not defined by the code.</p>
+            <img class="r-stretch" src="assets/ssi/nginx-config.png">
+        </section>
+        <section data-transition="fade">
+            <h3>server side composition ❌ Cons</h3>
+            <p><strong>Security Risks</strong> – exposing internal services.</p>
+            <img class="r-stretch" src="assets/ssi/security.png">
+        </section>
+        <section data-transition="fade-in slide-out">
+            <h3>server side composition ❌ Cons</h3>
+            <p><strong>Other challenges</strong> – timeouts, ♾️ loops, error handling</p>
+            <img class="r-stretch" src="assets/ssi/infinity-loop.png">
+        </section>
         <section>
             <h3>Technology Overview - server side composition</h3>
             <div style="font-size: 0.7em;">✅ Pros:
                 <ul>
-                    <li><strong>Improved Performance</strong> – Enables partial page caching, reducing backend load.
-                    </li>
                     <li><strong>Efficient Content Assembly</strong> – Components are fetched in parallel, speeding up
                         page rendering.
+                    </li>
+                    <li><strong>Improved Performance</strong> – Enables partial page caching, reducing backend load.
                     </li>
                     <li><strong>Multi-Language Support</strong> – Components can be written in different programming
                         languages and integrated seamlessly.
                     </li>
                 </ul>
             </div>
-            <div class="fragment" style="font-size: 0.7em;">❌ Cons:
+            <div style="font-size: 0.7em;">❌ Cons:
                 <ul>
                     <li><strong>Limited Flexibility</strong> – Requires server-side support and specific configurations.
                     </li>
@@ -872,17 +971,26 @@ server {
                     <li><strong>Security Risks</strong> – Incorrect configuration may introduce vulnerabilities, such as
                         exposing internal services or enabling injection attacks.
                     </li>
-                    <li><strong>Other challenges</strong> – timeouts, loops, error handling.
+                    <li><strong>Other challenges</strong> – timeouts, infinity loops, error handling.
                     </li>
                 </ul>
             </div>
         </section>
-        <section><h1>Edge Side Include (ESI)</h1></section>
+        <section>
+            <h1>What can we fix</h1>
+            <h2>Error handling</h2>
+            <h2>Timeouts</h2>
+        </section>
+        <section data-auto-animate data-auto-animate-id="esi"><h1 class="r-fit-text">Edge Side Include (ESI)</h1></section>
+        <section data-auto-animate data-auto-animate-id="esi">
+            <h1>Edge Side Include (ESI)</h1>
+            <p>Edge Side Includes (ESI) is a CDN feature that allows web pages to include content from other sources before being sent to the client.</p>
+            <img class="r-stretch" src="assets/esi/esi.png">
+        </section>
         <section>
             <h3>Edge Side Include (ESI)</h3>
             <p>
-                Edge Side Includes (ESI) is a CDN feature that allows web pages to include content from other sources before being sent to the client.
-                It works by processing special ESI directives, such as:<pre><code>&lt;esi:include src="http://foo.bar/components/foo" /&gt;</code></pre>
+            It works by processing special ESI directives, such as:<pre><code>&lt;esi:include src="http://foo.bar/components/foo" /&gt;</code></pre>
             which enable the inclusion of external subrequests.
             </p>
         </section>
@@ -893,9 +1001,10 @@ server {
                 <ul>
                     <li><strong>Akamai</strong> - The original creator of ESI and provides full support.</li>
                     <li><strong>Fastly</strong> - Strong ESI support, Varnish-based.</li>
-                    <li><strong>CloudFlare</strong> - Offers ESI through their Workers platform.</li>
-                    <li><strong>AWS CloudFront</strong> - Limited ESI support through Lambda@Edge functions.</li>
+                    <li><strong>CloudFlare*</strong> - Offers ESI through their Workers platform.</li>
+                    <li><strong>AWS CloudFront*</strong> - Limited ESI support through Lambda@Edge functions.</li>
                 </ul>
+                <aside class="notes">Z gwiazdką nie sprawdzałem tylko wyczytałem że można</aside>
             </div>
         </section>
         <section>
@@ -919,18 +1028,48 @@ server {
                 </ul>
             </div>
         </section>
+        <section data-auto-animate data-auto-animate-id="riddle-3">
+            <h1 class="r-fit-text">Third riddle</h1>
+        </section>
+        <section data-auto-animate data-auto-animate-id="riddle-3">
+            <h1>Third riddle</h1>
+            <p>Which of the following servers <strong>does not</strong> make subrequests in parallel?</p>
+            <ol class="fragment">
+                <li><strong>Fastly</strong></li>
+                <li><strong>Varnish</strong></li>
+                <li><strong>Traefik</strong></li>
+            </ol>
+        </section>
+        <section data-auto-animate data-auto-animate-id="riddle-3">
+            <h1 class="r-fit-text">Fastly</h1>
+        </section>
+        <section data-auto-animate data-auto-animate-id="riddle-3">
+            <h1>Fastly</h1>
+            <p><strong>Sequential processing</strong>: ESI tags are processed sequentially, <strong>not concurrently</strong>, because when the parser encounters an ESI include tag,
+                it will make the child request, wait for the HTTP response from the child request to complete...</p>
+        </section>
+        <section data-auto-animate data-auto-animate-id="riddle-3">
+            <h1>Varnish</h1>
+            <img class="r-stretch" src="assets/esi/varnish-pay.png">
+            <aside class="notes">Varnish tylko w wersji płatnej</aside>
+        </section>
+        <section data-auto-animate data-auto-animate-id="riddle-3">
+            <h1>go-esi</h1>
+            <p>All server supported by go-esi plugin should work in parallel. Traefik, Caddy, roadrunner.</p>
+        </section>
         <section>
             <h2>Basic usage</h2>
             <div>
-                <p>Include request:</p>
+                <p>Include request from different servers:</p>
                 <pre><code data-trim class="language-html">
 &lt;body&gt;
     &lt;esi:include src="http://example.com/_component/v1/header" /&gt;
-    &lt;esi:include src="http://example.com/_component/v1/content" /&gt;
-    &lt;esi:include src="http://example.com/_component/v1/footer" /&gt;
+    &lt;esi:include src="http://foo.com/bar/content" /&gt;
+    &lt;esi:include src="http://app.server.internal/_component/v1/footer" /&gt;
 &lt;/body&gt;
             </code></pre>
             </div>
+            <aside class="notes">Jak widać można robić subrequesty do różnych miejsc</aside>
         </section>
         <section>
             <h2>Basic Error Handling</h2>
@@ -938,37 +1077,129 @@ server {
             <pre><code>&lt;esi:include src="http://example.com/_component/v2/header"
              alt="http://example.com/_component/v1/header" /&gt;</code></pre>
             <p>If <code class="highlight-code">/v2/header</code> fails, then load <code class="highlight-code">/v1/header</code>. Great for quick fallback.</p>
+            <aside class="notes">Bardzo przydatne przy wprowadzaniu nowej wersji</aside>
         </section>
         <section>
             <h2>Advanced Fallback</h2>
             Advanced fallback with <code class="highlight-code">&lt;esi:try&gt;</code> tag:
             <pre><code style="font-size: 0.8em"><esi:try>
   <esi:attempt>
-    <esi:include src="http://example.com/_component/v2/header" />
+    &lt;esi:include src="http://example.com/_component/v2/content" /&gt;
   </esi:attempt>
   <esi:except>
-    <div hx-get="http://example.com/_component/v1/header"
+    <div hx-get="http://example.com/_component/v1/content"
 
          hx-trigger="load" hx-swap="outerHTML">
-      Loading guest box...
+      Loading content...
     </div>
   </esi:except>
 </esi:try>
 </code></pre>
             <p>If <code class="highlight-code">/v2/header</code> fails, then load <code class="highlight-code">/v1/header</code> using htmx</p>
+            <aside class="notes">Może się przydać jak mamy time budged. Można ustawić header na np 300ms timeout</aside>
         </section>
         <section>
             <h2>Detecting ESI Support</h2>
-            <p>Most CDN providers add special HTTP headers to let you know ESI is available and active. Most popular is <code class="highlight-code">Surrogate-Control</code>, example:</p>
-            <pre><code>Surrogate-Control: content="ESI/1.0"</code></pre>
+            <p>Most CDN providers add special HTTP headers to let you know ESI is available and active. Most popular is <code class="highlight-code">Surrogate-Capability</code>, example:</p>
+            <pre><code>Surrogate-Capability: varnish="ESI/1.0"</code></pre>
+            <aside class="notes">zamiast varnish może być cokolwiek, byle unikalnie identyfikować</aside>
+        </section>
+        <section>
+            <h2>Detecting ESI Support</h2>
+            <p>Some html parsers can brake html structure</p>
+            <strong>Original:</strong>
+            <pre><code><div>&lt;esi:include src="http://foo.com/bar"/&gt;<p>some text</p></div></code></pre>
+            <strong>Parsed:</strong>
+            <pre><code><div>&lt;esi:include src="http://foo.com/bar"&gt;<p>some text</p>&lt;/esi:include&gt;</div></code></pre>
         </section>
         <section>
             <h2>Notifying CDN about ESI content</h2>
             <p>Parsing server responses for esi tags can be demanding. That's why most CDNs only parse responses that have the <code class="highlight-code">Edge-Control</code> header set. Example:</p>
             <pre><code>Edge-control: dca=esi</code></pre>
+            <aside class="notes">"dca" oznacza "Dynamic Content Assembly"</aside>
+        </section>
+        <section>
+            <h1>Symfony support</h1>
+            <p>ESI is supported out of the box when using Symfony’s HTTP Cache</p>
+            <pre><code># config/packages/framework.yaml
+framework:
+    esi: true</code></pre>
+            Then in twig template:
+            <pre><code>{# templates/static/layout.html.twig #}
+{{ render_esi(controller('App\\Controller\\NewsController::latest', { 'page': 5 })) }}</code></pre>
         </section>
         <section>
             <h1 class="r-fit-text">Demo time</h1>
+        </section>
+        <section>
+            <h2>Traefiki configuration</h2>
+            <pre><code>experimental:         #loading external plugin
+  localPlugins:
+    esi:
+      moduleName: github.com/darkweak/go-esi
+middlewares:          #configure esi plugin
+  esi:
+    plugin:
+      esi: {}
+http:
+  routers:
+    nginx:
+      middlewares:
+        - esi         #add esi middleware to service
+      entrypoints:
+      ...</code></pre>
+        </section>
+        <section>
+            <h2>Demo template</h2>
+            <pre><code style="font-size: 0.8em"><header>&lt;esi:include src="http://nginx/_component/header.php" /&gt;</header>
+<div class="container">
+    <nav class="left-menu">&lt;esi:include src="http://nginx/_component/left_menu.php" /&gt;</nav>
+    <div class="content-area">
+        <div class="breadcrumbs">&lt;esi:include src="http://nginx/_component/breadcrumbs.php" /&gt;</div>
+        <h1>Use ESI to include components</h1>
+        <div class="content">
+            <div class="content1">&lt;esi:include src="http://nginx/_component/content.php" /&gt;</div>
+            ...
+        </div>
+    </div>
+</div>
+<footer>&lt;esi:include src="http://nginx/_component/footer.php" /&gt;</footer></code></pre>
+            <aside class="notes">Tutaj może być dowolna domena, np możesz sobie pobierać kod z github!</aside>
+        </section>
+        <section data-transition="slide-in fade-out">
+            <h3>edge side composition ✅ Pros</h3>
+            <p><strong>Reduced Backend Load</strong> –  Pages assembled at the CDN</p>
+            <img class="r-stretch" src="assets/esi/sleep-server.png">
+        </section>
+        <section data-transition="fade">
+            <h3>edge side composition ✅ Pros</h3>
+            <p><strong>Faster Content Delivery</strong> – Components cache closer to the user</p>
+            <img class="r-stretch" src="assets/esi/cache-close.png">
+        </section>
+        <section data-transition="fade">
+            <h3>edge side composition ✅ Pros</h3>
+            <p><strong>Easy to Configure</strong> – Many CDNs offer built-in ESI</p>
+            <img class="r-stretch" src="assets/esi/esi-switch.png">
+        </section>
+        <section data-transition="fade">
+            <h3>edge side composition ❌ Cons</h3>
+            <p><strong>Limited cache invalidation</strong> – hard to invalid single item</p>
+            <img class="r-stretch" src="assets/esi/invalidate-cache.png">
+        </section>
+        <section data-transition="fade">
+            <h3>edge side composition ❌ Cons</h3>
+            <p><strong>Complex Debugging</strong> – harder to trace, processing done at the edge.</p>
+            <img class="r-stretch" src="assets/esi/debug.png">
+        </section>
+        <section data-transition="fade">
+            <h3>edge side composition ❌ Cons</h3>
+            <p><strong>CDN Dependency</strong> – Requires a CDN with ESI support.</p>
+            <img class="r-stretch" src="assets/esi/checklist.png">
+        </section>
+        <section data-transition="fade-in slide-out">
+            <h3>edge side composition ❌ Cons</h3>
+            <p><strong>Additional Costs</strong> – ESI support can come with extra fees.</p>
+            <img class="r-stretch" src="assets/esi/varnish-pay-2.png">
         </section>
         <section>
             <h3>Technology Overview - edge side composition</h3>
@@ -985,7 +1216,7 @@ server {
                     </li>
                 </ul>
             </div>
-            <div class="fragment" style="font-size: 0.7em;">❌ Cons:
+            <div style="font-size: 0.7em;">❌ Cons:
                 <ul>
                     <li><strong>Limited cache invalidation</strong> – Can be hard to invalid single cache item.
                     </li>
@@ -998,6 +1229,45 @@ server {
                     <li><strong>Additional Costs</strong> – CDN services with ESI support can come with extra fees.</li>
                 </ul>
             </div>
+        </section>
+        <section data-auto-animate data-auto-animate-id="end">
+            <h1 class="r-fit-text">The end</h1>
+        </section>
+        <section data-auto-animate data-auto-animate-id="end">
+            <h1>The end</h1>
+            <h2>almost</h2>
+        </section>
+        <section data-auto-animate data-auto-animate-id="gomesi">
+            <h1>Go-mesi Project</h1>
+        </section>
+        <section data-auto-animate data-auto-animate-id="gomesi">
+            <h1>Go-mesi Project</h1>
+            <p><strong>go-mESI</strong> (minimal Edge Side Includes) is a lightweight implementation of Edge Side Includes (ESI) in Golang, designed to add ESI support to multiple web servers.</p>
+        </section>
+        <section data-auto-animate data-auto-animate-id="gomesi">
+            <h1>Go-mesi Project</h1>
+            <p>Features:</p>
+            <ul>
+                <li><strong>Parallel Fetching</strong> - mESI supports parallel fetching of ESI fragments</li>
+                <li><strong>Lightweight & Minimal</strong> - focuses on essential ESI features</li>
+                <li><strong>Multi-Server Support</strong> - traefik, nginx, apache, caddy, roadrunner...</li>
+                <li><strong>A/B testing</strong> - test different version of component</li>
+                <li><strong>Concurrent fetch</strong> - if you need ultra performance</li>
+                <li><strong>timeout</strong> - easily manage the page generation time</li>
+                <li><strong>Fallback content</strong> - content to be displayed on fail</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="gomesi">
+            <h1>Go-mesi Project</h1>
+            <p>Gitlab: <a href="https://github.com/crazy-goat/go-mesi">https://github.com/crazy-goat/go-mesi</a></p>
+            <img class="r-stretch" src="assets/qrcode.svg">
+        </section>
+        <section data-auto-animate data-auto-animate-id="end2">
+            <h1 class="r-fit-text">The end</h1>
+        </section>
+        <section data-auto-animate data-auto-animate-id="end2">
+            <h1>The end</h1>
+            <h2>Questions?</h2>
         </section>
     </div>
 </div>
