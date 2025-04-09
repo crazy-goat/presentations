@@ -1256,16 +1256,44 @@ http:
         </section>
         <section data-auto-animate data-auto-animate-id="gomesi">
             <h1>Go-mesi Project</h1>
-            <p>Features:</p>
+            <strong>Features:</strong>
             <ul>
                 <li><strong>Parallel Fetching</strong> - mESI supports parallel fetching of ESI fragments</li>
                 <li><strong>Lightweight & Minimal</strong> - focuses on essential ESI features</li>
                 <li><strong>Multi-Server Support</strong> - traefik, nginx, apache, caddy, roadrunner...</li>
                 <li><strong>A/B testing</strong> - test different version of component</li>
                 <li><strong>Concurrent fetch</strong> - if you need ultra performance</li>
-                <li><strong>timeout</strong> - easily manage the page generation time</li>
+                <li><strong>Timeout</strong> - easily manage the page generation time</li>
                 <li><strong>Fallback content</strong> - content to be displayed on fail</li>
+                <li><strong>Max depth</strong> - Defines the maximum allowed recursion depth</li>
             </ul>
+        </section>
+        <section>
+            <h1>Go-mESI - A/B testing</h1>
+            Allows to download with different probability from two different locations src and alt.
+            In case of no alt attribute, the src location will always be downloaded.
+            <pre><code>&lt;esi:include fetch-mode="ab" ab-ratio="90:10"
+    src="http://foo.bar/A" alt="http://foo.bar/B" /&gt;</code></pre>
+        </section>
+        <section>
+                <h1>Go-mESI - MaxDepth</h1>
+                Defines the maximum allowed recursion depth for esi:include tags.
+                This parameter prevents infinite loops that could occur when ESI templates reference each other.
+                <pre><code>&lt;esi:include max-depth="2" src="http://foo.bar/recursive"/&gt;</code></pre>
+        </section>
+        <section>
+                <h1>Go-mESI - Timeout</h1>
+                Specifies the maximum time to wait for a server response when processing <code class="highlight-code">esi:include</code> tags.
+                The request will be terminated if this timeout is exceeded.
+                <pre><code>&lt;esi:include timeout="0.2" src="http://foo.bar/some-long request"/&gt;</code></pre>
+        </section>
+        <section>
+                <h1>Go-mESI - Fallback content</h1>
+                By default, the <code class="highlight-code">esi:include</code> tag does not contain a body.
+                mESI allows you to set the so-called fallback content, or the content that will be displayed in case the download of remote content fails
+                <pre><code style="font-size: 0.8em"><esi:include timeout="0.25" src="https://foo.bar/can-be-slow">
+  <div hx-trigger="load" hx-swap="outerHTML" hx-get="https://foo.bar/can-be-slow"></div>
+</esi:include></code></pre>
         </section>
         <section data-auto-animate data-auto-animate-id="gomesi">
             <h1>Go-mesi Project</h1>
