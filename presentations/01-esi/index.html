@@ -897,7 +897,8 @@ location ~/_component/*\.php$ {
         <section>
             <h3>Important limitations</h3>
             <ul>
-                <li>All parameters to the component must be passed in the query string</li>
+                <li>Page with layout must be really fast, with minimal logic</li>
+                <li class="fragment">All parameters to the component must be passed in the query string</li>
                 <li class="fragment">By default, headers from the main request are not passed</li>
                 <li class="fragment">Better prepare a looooot of PHP workers</li>
                 <li class="fragment">SSI requests can only be performed within the server*</li>
