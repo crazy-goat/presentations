@@ -1,15 +1,8 @@
 providers:
   file:
-    filename: /esi-configuration.yml
+    filename: /etc/traefik/esi-configuration.yaml
     watch: true
 
-api:
-  dashboard: true
-  debug: true
-  insecure: true
-
-pilot:
-  token: 12926953-a7d1-4223-a092-d7dd95a91fa3
 
 experimental:
   localPlugins:
@@ -18,5 +11,9 @@ experimental:
 
 log:
   level: DEBUG
+
+entryPoints:
+  http:
+    address: ":80"
 
 accessLog: {}

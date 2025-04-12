@@ -1,0 +1,36 @@
+http:
+  routers:
+    demo:
+      middlewares:
+        - esi
+      entrypoints:
+        - http
+      service: nginx
+      rule: "Host(`demo.localhost`)"
+    presentation:
+      entrypoints:
+        - http
+      service: nginx
+      rule: "Host(`presentation.localhost`)"
+    dev:
+      entrypoints:
+        - http
+      service: revealjs
+      rule: "Host(`dev.localhost`)"
+
+  services:
+    nginx:
+      loadBalancer:
+        servers:
+          - url: http://127.0.0.1:8080
+        passHostHeader: true
+    revealjs:
+      loadBalancer:
+        servers:
+          - url: http://127.0.0.1:8081
+        passHostHeader: true
+
+  middlewares:
+    esi:
+      plugin:
+        esi: {}
