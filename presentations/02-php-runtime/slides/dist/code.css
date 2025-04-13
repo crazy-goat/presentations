@@ -1,0 +1,7 @@
+.highlight-code {
+    background-color: white;
+    color: #000;
+    font-weight: bold;
+    font-family: var(--r-code-font);
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15);
+}
