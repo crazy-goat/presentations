@@ -12,8 +12,8 @@ if (!headers_sent()) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HTMX Traefik Demo</title>
-    <link rel="stylesheet" href="/style.css">
-    <script src="https://unpkg.com/htmx.org@1.9.10"></script> <!-- HTMX CDN -->
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/html.min.js"></script>
 </head>
 <body>
 <header hx-get="/_component/header.php" hx-trigger="load"></header>

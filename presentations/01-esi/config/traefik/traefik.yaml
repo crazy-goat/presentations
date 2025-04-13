@@ -5,9 +5,10 @@ providers:
 
 
 experimental:
-  localPlugins:
+  plugins:
     esi:
-      moduleName: github.com/darkweak/go-esi
+      moduleName: github.com/crazy-goat/go-mesi
+      version: v0.6.2
 
 log:
   level: DEBUG

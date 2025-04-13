@@ -11,7 +11,7 @@ if (!headers_sent()) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SSI nginx demo</title>
-    <link rel="stylesheet" href="/style.css">
+    <style><!--# include file="css/style.css" --></style>
 </head>
 <body>
 <header><!--# include virtual="/_component/header.php" --></header>

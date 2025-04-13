@@ -1,16 +1,13 @@
 PWD := $(shell pwd)
 
-go-esi:
-	git clone https://github.com/darkweak/go-esi.git
+build:
+	docker build --target base --progress=plain -t crazygoat/presentation-01-esi:latest .
 
-vendor: go-esi
-	rm -rf go-esi/.git
+push: build
+	docker push crazygoat/presentation-01-esi:latest
 
-build: vendor
-	docker build --target base -t crazygoat/presentation-01-esi:latest .
-
-build-dev: vendor
-	docker build --target dev -t crazygoat/presentation-01-esi:dev .
+build-dev:
+	docker build --target dev --progress=plain -t crazygoat/presentation-01-esi:dev .
 
 run:
 	 docker run --rm --name presentation-01-esi -p 3210:80 -p 8080:8080 crazygoat/presentation-01-esi:latest
