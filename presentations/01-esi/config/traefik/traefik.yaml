@@ -1,0 +1,20 @@
+providers:
+  file:
+    filename: /etc/traefik/esi-configuration.yaml
+    watch: true
+
+
+experimental:
+  plugins:
+    esi:
+      moduleName: github.com/crazy-goat/go-mesi
+      version: v0.6.2
+
+log:
+  level: DEBUG
+
+entryPoints:
+  http:
+    address: ":80"
+
+accessLog: {}

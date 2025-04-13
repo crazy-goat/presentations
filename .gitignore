@@ -1,5 +1,7 @@
 .idea
-/node_modules/
-demo.html
-/presentations/01-esi/demos/esi/go-esi/
+/presentations/01-esi/demo/esi/go-esi/
 /slides/01-esi.pdf
+/presentations/01-esi/node_modules/
+/presentations/01-esi/go-esi/
+/presentations/01-esi/slides/node_modules/
+/presentations/01-esi/go-mesi/
