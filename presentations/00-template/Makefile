@@ -16,4 +16,9 @@ run:
 
 run-dev: build-dev
 	cd slides && npm i && cd ..
-	docker run --rm --name presentation-$(NAME) -p 3210:8081 -p 35729:35729 -v $(PWD)/slides:/var/www/slides crazygoat/presentation-$(NAME):dev
+	docker run --rm --name presentation-$(NAME)-dev -p 3210:8081 -p 35729:35729 -v $(PWD)/slides:/var/www/slides crazygoat/presentation-$(NAME):dev
+
+clean:
+	rm -rf slides/node_modules
+	docker stop presentation-$(NAME) presentation-$(NAME)-dev || true
+	docker image rm crazygoat/presentation-$(NAME):latest crazygoat/presentation-$(NAME):dev || true
