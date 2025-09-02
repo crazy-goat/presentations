@@ -2,8 +2,8 @@
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="utf-8">
-    <title>Blazingly Fast Websites with Parallel Composition</title>
-    <meta name="description" content="Blazingly Fast Websites with Parallel Composition">
+    <title>Single Endpoint, Infinite Chaos</title>
+    <meta name="description" content="Single Endpoint, Infinite Chaos">
     <meta name="author" content="Piotr Hałas">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -12,19 +12,19 @@
     <link rel="stylesheet" href="/dist/reset.css">
     <link rel="stylesheet" href="/dist/reveal.css">
     <link rel="stylesheet" href="/dist/code.css">
-    <link rel="stylesheet" href="/dist/theme/beige.css"  id="theme">
+    <link rel="stylesheet" href="/dist/theme/beige.css" id="theme">
     <link rel="stylesheet" href="/dist/plugin/highlight/github-light-default.css">
 </head>
 <body>
 <div class="reveal">
     <div class="slides">
         <section data-auto-animate data-auto-animate-id="intro">
-            <h1 class="r-fit-text">Presentation Title</h1>
+            <h1 class="r-fit-text">Single Endpoint</h1>
             <aside class="notes"></aside>
         </section>
         <section data-auto-animate data-auto-animate-id="intro">
-            <h1 class="r-fit-text">Presentation Title</h1>
-            <h3>Some subtitle</h3>
+            <h1 class="r-fit-text">Single Endpoint</h1>
+            <h3>Infinite Chaose</h3>
             <p>
                 <small>Created by <a href="http://hakim.se">Piotr Hałas</a> from
                     <a href="https://github.com/hakimel/reveal.js/graphs/contributors">Crazy Goat Software</a></small>
@@ -37,13 +37,41 @@
             <h1 data-id="chapter_agenda">Agenda</h1>
             <ol>
                 <li>WHOAMI</li>
-                <li class="fragment"></li>
-                <li class="fragment"></li>
-                <li class="fragment"></li>
+                <li class="fragment">The Project</li>
+                <li class="fragment">The Stack</li>
+                <li class="fragment">PHP</li>
+                <li class="fragment">Cache</li>
+                <li class="fragment">Queues</li>
+                <li class="fragment">Mongo</li>
+                <li class="fragment">The Future</li>
+                <li class="fragment">Q&A</li>
             </ol>
             <aside class="notes">
                 Oby był czas na Q&A
             </aside>
+        </section>
+        <section>
+            <h1>WHOAMI</h1>
+        </section>
+        <section>
+            <h3>WHOAMI --env=live</h3>
+            <ul>
+                <li>Proud Husband and Father of Two Daughters</li>
+                <li class="fragment">Run a small farm Hałaśliwa Zagroda
+                    <ul>
+                        <li class="fragment">Farm animals: <span class="fragment">horse, donkeys, goats, sheep, pigs, ducks, geese, chickens,
+                            guinea fowl</span><span class="fragment">; domestic: dogs, cats, fish</span></li>
+                        <li class="fragment">We produce goat cheese and sell eggs<span
+                                class="fragment">, organize school trips</span><span
+                                class="fragment">, birthday parties for children</span>
+                        </li>
+                    </ul>
+                </li>
+                <li class="fragment">Passion for Woodworking</li>
+                <li class="fragment">Enjoy Welding Projects</li>
+                <li class="fragment">Love for Classic Vehicles</li>
+                <li class="fragment">Youtuber</li>
+            </ul>
         </section>
         <section>
             <h3>WHOAMI --env=dev</h3>
@@ -68,24 +96,79 @@
                 <li class="fragment">Engineering mindset over pure theory</li>
             </ul>
         </section>
-        <section>
-            <h3>WHOAMI --env=live</h3>
+        <section data-auto-animate data-auto-animate-id="agenda">
+            <h1 class="r-fit-text">The Project</h1>
+        </section>
+        <section data-auto-animate data-auto-animate-id="agenda">
+            <h1>The Project</h1>
+            <img src="assets/recommendations.png"/>
+        </section>
+        <section data-auto-animate data-auto-animate-id="agenda">
+            <img src="assets/recommendations.png"/>
+            <p>The goal of the project was to replace the existing external product recommendation system with our own
+                solution.
+                The main reasons were the high costs and the lack of flexibility of the current system.</p>
+        </section>
+        <section data-auto-animate data-auto-animate-id="recsio">
+            <h1 class="r-fit-text">RECS.IO</h1>
+        </section>
+        <section data-auto-animate data-auto-animate-id="recsio">
+            <h1>RECS.IO</h1>
             <ul>
-                <li>Proud Husband and Father of Two Daughters</li>
-                <li class="fragment">Run a small farm Hałaśliwa Zagroda
-                    <ul>
-                        <li class="fragment">Farm animals: <span class="fragment">horse, donkeys, goats, sheep, pigs, ducks, geese, chickens,
-                            guinea fowl</span><span class="fragment">; domestic: dogs, cats, fish</span></li>
-                        <li class="fragment">We produce goat cheese and sell eggs<span
-                                class="fragment">, organize school trips</span><span
-                                class="fragment">, birthday parties for children</span>
-                        </li>
-                    </ul>
-                </li>
-                <li class="fragment">Passion for Woodworking</li>
-                <li class="fragment">Enjoy Welding Projects</li>
-                <li class="fragment">Love for Classic Vehicles</li>
-                <li class="fragment">Youtuber</li>
+                <li>3 Backend developers</li>
+                <li class="fragment">1 Frontend developers</li>
+                <li class="fragment">1 Tester</li>
+                <li class="fragment">PO, Scrum Master, Engineering Manager</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="assumptions">
+            <h1>Assumptions</h1>
+            <ul style="width: 700px; height: 220px">
+                <li>3 months to MVP</li>
+                <li class="fragment">Monthly cost: ~2000 euro</li>
+                <li class="fragment" data-id="perf">Performance: 1000 req/s</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="assumptions">
+            <h1>Assumptions</h1>
+            <ul style="width: 700px; height: 220px">
+                <li>3 months to MVP</li>
+                <li>Monthly cost: ~2000 euro</li>
+                <li data-id="perf">Performance: <s>1000 req/s</s> 1600 req/s</li>
+                <li class="fragment">Response time < 200ms</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="assumptions">
+            <h1>Assumptions</h1>
+            <ul style="width: 700px; height: 220px">
+                <li>3 months to MVP ❌</li>
+                <li>Monthly cost: ~2000 euro ✅</li>
+                <li>Performance: <s>1000 req/s</s> 1600 req/s ✅</li>
+                <li>Response time < 200ms ✅</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="stack">
+            <h1 class="r-fit-text">The Stack</h1>
+        </section>
+        <section data-auto-animate data-auto-animate-id="stack">
+            <h1>The Stack</h1>
+            <p><strong>Backend</strong></p>
+            <ul>
+                <li>Programing language: PHP</li>
+                <li class="fragment">Framework: Symfony 7.3</li>
+                <li class="fragment">Database: MongoDB 7.0</li>
+                <li class="fragment">Cache: Redis</li>
+                <li class="fragment">Queues: Kafka<span class="fragment">, Rabbitmq</span></li>
+                <li class="fragment">Platform: K8s - OpenShift</li>
+                <li class="fragment">Cloud: GCP<span class="fragment">, Azure</span></li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="stack">
+            <h1>The Stack</h1>
+            <p><strong>Frontend</strong></p>
+            <ul>
+                <li>Frontend: 15kb React js file</li>
+                <li class="fragment">Mobile: 10 mobile apps (5 Android, 5 Iphone)</li>
             </ul>
         </section>
     </div>

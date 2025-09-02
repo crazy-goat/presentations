@@ -1,5 +1,5 @@
 PWD := $(shell pwd)
-NAME := 00-template
+NAME := 03-single-endpoint
 
 
 build:
