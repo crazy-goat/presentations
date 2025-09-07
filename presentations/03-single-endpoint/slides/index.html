@@ -30,6 +30,15 @@
                     <a href="https://github.com/hakimel/reveal.js/graphs/contributors">Crazy Goat Software</a></small>
             </p>
         </section>
+        <section>
+            <h1>Attention</h1>
+            <p style="width: 100%">
+                This presentation is not about success stories. It’s about failures – the mistakes and wrong turns that, in the end, made success possible.
+                We often like to hear about other people’s failures, and that’s fine, because they can teach us something.
+                Still, it’s always smarter to learn from someone else’s mistakes than to make them all yourself.
+                That’s why I want to share some of my own failures with you – so you can avoid them on your own path.
+            </p>
+        </section>
         <section data-auto-animate data-auto-animate-id="agenda">
             <h1 data-id="chapter_agenda" class="r-fit-text">Agenda</h1>
         </section>
@@ -170,6 +179,306 @@
                 <li>Frontend: 15kb React js file</li>
                 <li class="fragment">Mobile: 10 mobile apps (5 Android, 5 Iphone)</li>
             </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="stack">
+            <h1 style="font-size: 1.5em; margin-bottom: 0px;">The Stack</h1>
+            <img src="assets/big-picture.png" style="height: 600px">
+        </section>
+        <section data-auto-animate data-auto-animate-id="stack">
+            <h1>The Stack</h1>
+            <ul>
+                <li>5 different brands, vary in size</li>
+                <li class="fragment">Each have own k8s namespace, own database, cache, etc</li>
+                <li class="fragment">But it can be run as a multi-tenant application</li>
+                <li class="fragment">All k8s configuration owned by Recs.io</li>
+                <li class="fragment">CI/CD - ArgoCD<span class="fragment">, owned by Recs.io</span></li>
+                <li class="fragment">Whole stack can be run locally using k3d</li>
+                <li class="fragment">Including CI/CD🤪</li>
+                <li class="fragment">Monitoring: Prometheus, Grafana, NewRelic, PMM</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="PHP">
+            <h1 class="r-fit-text">PHP Application</h1>
+        </section>
+        <section data-auto-animate data-auto-animate-id="PHP">
+            <h1>PHP Application</h1>
+            <ul>
+                <li>Classic configuration Nginx + PHP-FPM + NewRelic</li>
+                <li class="fragment">Alpine-based docker image</li>
+                <li class="fragment">PHP 8.4 - from packages</li>
+                <li class="fragment">FPM <code>pm.static</code> with 20 workers</li>
+                <li class="fragment">Separate container for Nginx, PHP-FPM, NewRelic</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="PHP">
+            <h1 style="font-size: 1.5em; margin-bottom: 0px;">PHP Application</h1>
+            <img src="assets/php-ver-1.png"/>
+        </section>
+        <section data-auto-animate data-auto-animate-id="PHP-1">
+            <h1 style="font-size: 3em">NewRelic - Problem 1</h1>
+            <h2></h2>
+            <ul>
+                <li>Sometimes it took more than 30s for NewRelic agent to accept data</li>
+                <li class="fragment">This cause readiness probes to fail</li>
+                <li class="fragment">It was easy to fix with <code>newrelic.daemon.app_connect_timeout=0s</code></li>
+                <li class="fragment">Copy-pasted from others config</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="PHP-2">
+            <h1 style="font-size: 3em">NewRelic - Problem 2</h1>
+            <pre><code style="font-size: 0.9em">
+Process 42 (version 11.10.0.24) received signal 11: segmentation violation
+process id 1 fatal signal (SIGSEGV, SIGFPE, SIGILL, SIGBUS, ...)
+ - stack dump follows (code=0x7fae61df2000 bss=0x7fae61f0eb2c):
+No backtrace on this platform.
+PHP execution trace follows...
+2025-07-29 06:39:08.922 +0000 (44 44) error: parse preamble failure: invalid format: 0
+2025-07-29 06:39:08.922 +0000 (44 44) error: APPINFO failure: len=7356 errno=EISCONN
+[29-Jul-2025 06:39:09] WARNING: [pool www] child 42 exited on signal 11 (SIGSEGV - core dumped)
+after 8.668780 seconds from start
+[29-Jul-2025 06:39:09] NOTICE: [pool www] child 91 started
+            </code></pre>
+        </section>
+        <section data-auto-animate data-auto-animate-id="PHP-2">
+            <h1 style="font-size: 3em">NewRelic - Problem 2</h1>
+            <ul>
+                <li>There was 40% chance that this will happen</li>
+                <li class="fragment">The FPM child process was restarted and work well</li>
+                <li class="fragment">With little traffic, there were no visible problems</li>
+                <li class="fragment">Apart from increased memory usage</li>
+                <li class="fragment">Problems began when the load on the server increased</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="PHP-2">
+            <h1 style="font-size: 3em">NewRelic - Problem 2</h1>
+            <img src="assets/php-memory.png">
+        </section>
+        <section data-auto-animate data-auto-animate-id="PHP-2">
+            <h1 style="font-size: 3em">NewRelic - Problem 2</h1>
+            <img src="assets/php-cpu.png">
+        </section>
+        <section data-auto-animate data-auto-animate-id="PHP-2">
+            <h1 style="font-size: 3em">NewRelic - Problem 2</h1>
+            <ul>
+                <li>Partial fix number 1</li>
+                <li class="fragment">Disable newrelic for PHP scripts in entrypoint.sh</li>
+                <li class="fragment">Reduced chance of SIGSEGV by 50%</li>
+                <li class="fragment">Done by adding special NEWRELIC_ENABLED variable in php.ini file</li>
+            </ul>
+            <pre class="fragment"><code>newrelic.enabled = ${NEWRELIC_ENABLED}</code></pre>
+        </section>
+        <section data-auto-animate data-auto-animate-id="PHP-2">
+            <h1 style="font-size: 3em">NewRelic - Problem 2</h1>
+            <ul>
+                <li>Hot-fix - disable <code>opcache.preload</code></li>
+                <li class="fragment">Similar problem was already reported on github #19125</li>
+                <li class="fragment">Not a option for us - lower performance</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="PHP-2">
+            <h1 style="font-size: 3em">NewRelic - Problem 2</h1>
+            <ul>
+                <li>Partial fix number 2</li>
+                <li class="fragment">Disable NewRelic sidecar container</li>
+                <li class="fragment">Run NewRelic agent inside PHP-FPM container</li>
+                <li class="fragment">Reduce 90% of SIGSEGV</li>
+                <li class="fragment">But the problem was still occurring</li>
+                <li class="fragment">Finial solution latter</li>
+            </ul>
+            <pre class="fragment"><code>newrelic.daemon.dont_launch = 0</code></pre>
+        </section>
+        <section data-auto-animate data-auto-animate-id="FF1">
+            <h1 class="r-fit-text">fun fact</h1>
+        </section>
+        <section data-auto-animate data-auto-animate-id="FF1">
+            <h1  style="font-size: 1.5em; margin-bottom: 0">fun fact</h1>
+            Impact of NewRelic on PHP CPU load
+            <img src="assets/brak-new-relic-cpu.png" style="height: 450px">
+        </section>
+        <section data-auto-animate data-auto-animate-id="FF1">
+            <h1  style="font-size: 1.5em; margin-bottom: 0">fun fact</h1>
+            Impact of NewRelic on response time
+            <img src="assets/brak-new-relic.png" style="height: 450px">
+        </section>
+        <section data-auto-animate data-auto-animate-id="scaling">
+            <h1 class="r-fit-text">Scaling application</h1>
+        </section>
+        <section data-auto-animate data-auto-animate-id="scaling">
+            <h1>Scaling application</h1>
+            <ul>
+                <li>Available Options</li>
+                <li class="fragment">Based on CPU</li>
+                <li class="fragment">Based on Request per second</li>
+                <li class="fragment">Custom metrics using KEDA</li>
+                <li class="fragment">Of course, we chose the custom metrics option</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="scaling">
+            <h1>Scaling application</h1>
+            <p>(Dis)advantages of CPU base scaling</p>
+            <ul>
+                <li class="fragment">It is straightforward to implement</li>
+                <li class="fragment">It works with a cpu-based load</li>
+                <li class="fragment">It does not work with a high IO-based load</li>
+                <li class="fragment">Example: It will not scale on high network latency</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="scaling">
+            <h1>Scaling application</h1>
+            <p>(Dis)advantages of RPS base scaling</p>
+            <ul>
+                <li class="fragment">It is straightforward to implement</li>
+                <li class="fragment">It works if you have stable response times</li>
+                <li class="fragment">All endpoints should have similar response times</li>
+                <li class="fragment">It will not scale on high network latency</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="scaling">
+            <h1>Scaling application</h1>
+            <p>We choose to use active PHP-FPM workers as a scaling metric</p>
+            <ul>
+                <li class="fragment">It is a little harder to implement</li>
+                <li class="fragment"><strong>pm=static</strong> and <strong>pm.start_servers=20</strong></li>
+                <li class="fragment">If avg active worker > 15 scale up</li>
+                <li class="fragment">We test this on local k8s cluster using wrk and ab</li>
+                <li class="fragment">It works well<span class="fragment">, with small number of connection</span></li>
+                <li class="fragment">On lots of connection it created a scale bomb 💣</li>
+                <li class="fragment">Unfortunately, we only discovered this in the production environment</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="scaling">
+            <h1>Scaling application</h1>
+            <p>The PHP-FPM counting connection problem</p>
+            <ul>
+                <li class="fragment">PHP-FPM has a problem with counting <strong>active processes</strong></li>
+                <li class="fragment">Example: It could return 3347 when <strong>pm.max_children=20</strong></li>
+                <li class="fragment">After two days of investigation, we found the bug</li>
+                <li class="fragment">It only happens when <strong>fastcgi_keep_conn on</strong> directive in the nginx</li>
+                <li class="fragment">Hot-fix: disable this line in config</li>
+                <li class="fragment">Report bug to PHP: <a href="https://github.com/php/php-src/issues/14212">https://github.com/php/php-src/issues/14212</a></li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="scaling">
+            <h1>Scaling application</h1>
+            <p>Tuning pod size and scaling params</p>
+            <ul>
+                <li class="fragment">We started with 20 workers on MVP</li>
+                <li class="fragment">It was good when we had response times about 100ms</li>
+                <pre class="fragment"><code>one worker: 1/100ms = 10 req/s
+max per pod: 20 workers * 10 req/s = 200 req/s
+scaling up: 15 workers * 10 req/s = 150 req/s
+1600 req/s / 150 req/s ~= 12 pods</code></pre>
+                <li class="fragment">We made some optimization to code and data structures</li>
+                <li class="fragment">Response time went down to 30-40ms</li>
+                <li class="fragment">And then...</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="scaling">
+            <h1>Kubernetes tango down</h1>
+            <img src="assets/k8s-disaster-2.png" style="height: 450px">
+        </section>
+        <section data-auto-animate data-auto-animate-id="scaling">
+            <h1>Kubernetes tango down</h1>
+            <ul>
+                <li>We lost all of our redis instances</li>
+                <li class="fragment">2 of 3 mongodb node were down</li>
+                <li class="fragment">Only one app pod was serving traffic</li>
+                <li class="fragment">Despite heavy injuries, Recsio was still alive.</li>
+                <li class="fragment">What doesn’t kill us makes us stronger.</li>
+                <li class="fragment">When the dust settled, our app started running faster.</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="scaling">
+            <h1>Kubernetes tango down</h1>
+            <img src="assets/k8s-disaster.png" style="height: 450px">
+        </section>
+        <section data-auto-animate data-auto-animate-id="scaling">
+            <h1>Scaling application</h1>
+            <p>New response times changed everything</p>
+            <ul>
+                <li class="fragment">New response times were ~15ms</li>
+                <li class="fragment">20 workers on one pod was waaaay to much</li>
+                <pre class="fragment"><code>one worker: 1/15ms ~= 65 req/s
+max per pod: 20 workers * 65 req/s = 1300 req/s
+scaling up: 15 workers * 10 req/s = 950 req/s
+1600 req/s / 950 req/s ~= 2 pods</code></pre>
+                <li class="fragment">In theory, we don’t need to scale at all.</li>
+                <li class="fragment">The HA requirements already assumed at least 2 pods.</li>
+                <li class="fragment">But there’s a catch...</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="scaling">
+            <h1>Scaling application</h1>
+            <p>Setting CPU requests and limits</p>
+            <ul>
+                <li class="fragment">1/3 is IO (redis and mognodb) 2/3 is PHP</li>
+                <li class="fragment">We need to do some math again.</li>
+                <pre class="fragment"><code>15 workers * 0.667 ~= 10 cores</code></pre>
+                <li class="fragment">It will be hard to allocate that many resources on a crowded node.</li>
+                <li class="fragment">In case of failure, the remaining pod will get a lot of traffic.</li>
+                <li class="fragment">And the problem of unused resources...</li>
+            </ul>
+        </section>
+        <section>
+            <h1 class="r-fit-text">Cat Head Problem</h1>
+        </section>
+        <section data-transition="none none">
+            <img src="assets/the-curve-cat.jpg" style="height: 650px"/>
+        </section>
+        <section data-transition="none none">
+            <img src="assets/the-curve-2.png" style="height: 650px"/>
+        </section>
+        <section>
+            <h1>Cat Head Problem</h1>
+            <ul>
+                <li>Two peaks: one in the morning, bigger one in the evening.</li>
+                <li class="fragment">Medium traffic during the day.</li>
+                <li class="fragment">Minimal traffic during night hours.</li>
+                <li class="fragment">The difference between the lowest traffic and the peak is 75x.</li>
+                <li class="fragment">We don’t want to pay for 20 cores at night.</li>
+                <li class="fragment">That’s why we had to do the math again...</li>
+            </ul>
+        </section>
+        <section>
+            <h1>Cat Head Problem</h1>
+            <ul>
+                <li>For 6 hours during the day, we have very low traffic.</li>
+                <li class="fragment">We want to pay as little as possible during this period.</li>
+                <li class="fragment">We also want to scale very quickly to meet traffic demands.</li>
+                <li class="fragment">We need a reserve in case of a failure.</li>
+                <li class="fragment">Or in case of a sudden traffic surge.</li>
+                <li class="fragment">So we came up with this...</li>
+            </ul>
+        </section>
+        <section>
+            <h1>Cat Head Problem</h1>
+            <pre><code>#php-fpm.conf
+pm = dynamic
+pm.start_servers = 3
+pm.max_children = 20</code></pre>
+
+            <pre class="fragment"><code>#deployment.yaml
+resources:
+  limits:
+    memory: 164Mi
+  requests:
+    memory: 128Mi
+    cpu: 300m</code></pre>
+        </section>
+        <section>
+            <h1>Cat Head Problem</h1>
+            <ul>
+                <li>Each pod serves around 20 req/s before scaling up.</li>
+                <li class="fragment">At night, we only have two pods.</li>
+                <li class="fragment">At peak load, we expect to have around 80 pods.</li>
+                <li class="fragment">Large reserve - in theory, one pod can handle traffic up to ~200 req/s.</li>
+                <li class="fragment">Losing even a few pods is not a problem.</li>
+                <li class="fragment">The application looks more robust when it has many pods.</li>
+                <li class="fragment">And we created a pixel-art cat...</li>
+            </ul>
+        </section>
+        <section data-transition="none none">
+            <img src="assets/workercount.png" style="height: 650px"/>
         </section>
     </div>
 </div>
