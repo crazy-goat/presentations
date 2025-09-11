@@ -39,6 +39,11 @@
                 That’s why I want to share some of my own failures with you – so you can avoid them on your own path.
             </p>
         </section>
+        <section>
+            <h1>TL;DR</h1>
+            <p>The choice of programming language has little impact on creating efficient software. The most critical factor is a deep understanding of your data.
+                Only by knowing your data can you select the appropriate infrastructure and then, finally, the right high-performance algorithms.</p>
+        </section>
         <section data-auto-animate data-auto-animate-id="agenda">
             <h1 data-id="chapter_agenda" class="r-fit-text">Agenda</h1>
         </section>
@@ -480,6 +485,240 @@ resources:
         <section data-transition="none none">
             <img src="assets/workercount.png" style="height: 650px"/>
         </section>
+        <section>
+            <h1 style="font-size: 3em">Back to NewRelic - Problem 2</h1>
+            <ul>
+                <li>Since changing the PHP-FPM parameters the problem has disappeared</li>
+                <li class="fragment">SIGSEGV errors usually appeared on final 15+ workers.</li>
+                <li class="fragment">Since we only run 3 workers by default, the problem has not recurred.</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="queue">
+            <h1 class="r-fit-text">The queue</h1>
+        </section>
+        <section data-auto-animate data-auto-animate-id="queue">
+            <h1>The queue</h1>
+            <h2>The only way we feed the app</h2>
+        </section>
+        <section>
+            <h2>The only way we feed the app</h2>
+            <ul>
+                <li>Two queue systems: Kafka and RabbitMQ
+                <li class="fragment">Kafka holds the product data
+                    <ul>
+                        <li class="fragment">Morning burst: about 5M messages</li>
+                        <li class="fragment">Then during the day: about 2–3M messages</li>
+                    </ul>
+                </li>
+                <li class="fragment">RabbitMQ holds product recommendation data
+                    <ul>
+                        <li class="fragment">Morning burst: about 3-4M messages</li>
+                        <li class="fragment">Later - nothing</li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
+        <section>
+            <h2>The only way we feed the app</h2>
+            <ul>
+                <li>For the kafka queue, we have about 1–1.5 hours to process</li>
+                <li class="fragment">That gives about 1000 messages per second</li>
+                <li class="fragment">Dataset: 100+ GB per day</li>
+                <li class="fragment">For the rabbit queue, we have about 1 hour to process</li>
+                <li class="fragment">That gives about ~1100 messages per second</li>
+                <li class="fragment">Dataset: 15GB per day</li>
+            </ul>
+        </section>
+        <section>
+            <h1>Chasing a rabbit</h1>
+        </section>
+        <section>
+            <h2>Chasing a rabbit</h2>
+            <ul>
+                <li>Rabbit HA configuration</li>
+                <li class="fragment">Cluster - 3 nodes</li>
+                <li class="fragment">5 - cluster queues, 3 replicas each</li>
+                <li class="fragment">Ram: 1GB</li>
+                <li class="fragment">Storage: 16GB PVC(pd-ssd)</li>
+            </ul>
+        </section>
+        <section>
+            <h2>Chasing a rabbit</h2>
+            <ul>
+                <li>Initial test dump</li>
+                <li class="fragment">1/30 of all data</li>
+                <li class="fragment">Seamlessly completed, took only seconds.</li>
+                <li class="fragment">I loaded the data 30 times on a local cluster.</li>
+                <li class="fragment">Took under a minute, also problem-free.</li>
+            </ul>
+        </section>
+        <section>
+            <h2>Chasing a rabbit</h2>
+            <ul>
+                <li>Initial real dump</li>
+                <li class="fragment">15GB of recommendation</li>
+                <li class="fragment">Took under a minute</li>
+                <li class="fragment">But it also took down all RabbitMQ nodes.</li>
+                <li class="fragment">They all crashed due to OOM.</li>
+                <li class="fragment">Increased RAM to 2GB... same result.</li>
+                <li class="fragment">The problem was with PVC performance.</li>
+            </ul>
+        </section>
+        <section>
+            <h2>Chasing a rabbit</h2>
+            <ul>
+                <li>sleep(1) to the rescue.</li>
+                <li class="fragment">We could have kept increasing the RAM...</li>
+                <li class="fragment">But our rabbits only run for 1 hour a day.</li>
+                <li class="fragment">Instead of paying for more RAM, it's better to find another solution.</li>
+                <li class="fragment">We added a sleep(1) after every 5k messages.</li>
+                <li class="fragment">Sometimes the simplest things work best.</li>
+            </ul>
+        </section>
+        <section>
+            <h2>Chasing a rabbit</h2>
+            <ul>
+                <li>Symfony messenger amqp client is very slow</li>
+                <li class="fragment">Inefficiencies of constant polling with get()</li>
+                <li class="fragment">With empty handler, we were able to get up 200msg/s</li>
+                <li class="fragment">With database writes max what we could get 120msg/s</li>
+                <li class="fragment">Adding more consumers didn’t boost performance</li>
+                <li class="fragment">It only added more traffic to RabbitMQ</li>
+                <li class="fragment">First try: planned 1 hour, but it took 6</li>
+            </ul>
+        </section>
+        <section>
+            <h2>Chasing a rabbit</h2>
+            <ul>
+                <li>Switch amqp client to jwage/phpamqplib-messenger</li>
+                <li class="fragment">It’s not a drop-in replacement</li>
+                <li class="fragment">It allows using consume and prefetch features</li>
+                <li class="fragment">Not perfect: you still have to ack every message</li>
+                <li class="fragment">We managed to reach about 250 msg/s</li>
+                <li class="fragment">Now the database became a bottleneck</li>
+            </ul>
+        </section>
+        <section>
+            <h2>Chasing a rabbit</h2>
+                <p>Symfony messenger batch processing - game changer</p>
+                <pre><code>class BatchHandler implements BatchHandlerInterface {
+    use BatchHandlerTrait;
+
+    public function __invoke(Message $message, Acknowledger $ack = null): mixed {
+        return $this->handle($message, $ack);
+    }
+
+    private function process(array $jobs): void {
+        foreach ($jobs as [$message, $ack]) {
+                // ... some code
+                $ack->ack($result);
+        }
+    }
+}</code></pre>
+        </section>
+        <section>
+            <h2>Chasing a rabbit</h2>
+            <p>Symfony messenger batch processing - game changer</p>
+            <ul>
+                <li>BatchHandlerInterface does not speed up processing</li>
+                <li class="fragment">Instead, it allows for the use of bulkWrite in MongoDB.</li>
+                <li class="fragment">This significantly reduces traffic between the consumer and the database.</li>
+                <li class="fragment">Allows ordered=false for parallel writes.</li>
+                <li class="fragment">Also added w=1&journal=false for all consumer.</li>
+                <li class="fragment">We achieved around 450 msg/s.</li>
+                <li class="fragment">With 3 consumers, we achieved the desired performance.</li>
+            </ul>
+        </section>
+        <section>
+            <h1>Know you data!</h1>
+            <p>
+                Setting <strong>journal=false</strong> is not recommended for critical data. However, in our use case, we can rebuild the data very quickly.
+                It is not a critical issue if a customer temporarily sees recommendations in a different order.
+            </p>
+            <p>
+                Setting <strong>ordered=false</strong> means that queries in a batch are executed in a random order. This can lead to unpredictable results.
+                In our case, messages in the queue never refer to the same records. This way, we don’t have any problems with data being overwritten in the wrong order.
+            </p>
+        </section>
+        <section>
+            <h2>Chasing a rabbit</h2>
+            <ul>
+                <li>Scaling rabbitmq consumers</li>
+                <li class="fragment">We want to scale to zero, when no messages</li>
+                <li class="fragment">Scaling must be independent for all 5 queues</li>
+                <li class="fragment">Can't use cron, we don't know when we get messages</li>
+                <li class="fragment">We decided to use KEDA - Kubernetes Event-driven Autoscaler.</li>
+                <li class="fragment">Meets all our requirements</li>
+                <li class="fragment">Easy to set up</li>
+                <li class="fragment">It also support Kafka</li>
+            </ul>
+        </section>
+        <section>
+            <h1>bitter taste of kafka</h1>
+        </section>
+        <section>
+            <h1>bitter taste of kafka</h1>
+            <ul>
+                <li>Kafka configuration</li>
+                <li class="fragment">Product queue - 32 partition, 3 replicas</li>
+                <li class="fragment">About 19 hours of data</li>
+                <li class="fragment">Managed by other team</li>
+            </ul>
+        </section>
+        <section>
+            <h1>bitter taste of kafka</h1>
+            <ul>
+                <li>Same issue as with rabbitmq - reading message one by one is slow</li>
+                <li class="fragment">We noticed that a large portion of the messages are static.</li>
+                <li class="fragment">Probably archival products?</li>
+                <li class="fragment">So, we decided to skip them during updates.</li>
+                <li class="fragment">We only save if our updatedAt is less than the message's.</li>
+                <li class="fragment">I was implemented, but there was a bug: >= instead of ></li>
+                <li class="fragment">It reduced the number of database writes by over 50%.</li>
+            </ul>
+        </section>
+        <section>
+            <h1>bitter taste of kafka</h1>
+            <p>Know your data!!!</p>
+            <pre><code>  "material": "100% SILIKON",
+  "publicationDate": "2025-02-06",
+  "updatedAt": "2025-05-28T09:33:34", // this is not last update date
+  "sizes": [{
+      "stock": true,
+      "sizeId": 1041,</code></pre>
+            <p class="fragment">For two weeks, we did not update most products.</p>
+        </section>
+        <section data-auto-animate data-auto-animate-id="cache">
+            <h1 class="r-fit-text">Cache</h1>
+        </section>
+        <section data-auto-animate data-auto-animate-id="cache">
+            <h1>Cache</h1>
+            <h2>Redis client selection</h2>
+        </section>
+        <section data-auto-animate data-auto-animate-id="cache">
+            <h2>Redis client selection</h2>
+            <uL>
+                <li>Master-slave replication</li>
+                <li class="fragment">Automatic read-write separation</li>
+                <li class="fragment">Must work with symfony cache</li>
+                <li class="fragment">phpRedis is superfast...</li>
+                <li class="fragment">but only support read-write separation for cluster</li>
+                <li class="fragment">So we chose predis support read-write separation for master-slave</li>
+            </uL>
+        </section>
+        <section>
+            <h2>Wrong way to make cache</h2>
+            <uL>
+                <li>Master-slave replication</li>
+                <li class="fragment">Automatic read-write separation</li>
+                <li class="fragment">Must work with symfony cache</li>
+                <li class="fragment">phpRedis is superfast...</li>
+                <li class="fragment">but only support read-write separation for cluster</li>
+                <li class="fragment">So we chose Predis because we use the cache extensively...</li>
+                <li class="fragment">but in a clever way, so a Redis cluster is overkill.</li>
+            </uL>
+        </section>
+
     </div>
 </div>
 <script src="/dist/reveal.js"></script>
