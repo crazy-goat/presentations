@@ -630,7 +630,7 @@ resources:
             </ul>
         </section>
         <section>
-            <h1>Know you data!</h1>
+            <h1>Know your data!</h1>
             <p>
                 Setting <strong>journal=false</strong> is not recommended for critical data. However, in our use case, we can rebuild the data very quickly.
                 It is not a critical issue if a customer temporarily sees recommendations in a different order.
@@ -638,6 +638,13 @@ resources:
             <p>
                 Setting <strong>ordered=false</strong> means that queries in a batch are executed in a random order. This can lead to unpredictable results.
                 In our case, messages in the queue never refer to the same records. This way, we don’t have any problems with data being overwritten in the wrong order.
+            </p>
+        </section>
+        <section>
+            <h1>Know your data!</h1>
+            <p>
+                Setting <strong>w=1</strong> is not recommended if you can't afford replication lag.
+                In our case, the fact that the data on the secondary would appear in a few seconds didn't matter.
             </p>
         </section>
         <section>
@@ -650,7 +657,7 @@ resources:
                 <li class="fragment">We decided to use KEDA - Kubernetes Event-driven Autoscaler.</li>
                 <li class="fragment">Meets all our requirements</li>
                 <li class="fragment">Easy to set up</li>
-                <li class="fragment">It also support Kafka</li>
+                <li class="fragment">It also supports Kafka</li>
             </ul>
         </section>
         <section>
@@ -662,7 +669,7 @@ resources:
                 <li>Kafka configuration</li>
                 <li class="fragment">Product queue - 32 partition, 3 replicas</li>
                 <li class="fragment">About 19 hours of data</li>
-                <li class="fragment">Managed by other team</li>
+                <li class="fragment">Managed by another team</li>
             </ul>
         </section>
         <section>
@@ -688,6 +695,66 @@ resources:
       "sizeId": 1041,</code></pre>
             <p class="fragment">For two weeks, we did not update most products.</p>
         </section>
+        <section>
+            <h1>bitter taste of kafka</h1>
+            <ul>
+                <li>We achieved the desired speed with about 20 consumers</li>
+                <li class="fragment">The number of partitions should be divisible by the number of consumers.</li>
+                <li class="fragment">Otherwise, some partitions will be consumed faster than others.</li>
+                <li class="fragment">However, 32 consumers caused database overload.</li>
+                <li class="fragment">16 consumers didn't provide adequate speed.</li>
+                <li class="fragment">KEDA leaves consumers that do nothing.</li>
+            </ul>
+        </section>
+        <section>
+            <h1>bitter taste of kafka</h1>
+            <ul>
+                <li>Incorrectly selected number of consumers.</li>
+                <li class="fragment">Combined with an incorrectly selected partitioning key</li>
+                <li class="fragment">Leads to a situation where, despite a large number of consumers, the processing speed is slow at the end of the queue.</li>
+            </ul>
+        </section>
+        <section>
+            <h1>bitter taste of kafka</h1>
+            <img src="assets/kafka-topics.png" height="450px"/>
+        </section>
+        <section>
+            <h1>bitter taste of kafka</h1>
+            <ul>
+                <li>In this case, most consumers had assigned only 2 partitions</li>
+                <li class="fragment">These consumers finished their job much faster.</li>
+                <li class="fragment">The consumer assigned three partitions struggled with the task.</li>
+                <li class="fragment">Because there were still over 120,000 messages in the queue.</li>
+                <li class="fragment">KEDA maintained the maximum number of consumers.</li>
+                <li class="fragment">Of which, only one was doing job.</li>
+            </ul>
+        </section>
+        <section>
+            <h1>bitter taste of kafka</h1>
+            <img src="assets/one-working.png" height="450px"/>
+        </section>
+        <section>
+            <h1>bitter taste of kafka</h1>
+            <ul>
+                <li>How to deal with such a problem</li>
+                <li class="fragment">Kafka rebalances when a client joins or disconnects.</li>
+                <li class="fragment">You can restart the client every few minutes or every few messages.</li>
+                <li class="fragment">However, frequent restarts can cause Kubernetes to add a back-off period.</li>
+                <li class="fragment">However, frequent restarts can cause Kubernetes to add a back-off period.</li>
+                <li class="fragment">Fortunately, KEDA has built-in options for monitoring the number of active partitions.</li>
+            </ul>
+        </section>
+        <section>
+            <h1>bitter taste of kafka</h1>
+            <pre><code>triggers:
+    - type: kafka
+      metadata:
+        bootstrapServers: 'kafka'
+        consumerGroup: 'recsio'
+        topic: 'products'
+        # number of replicas will not exceed zero-lag partitions
+        limitToPartitionsWithLag: 'true'</code></pre>
+        </section>
         <section data-auto-animate data-auto-animate-id="cache">
             <h1 class="r-fit-text">Cache</h1>
         </section>
@@ -708,17 +775,107 @@ resources:
         </section>
         <section>
             <h2>Wrong way to make cache</h2>
+            <p>In the initial phase of our application, we had two problematic queries that took 90% of the time of all queries</p>
             <uL>
-                <li>Master-slave replication</li>
-                <li class="fragment">Automatic read-write separation</li>
-                <li class="fragment">Must work with symfony cache</li>
-                <li class="fragment">phpRedis is superfast...</li>
-                <li class="fragment">but only support read-write separation for cluster</li>
-                <li class="fragment">So we chose Predis because we use the cache extensively...</li>
-                <li class="fragment">but in a clever way, so a Redis cluster is overkill.</li>
+                <li class="fragment">The first was a query of the type <pre style="display: inline">IN(id1, ... id200)</pre></li>
+                <li class="fragment">The second involved selecting approximately 1,500 products based on a complex filter.</li>
+                <li class="fragment">Each of these queries took 10-30 milliseconds.</li>
+                <li class="fragment">We could cache results for about 5 minutes.</li>
+                <li class="fragment">But this solution wasn't optimal.</li>
             </uL>
         </section>
-
+        <section>
+            <h2>Wrong way to make cache</h2>
+            <ul>
+                <li>Store offers approximately 4.5 million products.</li>
+                <li class="fragment">The cache size exploded, and there were large number of evictions.</li>
+                <li class="fragment">The hit/miss ratio was terrible.</li>
+                <li class="fragment">For popular products, the speedup was indeed noticeable.</li>
+                <li class="fragment">However, for most products, implementing the cache caused a slowdown.</li>
+                <li class="fragment">Cache miss -> database query -> cache store</li>
+            </ul>
+        </section>
+        <section>
+            <h1>Know your data!</h1>
+            <p>After analyzing the data, it turned out that instead of maintaining a cache for individual products, we could recalculate the necessary data for entire product groups.
+                This gave us some hope; the only thing left to do was to see if we could perform these recalculations quickly enough.</p>
+        </section>
+        <section>
+            <h2>Cache done right</h2>
+            <ul>
+                <li>For each store we keep about 80 keys</li>
+                <li class="fragment">For brand its about 2000 keys</li>
+                <li class="fragment">The entire cache takes 25MB RAM / 12,5kb perk key</li>
+                <li class="fragment">It takes 13 seconds to generate cache</li>
+                <li class="fragment">We fetch two keys per request</li>
+                <li class="fragment">Depending on the product, the cache is an array containing approximately 100 - 10,000 entries</li>
+                <li class="fragment">To reduce decoding time and data volume, we used igbinary</li>
+                <li class="fragment">This decision caused problems...</li>
+            </ul>
+        </section>
+        <section>
+            <h2>Cache done right</h2>
+            <ul>
+                <li>Despite 100% coverage of the problematic queries, they still sometimes executed.</li>
+                <li class="fragment">It turned out that the cache was not generated for larger tables.</li>
+                <li class="fragment">Symfony cache does not throw exceptions if the cache fails to be written.</li>
+                <li class="fragment">After a little investigation, it turned out that we can't save arrays larger than 3338 entries.</li>
+                <li class="fragment">Later, it turned out that larger arrays can be saved.</li>
+                <li class="fragment">An array can't be saved if it has a key of 3338</li>
+            </ul>
+        </section>
+        <section>
+            <h2>The Hidden Magic of Number 3338</h2>
+            <ul>
+                <li>Why array key 3338 is problematic</li>
+                <li class="fragment">3338 in hex is <pre style="display: inline; font-size: 1em">0D 0A</pre></li>
+                <li class="fragment"><pre style="display: inline; font-size: 1em">0D => 015</pre> in ASCII is Carriage Return (\r)</li>
+                <li class="fragment"><pre style="display: inline; font-size: 1em">0A => 012</pre> in ASCII is Line Feed (\n)</li>
+                <li class="fragment">predis use <pre style="display: inline; font-size: 1em">\r\n</pre> as command separator in pipeline</li>
+                <li class="fragment">Reported: <a href="https://github.com/predis/predis/issues/1574">https://github.com/predis/predis/issues/1574</a></li>
+                <li class="fragment">Fixed not released yet.</li>
+            </ul>
+        </section>
+        <section>
+            <h2>Cache done right<span class="fragment"> - but we can do better</span></h2>
+            <ul>
+                <li class="fragment">We can do it better because the cache size is only 25MB</li>
+                <li class="fragment">So the entire cache will easily fit in the APC</li>
+                <li class="fragment">The only problem is that we cannot save the cache to APC within the cron command.</li>
+                <li class="fragment">We can use Symfony Chain Cache Adapter for this</li>
+                <li class="fragment">And use redis only to distribute keys to application pods</li>
+                <li class="fragment">This solution worked incredibly well</li>
+                <li class="fragment">Even a little too well...</li>
+            </ul>
+        </section>
+        <section>
+            <h2>When hallucinations hit production</h2>
+            <p>Do you see an error in this configuration? This configuration compiles but doesn't work correctly? </p>
+            <pre><code>pools:
+    recommendation.cache:
+        adapters:
+            - {name: cache.adapter.apcu, default_lifetime: 60}
+            - {name: cache.adapter.redis, default_lifetime: 300}</code>
+            </pre>
+            <span class="fragment">Valid one:
+            <pre><code>pools:
+    recommendation.cache:
+        adapters:
+            - {name: cache.adapter.apcu}
+            - {name: cache.adapter.redis}
+        default_lifetime: 60</code>
+            </pre></span>
+        </section>
+        <section>
+            <h2>Cache done better</h2>
+            <ul>
+                <li>This bug remained in production unnoticed for almost two weeks.</li>
+                <li class="fragment">Causing a gradual degradation of recommendation scores.</li>
+                <li class="fragment">Lesson learned: never trust AI.</li>
+                <li class="fragment">Currently, after fixing the bug, Redis has minimal traffic.</li>
+                <li class="fragment">We may completely stop using Redis for caching.</li>
+            </ul>
+        </section>
     </div>
 </div>
 <script src="/dist/reveal.js"></script>
