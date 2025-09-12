@@ -54,10 +54,9 @@
                 <li class="fragment">The Project</li>
                 <li class="fragment">The Stack</li>
                 <li class="fragment">PHP</li>
-                <li class="fragment">Cache</li>
                 <li class="fragment">Queues</li>
+                <li class="fragment">Cache</li>
                 <li class="fragment">Mongo</li>
-                <li class="fragment">The Future</li>
                 <li class="fragment">Q&A</li>
             </ol>
             <aside class="notes">
@@ -170,7 +169,7 @@
             <ul>
                 <li>Programing language: PHP</li>
                 <li class="fragment">Framework: Symfony 7.3</li>
-                <li class="fragment">Database: MongoDB 7.0</li>
+                <li class="fragment">Database: MongoDB <strike>8.0</strike>7.0</li>
                 <li class="fragment">Cache: Redis</li>
                 <li class="fragment">Queues: Kafka<span class="fragment">, Rabbitmq</span></li>
                 <li class="fragment">Platform: K8s - OpenShift</li>
@@ -875,6 +874,137 @@ resources:
                 <li class="fragment">Currently, after fixing the bug, Redis has minimal traffic.</li>
                 <li class="fragment">We may completely stop using Redis for caching.</li>
             </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="mongo">
+            <h1 class="r-fit-text">Mongo</h1>
+        </section>
+        <section data-auto-animate data-auto-animate-id="mongo">
+            <h1>Mongo</h1>
+            <p>Why we chose mongodb as the database</p>
+            <ul>
+                <li class="fragment">We had the choice between MySQL and MongoDB.</li>
+                <li class="fragment">High performance for writes and reads for PK.</li>
+                <li class="fragment">Easy HA setup with Replicaset</li>
+                <li class="fragment">High data compression</li>
+                <li class="fragment">No schema - good for prototyping.</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="mongo">
+            <h2>Mongo</h2>
+            <ul>
+                <li>Why did we choose version 7.0 instead of 8.0?</li>
+                <li class="fragment">At first, we started with version 8.0 on dev machines.</li>
+                <li class="fragment">Then we prepared a local version on k3d to test replicasets.</li>
+                <li class="fragment">Next, we deployed it on test servers.</li>
+                <li class="fragment">Up to this point, everything worked fine with version 8.0.</li>
+                <li class="fragment">But on production servers, we had an older Mongo operator.</li>
+                <li class="fragment">This operator did not support version 8.0.</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="mongo">
+            <h2>Mongo</h2>
+            <ul>
+                <li>There was no option to quickly upgrade the operator.</li>
+                <li class="fragment">So we had to switch to version 7.0.</li>
+                <li class="fragment">It is a pity, because version 8.0 has many performance improvements.</li>
+            </ul>
+            <img class="fragment" src="assets/mongodb-8.png" height="350px"/>
+        </section>
+        <section data-auto-animate data-auto-animate-id="mongo">
+            <h2>Mongo - lesson learned</h2>
+            <p>Keeping everything in one collection with big documents is not a good idea</p>
+            <ul>
+                <li class="fragment">This design is only good for simple key-value data.</li>
+                <li class="fragment">If a query is not covered by an index, reading can be very expensive.</li>
+                <li class="fragment">Even to get one field, the whole document must be read.</li>
+                <li class="fragment">With big updates, frequent relocation may happen.</li>
+                <li class="fragment">Parallel updates - you must remember about document lock.</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="mongo">
+            <h2>Mongo - lesson learned</h2>
+            <p>Running MongoDB in Kubernetes vs. bare metal</p>
+            <ul>
+                <li class="fragment">Make sure Mongo runs on dedicated CPUs.</li>
+                <li class="fragment">No direct access to fast persistent disks.</li>
+                <li class="fragment">If using PVC, check performance limits.</li>
+                <li class="fragment">Example: on GCP, 32GB pd-ssd gives ~4000 IOPS and 15MB/s.</li>
+                <li class="fragment">Because of this, we had to choose a much bigger disk than we needed.</li>
+                <li class="fragment">Also remember about IOPS limits for the instance.</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="mongo">
+            <h2>Mongo - lesson learned</h2>
+            <ul>
+                <li>IOPS are not the biggest problem.</li>
+                <li class="fragment">The main issue is high latency of such disks.</li>
+                <li class="fragment">Surprisingly, read latency is higher than write latency.</li>
+            </ul>
+            <img src="assets/pvc-latency.png" height="350px">
+        </section>
+        <section data-auto-animate data-auto-animate-id="mongo">
+            <h2>Mongo - lesson learned</h2>
+            <ul>
+                <li>IOPS are not the biggest problem.</li>
+                <li class="fragment">The main issue is high latency of such disks.</li>
+                <li class="fragment">Surprisingly, read latency is higher than write latency.</li>
+            </ul>
+            <img src="assets/pvc-latency.png" height="350px">
+        </section>
+        <section data-auto-animate data-auto-animate-id="mongo">
+            <h2>Mongo - lesson learned</h2>
+            <ul>
+                <li>It is crucial that our dataset fits into RAM.</li>
+                <li class="fragment">But what if the dataset does not fit?</li>
+                <li class="fragment">By default, Mongo splits memory: 50% WiredTiger, 50% page cache</li>
+                <li class="fragment">bare metal: reduce WiredTiger cache, Change compression from snappy to zstd</li>
+                <li class="fragment">K8s: Increase WiredTiger to 80%. Hope the node has enough free RAM for page cache</li>
+            </ul>
+        </section>
+        <section>
+            <h2>Mongo - indexes</h2>
+            <ul>
+                <li>How to run simple queries without any disk operations.</li>
+                <li class="fragment">Our case: get all SKUs (single field) of active products.</li>
+                <li class="fragment">Data size: 4.5M documents, 30GB uncompressed size</li>
+                <li class="fragment">bare metal: reduce WiredTiger cache, Change compression from snappy to zstd</li>
+                <li class="fragment">We only get about 0.5% of them, ~25k.</li>
+            </ul>
+            <pre class="fragment"><code class="language-json">{
+    filter: {"brand": "foo", "store": "bar", "isSaleable": true}
+    projection: {"sku": true}
+}</code></pre>
+        </section>
+        <section data-auto-animate data-auto-animate-id="mongo-index">
+            <h2>Mongo - indexes</h2>
+            <pre><code class="language-js">createIndex({"brand": true, "store": true, "isSaleable": true})</code></pre>
+            <img src="assets/index-fetch.png">
+        </section>
+        <section data-auto-animate data-auto-animate-id="mongo-index">
+            <h2>Mongo - indexes</h2>
+            <pre><code class="language-js">createIndex({"brand": true, "store": true, "isSaleable": true, "sku": true})</code></pre>
+            <img src="assets/index-no-fetch.png">
+        </section>
+        <section>
+            <h2>Mongo - indexes</h2>
+            <ul>
+                <li>Index size reduction</li>
+                <li class="fragment">In our case, only ~20% of products are active.</li>
+                <li class="fragment">The rest are archived products, no stock, or new items.</li>
+                <li class="fragment">Mongo allows creating indexes only on part of a collection.</li>
+                <li class="fragment">To use such an index, the query must match the index filter.</li>
+                <li class="fragment">This reduces the amount of RAM needed for indexes.</li>
+                <li class="fragment">Indexes are not updated if the write does not match them.</li>
+            </ul>
+        </section>
+        <section>
+            <h2>Mongo - indexes</h2>
+            <pre><code class="language-js">createIndex(
+    {"brand": true, "store": true, "sku": true},
+    {"partialFilterExpression": { "isSaleable": true } }
+)</code></pre>
+            <p>In our case the size reduction is about 10 times</p>
+            <img src="assets/partial-index.png">
         </section>
     </div>
 </div>
