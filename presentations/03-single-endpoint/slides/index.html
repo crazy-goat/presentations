@@ -940,16 +940,7 @@ resources:
                 <li class="fragment">The main issue is high latency of such disks.</li>
                 <li class="fragment">Surprisingly, read latency is higher than write latency.</li>
             </ul>
-            <img src="assets/pvc-latency.png" height="350px">
-        </section>
-        <section data-auto-animate data-auto-animate-id="mongo">
-            <h2>Mongo - lesson learned</h2>
-            <ul>
-                <li>IOPS are not the biggest problem.</li>
-                <li class="fragment">The main issue is high latency of such disks.</li>
-                <li class="fragment">Surprisingly, read latency is higher than write latency.</li>
-            </ul>
-            <img src="assets/pvc-latency.png" height="350px">
+            <img  class="fragment" src="assets/pvc-latency.png" height="350px">
         </section>
         <section data-auto-animate data-auto-animate-id="mongo">
             <h2>Mongo - lesson learned</h2>
@@ -967,7 +958,6 @@ resources:
                 <li>How to run simple queries without any disk operations.</li>
                 <li class="fragment">Our case: get all SKUs (single field) of active products.</li>
                 <li class="fragment">Data size: 4.5M documents, 30GB uncompressed size</li>
-                <li class="fragment">bare metal: reduce WiredTiger cache, Change compression from snappy to zstd</li>
                 <li class="fragment">We only get about 0.5% of them, ~25k.</li>
             </ul>
             <pre class="fragment"><code class="language-json">{
@@ -1005,6 +995,77 @@ resources:
 )</code></pre>
             <p>In our case the size reduction is about 10 times</p>
             <img src="assets/partial-index.png">
+        </section>
+        <section>
+            <h2>Mongo - in hell </h2>
+            <ul>
+                <li>Why do we need to query and cache thousands of SKUs?</li>
+                <li class="fragment">All recommendations come from an external system as a list of SKUs.</li>
+                <li class="fragment">For each product, we get several vectors, each with 100–1500 SKUs.</li>
+                <li class="fragment">Our system must constantly calculate which SKUs are "buyable".</li>
+                <li class="fragment">Because these lists are random, we can only select them using query IN(...).</li>
+            </ul>
+        </section>
+        <section>
+            <h2>Mongo - indexes</h2>
+            <p>Here is an example query that returns active SKUs for a given vector.</p>
+            <pre><code class="language-json">"filter": {
+    "brand": "foo",
+    "store": "bar",
+    "isSaleable": true,
+    "sku": { "$in": ["SKU-0001", ... "SKU-2000"] },
+"projection": { "sku" : true} </code></pre>
+            <p class="fragment">With a few SKUs in IN(), the query works fine. But with 1000 SKUs in IN(), the query is not efficient.</p>
+        </section>
+        <section>
+            <h2>Mongo - in hell </h2>
+            <ul>
+                <li>How did we solve this problem?</li>
+                <li class="fragment">A cron job query all “buyable” SKUs and stores the result in Redis.</li>
+                <li class="fragment">From Redis, we sync the list of active SKUs to APCu cache.</li>
+                <li class="fragment">Our system must constantly calculate which SKUs are "buyable".</li>
+                <li class="fragment">When showing recommendations for a product, we get recommendation vectors from MongoDB.</li>
+                <li class="fragment">Then we use array_intersect to compare both lists.</li>
+            </ul>
+            <pre class="fragment"><code class="language-php">$validSKUs = array_intersect($similarSKUs, $allValidSKUs);</code></pre>
+        </section>
+        <section>
+            <h2>Mongo - arrrrrrrrrrrrrays</h2>
+            <img src="assets/large-array.png">
+        </section>
+        <section>
+            <h2>Mongo - arrrrrrrrrrrrrays</h2>
+            <ul>
+                <li>With large arrays, write speed was not good enough.</li>
+                <li class="fragment">This is because whole arrays were updated, not single elements.</li>
+                <li class="fragment">So instead of arrays
+                <pre><code class="language-json">{"similarItems": ["SKU-001", "SKU-002",..., "SKU-500"]}</code></pre></li>
+                <li class="fragment">we used a string field with implode function.
+                    <pre><code class="language-json">{"similarItems": ["SKU-001,SKU-002,SKU-500"]}</code></pre>
+                </li>
+            </ul>
+        </section>
+        <section>
+            <h2>MongoDB ODM</h2>
+            <h1 class="r-fit-text fragment">Don't use it</h1>
+        </section>
+        <section>
+            <h2>Bitnami charts</h2>
+            <ul>
+                <li>Starting Aug 28, Bitnami is changing its free container images and Helm charts.</li>
+                <li class="fragment">Before: many free images with versions were available.</li>
+                <li class="fragment">Change: most old images move to Legacy repo (no updates).</li>
+                <li class="fragment">Only a few “community” images stay free (latest only).</li>
+                <li class="fragment">Secure, supported images move to paid Bitnami Secure Images.</li>
+                <li class="fragment">For us: this affects RabbitMQ and Redis containers.</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="questions">
+            <h1 class="r-fit-text">Questions?</h1>
+        </section>
+        <section data-auto-animate data-auto-animate-id="questions">
+            <h1>Questions?</h1>
+            <img src="assets/qrcode.svg" height="450px">
         </section>
     </div>
 </div>
