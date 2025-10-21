@@ -173,14 +173,14 @@
                 <li class="fragment">Cache: Redis</li>
                 <li class="fragment">Queues: Kafka<span class="fragment">, Rabbitmq</span></li>
                 <li class="fragment">Platform: K8s - OpenShift</li>
-                <li class="fragment">Cloud: GCP<span class="fragment">, Azure</span></li>
+                <li class="fragment">Cloud: GCP<span class="fragment">, Azure</span><span class="fragment">, <strike>AWS</strike></span></li>
             </ul>
         </section>
         <section data-auto-animate data-auto-animate-id="stack">
             <h1>The Stack</h1>
             <p><strong>Frontend</strong></p>
             <ul>
-                <li>Frontend: 15kb React js file</li>
+                <li>Frontend: 15kb React js file (5x - for each brand)</li>
                 <li class="fragment">Mobile: 10 mobile apps (5 Android, 5 Iphone)</li>
             </ul>
         </section>
@@ -522,10 +522,10 @@ resources:
             <ul>
                 <li>For the kafka queue, we have about 1–1.5 hours to process</li>
                 <li class="fragment">That gives about 1000 messages per second</li>
-                <li class="fragment">Dataset: 100+ GB per day</li>
+                <li class="fragment">Dataset: 100+ GB per day (biggest brand 750+ GB)</li>
                 <li class="fragment">For the rabbit queue, we have about 1 hour to process</li>
                 <li class="fragment">That gives about ~1100 messages per second</li>
-                <li class="fragment">Dataset: 15GB per day</li>
+                <li class="fragment">Dataset: 15GB per day (now 25GB)</li>
             </ul>
         </section>
         <section>
@@ -545,7 +545,7 @@ resources:
             <h2>Chasing a rabbit</h2>
             <ul>
                 <li>Initial test dump</li>
-                <li class="fragment">1/30 of all data</li>
+                <li class="fragment">1/30 of all data (one market for one brand)</li>
                 <li class="fragment">Seamlessly completed, took only seconds.</li>
                 <li class="fragment">I loaded the data 30 times on a local cluster.</li>
                 <li class="fragment">Took under a minute, also problem-free.</li>
@@ -566,10 +566,10 @@ resources:
         <section>
             <h2>Chasing a rabbit</h2>
             <ul>
-                <li>sleep(1) to the rescue.</li>
-                <li class="fragment">We could have kept increasing the RAM...</li>
+                <li>We could have kept increasing the RAM...</li>
                 <li class="fragment">But our rabbits only run for 1 hour a day.</li>
                 <li class="fragment">Instead of paying for more RAM, it's better to find another solution.</li>
+                <li class="fragment">sleep(1) to the rescue.</li>
                 <li class="fragment">We added a sleep(1) after every 5k messages.</li>
                 <li class="fragment">Sometimes the simplest things work best.</li>
             </ul>
@@ -658,6 +658,72 @@ resources:
                 <li class="fragment">Easy to set up</li>
                 <li class="fragment">It also supports Kafka</li>
             </ul>
+        </section>
+        <section>
+            <h2>Chasing a rabbit</h2>
+            <p>Example configuration</p>
+                <pre><code class="language-yaml" style="font-size: 0.8em; line-height: 1.3em">apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+spec:
+  maxReplicaCount: 10
+  minReplicaCount: 0
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: product-vectors-consumer
+  triggers:
+      metadata:
+        mode: QueueLength
+        protocol: amqp
+        queueName: product_vectors
+        value: "5000"
+      type: rabbitmq
+</code></pre>
+        </section>
+        <section>
+            <h2>Chasing a rabbit</h2>
+            <img src="assets/keda-scaling.png" style="height: 450px" />
+        </section>
+        <section>
+            <h2>Chasing a rabbit</h2>
+            <img src="assets/keda-scaling-2.png" style="height: 450px" />
+        </section>
+        <section>
+            <h2>Chasing a rabbit</h2>
+            <ul>
+                <li>Another problem we encountered was high CPU load in idle.</li>
+                <li class="fragment">A load of 400 millicore (40% CPU) is unusual for an idle state
+
+                </li>
+            </ul>
+            <img class="fragment" src="assets/rabbitmq-high-cpu-idle.png" >
+        </section>
+        <section>
+            <h2>Chasing a rabbit</h2>
+            <ul>
+                <li>There was no information in the logs as to what could have caused this condition.</li>
+                <li class="fragment">The first idea was to download metrics too often.</li>
+                <li class="fragment">However, even disabling them did not change much.</li>
+                <li class="fragment">We searched the web and found this error https://github.com/bitnami/charts/issues/11116</li>
+                <li class="fragment">What cases high CPU usage is CLI tools: rabbitmq-diagnostics in liveness and readiness probes.</li>
+                <li class="fragment">After changing the way liveness and readiness are checked, CPU usage is back to normal.</li>
+            </ul>
+        </section>
+        <section>
+            <h2>Chasing a rabbit</h2>
+            <p>Configuration to fix high CPU usage in rabbitmq</p>
+            <pre><code class="language-yaml" style="font-size: 0.8em; line-height: 1.3em">rabbitmq:
+  customReadinessProbe:
+    tcpSocket:
+      port: amqp
+  customLivenessProbe:
+    tcpSocket:
+      port: amqp
+</code></pre>
+        </section>
+        <section>
+            <h2>Chasing a rabbit</h2>
+            <img src="assets/rabbitmq-high-cpu-idle-fix.png">
         </section>
         <section>
             <h1>bitter taste of kafka</h1>
@@ -804,7 +870,7 @@ resources:
             <ul>
                 <li>For each store we keep about 80 keys</li>
                 <li class="fragment">For brand its about 2000 keys</li>
-                <li class="fragment">The entire cache takes 25MB RAM / 12,5kb perk key</li>
+                <li class="fragment">The entire cache takes 25MB RAM / 12,5kb per key</li>
                 <li class="fragment">It takes 13 seconds to generate cache</li>
                 <li class="fragment">We fetch two keys per request</li>
                 <li class="fragment">Depending on the product, the cache is an array containing approximately 100 - 10,000 entries</li>
@@ -820,7 +886,7 @@ resources:
                 <li class="fragment">Symfony cache does not throw exceptions if the cache fails to be written.</li>
                 <li class="fragment">After a little investigation, it turned out that we can't save arrays larger than 3338 entries.</li>
                 <li class="fragment">Later, it turned out that larger arrays can be saved.</li>
-                <li class="fragment">An array can't be saved if it has a key of 3338</li>
+                <li class="fragment">An array can't be saved if it has a key "3338"</li>
             </ul>
         </section>
         <section>
@@ -874,6 +940,91 @@ resources:
                 <li class="fragment">Currently, after fixing the bug, Redis has minimal traffic.</li>
                 <li class="fragment">We may completely stop using Redis for caching.</li>
             </ul>
+        </section>
+        <section>
+            <h2>Cache problems continue</h2>
+            <ul>
+                <li>At first it seemed like everything was working.</li>
+                <li class="fragment">But after a few hours of operation, errors started appearing again.</li>
+                <li class="fragment">This time the APC cache reported that it could not save the key.
+                <span class="fragment"><pre><code>Failed to save key "valid_skus_v1|xxxxxxx|XXX_PL_PL|Ladies" of type array.</code>
+            </pre></span></li>
+                <li class="fragment">The error description was very misleading, so we first looked for the error in the code</li>
+            </ul>
+        </section>
+        <section>
+            <h2>Cache problems continue</h2>
+            <ul>
+                <li>The error itself did not cause a significant performance drop.</li>
+                <li class="fragment">But it was clogging up the logs in Kibana.</li>
+                <img class="fragment" src="assets/apcu-cache-error.png" height="350px"/>
+            </ul>
+        </section>
+        <section>
+            <h2>Cache problems continue</h2>
+            <ul>
+                <li>After searching the web, it turned out to be a symptom of memory fragmentation in APC.</li>
+                <li class="fragment">The proposed solution was to increase the memory for the APC.</li>
+                <li class="fragment">We increased the memory and it helped.<span class="fragment">.. for an hour</span></li>
+                <img class="fragment" src="assets/apcu-cache-error-2.png" height="300px"/>
+            </ul>
+        </section>
+        <section>
+            <h2>Cache problems continue</h2>
+            <ul>
+                <li>Unfortunately, we had to dig deeper.</li>
+                <li class="fragment">Well, we found the solution, just upgrade the APC version to 5.1.25</li>
+                <img class="fragment" src="assets/apcu-fix.png" height="300px"/>
+            </ul>
+        </section>
+        <section>
+            <h2>Cache problems continue</h2>
+            <ul>
+                <li>The solution was so close, yet so far away.</li>
+                <li>As base image we use Alpine 3.21</li>
+                <li class="fragment">There was php84-pecl-apcu package with version 5.1.24</li>
+                <li class="fragment">One option is to upgrade the alpine to 3.22, where APC was at version 5.1.27</li>
+                <li class="fragment">But this involved updating the mongodb extension to version 2.x</li>
+                <li class="fragment">And this one is not supported by Newrelic, so we would lose query monitoring</li>
+            </ul>
+        </section>
+        <section>
+            <h2>Cache problems continue</h2>
+            <ul>
+                <li>The second option was to compile APC from the sources.</li>
+                <li class="fragment">We could have used the standard PECL/PEAR method.</li>
+                <li class="fragment">But this solution will be deprecated soon</li>
+                <img class="fragment" src="assets/pecl-deprecate.png" height="300px"/>
+                <li class="fragment">https://wiki.php.net/rfc/deprecate_pear_recommend_composer</li>
+            </ul>
+        </section>
+        <section>
+            <h2>Cache problems continue</h2>
+            <ul>
+                <li>That's why we decided to use PIE</li>
+                <li class="fragment">Unfortunately, Alpine does not provide pie packages.</li>
+                <li class="fragment">That's why we had to do it the old school way.</li>
+                <li class="fragment">Using docker multi-step build.</li>
+            </ul>
+        </section>
+        <section>
+            <h2>Cache problems continue</h2>
+            <pre><code>FROM alpine:3.21 AS php-ext
+
+RUN apk add gcc g++ make autoconf libtool bison re2c pkgconf php84-dev php84-phar php84-iconv php84-openssl \
+    && wget https://github.com/php/pie/releases/download/1.2.1/pie.phar \
+    && php84 pie.phar install apcu/apcu
+
+FROM alpine:3.21 AS base
+
+COPY --from=php-ext /usr/lib/php84/modules/apcu.so /usr/lib/php84/modules/apcu.so
+...</code>
+            </pre>
+        </section>
+        <section>
+            <h2>Cache problems continue</h2>
+            <p>Ultimately, we managed to save 1ms off the average response time.</p>
+            <img src="assets/apcu-final-fix.png" height="450px"/>
         </section>
         <section data-auto-animate data-auto-animate-id="mongo">
             <h1 class="r-fit-text">Mongo</h1>
@@ -1041,7 +1192,7 @@ resources:
                 <li class="fragment">So instead of arrays
                 <pre><code class="language-json">{"similarItems": ["SKU-001", "SKU-002",..., "SKU-500"]}</code></pre></li>
                 <li class="fragment">we used a string field with implode function.
-                    <pre><code class="language-json">{"similarItems": ["SKU-001,SKU-002,SKU-500"]}</code></pre>
+                    <pre><code class="language-json">{"similarItems": "SKU-001,SKU-002,SKU-500"}</code></pre>
                 </li>
             </ul>
         </section>
@@ -1058,7 +1209,39 @@ resources:
                 <li class="fragment">Only a few “community” images stay free (latest only).</li>
                 <li class="fragment">Secure, supported images move to paid Bitnami Secure Images.</li>
                 <li class="fragment">For us: this affects RabbitMQ and Redis containers.</li>
+                <li class="fragment">That's why we prayed that there would be no new security holes in these images.</li>
             </ul>
+        </section>
+        <section>
+            <h2>Bitnami charts</h2>
+            <ul>
+                <li>But apparently we didn't pray enough.</li>
+                <li class="fragment">On October 10, a security flaw appears that allows remote code execution
+                <img src="assets/redis-cve.png" height="360px"/>
+                </li>
+            </ul>
+        </section>
+        <section>
+            <h2>Bitnami charts</h2>
+            <ul>
+                <li>We had two options to solve this problem</li>
+                <li class="fragment">First, using bitnami/redis:latest, but then we lose control of the version used on the production machine.</li>
+                <li class="fragment">Second, find an image that can be inserted instead of the original bitnami.</li>
+                <li class="fragment">Luckily the official Redis image worked without any changes.</li>
+                <li class="fragment">However, you cannot use the *-alpine version because the bitnami startup script requires bash.</li>
+                <li class="fragment">Changing the configuration was also simple.</li>
+            </ul>
+        </section>
+        <section>
+            <h2>Bitnami charts</h2>
+            <p>A small change in configuration allowed us to continue working</p>
+            <pre><code class="language-yaml">redis:
+  architecture: replication
+  image:
+    registry: internal.docker.proxy
+    repository: redis #------ this line ----#
+    tag: 8.2.2-bookworm
+...</code></pre>
         </section>
         <section data-auto-animate data-auto-animate-id="questions">
             <h1 class="r-fit-text">Questions?</h1>
