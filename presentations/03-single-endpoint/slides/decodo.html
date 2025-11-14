@@ -1,0 +1,1634 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8">
+    <title>Single Endpoint, Infinite Chaos</title>
+    <meta name="description" content="Single Endpoint, Infinite Chaos">
+    <meta name="author" content="Piotr Hałas">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="/dist/reset.css">
+    <link rel="stylesheet" href="/dist/reveal.css">
+    <link rel="stylesheet" href="/dist/code.css">
+    <link rel="stylesheet" href="/dist/theme/beige.css" id="theme">
+    <link rel="stylesheet" href="/dist/plugin/highlight/github-light-default.css">
+</head>
+<body>
+<div class="reveal">
+    <div class="slides">
+        <section data-auto-animate data-auto-animate-id="intro">
+            <h1 class="r-fit-text">Single Endpoint</h1>
+            <aside class="notes"></aside>
+        </section>
+        <section data-auto-animate data-auto-animate-id="intro">
+            <h1 class="r-fit-text">Single Endpoint</h1>
+            <h3>Infinite Chaos</h3>
+            <p>
+                <small>Created by <a href="http://hakim.se">Piotr Hałas</a> from
+                    <a href="https://github.com/hakimel/reveal.js/graphs/contributors">Crazy Goat Software</a></small>
+            </p>
+        </section>
+        <section data-auto-animate data-auto-animate-id="intro">
+            <img src="assets/mparking.png" height="550px">
+        </section>
+        <section data-auto-animate data-auto-animate-id="agenda">
+            <h1 data-id="chapter_agenda" class="r-fit-text">Agenda</h1>
+        </section>
+        <section data-auto-animate data-auto-animate-id="agenda">
+            <h1 data-id="chapter_agenda">Agenda</h1>
+            <ol>
+                <li>WHOAMI</li>
+                <li class="fragment">The Project</li>
+                <li class="fragment">The Stack</li>
+                <li class="fragment">PHP</li>
+                <li class="fragment">Queues</li>
+                <li class="fragment">Cache</li>
+                <li class="fragment">Mongo</li>
+                <li class="fragment">Cost optimization</li>
+                <li class="fragment">Is it worth it?</li>
+                <li class="fragment">Q&A</li>
+            </ol>
+            <aside class="notes">
+                Oby był czas na Q&A
+            </aside>
+        </section>
+        <section>
+            <h1>WHOAMI</h1>
+        </section>
+        <section>
+            <h3>WHOAMI --env=live</h3>
+            <ul>
+                <li>Proud Husband and Father of Two Daughters</li>
+                <li class="fragment">Run a small farm Hałaśliwa Zagroda
+                    <ul>
+                        <li class="fragment">Farm animals: <span class="fragment">horse, donkeys, goats, sheep, pigs, ducks, geese, chickens,
+                            guinea fowl</span><span class="fragment">; domestic: dogs, cats, fish</span></li>
+                        <li class="fragment">We produce goat cheese and sell eggs<span
+                                class="fragment">, organize school trips</span><span
+                                class="fragment">, birthday parties for children</span>
+                        </li>
+                    </ul>
+                </li>
+                <li class="fragment">Passion for Woodworking</li>
+                <li class="fragment">Enjoy Welding Projects</li>
+                <li class="fragment">Love for Classic Vehicles</li>
+                <li class="fragment">Youtuber</li>
+            </ul>
+        </section>
+        <section>
+            <h3>WHOAMI --env=dev</h3>
+            <ul>
+                <li>Professionally coding in PHP since 2007
+                    <ul>
+                        <li class="fragment">Symfony from version 1.0</li>
+                        <li class="fragment">Explored Slim and Zend frameworks.</li>
+                        <li class="fragment">Workerman/Webman i (Open)Swoole</li>
+                    </ul>
+                </li>
+                <li class="fragment">Hobby
+                    <ul>
+                        <li>C/C++ embedded, ESP-01/12, Arduino</li>
+                        <li class="fragment">Golang - tooling, PHP + Golang</li>
+                    </ul>
+                </li>
+                <li class="fragment">Small DevOps
+                    <span class="fragment"> - CI/CD</span><span class="fragment">, Docker</span><span class="fragment">, Systems Architecture</span>
+                </li>
+                <li class="fragment">Open Source contributor</li>
+                <li class="fragment">Engineering mindset over pure theory</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="agenda">
+            <h1 class="r-fit-text">The Project</h1>
+        </section>
+        <section data-auto-animate data-auto-animate-id="agenda">
+            <h1>The Project</h1>
+            <img src="assets/recommendations.png"/>
+        </section>
+        <section data-auto-animate data-auto-animate-id="agenda">
+            <img src="assets/recommendations.png"/>
+            <p>The goal of the project was to replace the existing external product recommendation system with our own
+                solution.
+                The main reasons were the high costs and the lack of flexibility of the current system.</p>
+        </section>
+        <section data-auto-animate data-auto-animate-id="recsio">
+            <h1 class="r-fit-text">RECS.IO</h1>
+        </section>
+        <section data-auto-animate data-auto-animate-id="recsio">
+            <h1>RECS.IO</h1>
+            <img src="assets/recsio.png" height="450px">
+        </section>
+        <section data-auto-animate data-auto-animate-id="recsio">
+            <h1>RECS.IO</h1>
+            <ul>
+                <li>3 Backend developers</li>
+                <li class="fragment">1 Frontend developers</li>
+                <li class="fragment">1 Tester</li>
+                <li class="fragment">PO, Scrum Master, Engineering Manager</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="assumptions">
+            <h1>Assumptions</h1>
+            <ul style="width: 700px; height: 220px">
+                <li>3 months to MVP</li>
+                <li class="fragment">Monthly cost: ~2000 euro</li>
+                <li class="fragment" data-id="perf">Performance: 1000 req/s</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="assumptions">
+            <h1>Assumptions</h1>
+            <ul style="width: 700px; height: 220px">
+                <li>3 months to MVP</li>
+                <li>Monthly cost: ~2000 euro</li>
+                <li data-id="perf">Performance: <s>1000 req/s</s> 1600 req/s</li>
+                <li class="fragment">Response time < 200ms</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="assumptions">
+            <h1>Assumptions</h1>
+            <ul style="width: 700px; height: 220px">
+                <li>3 months to MVP ❌</li>
+                <li>Monthly cost: ~2000 euro ✅</li>
+                <li>Performance: <s>1000 req/s</s> 1600 req/s ✅</li>
+                <li>Response time < 200ms ✅</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="stack">
+            <h1 class="r-fit-text">The Stack</h1>
+        </section>
+        <section data-auto-animate data-auto-animate-id="stack">
+            <h1>The Stack</h1>
+            <p><strong>Backend</strong></p>
+            <ul>
+                <li>Programing language: PHP</li>
+                <li class="fragment">Framework: Symfony 7.3</li>
+                <li class="fragment">Database: MongoDB <strike>8.0</strike>7.0</li>
+                <li class="fragment">Cache: Redis</li>
+                <li class="fragment">Queues: Kafka<span class="fragment">, Rabbitmq</span></li>
+                <li class="fragment">Platform: K8s - OpenShift</li>
+                <li class="fragment">Cloud: GCP<span class="fragment">, Azure</span><span
+                        class="fragment">, <strike>AWS</strike></span></li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="stack">
+            <h1>The Stack</h1>
+            <p><strong>Frontend</strong></p>
+            <ul>
+                <li>Frontend: 15kb React js file (5x - for each brand)</li>
+                <li class="fragment">Mobile: 10 mobile apps (5 Android, 5 Iphone)</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="stack">
+            <h1 style="font-size: 1.5em; margin-bottom: 0px;">The Stack</h1>
+            <img src="assets/big-picture.png" style="height: 600px">
+        </section>
+        <section data-auto-animate data-auto-animate-id="stack">
+            <h1>The Stack</h1>
+            <ul>
+                <li>5 different brands, vary in size</li>
+                <li class="fragment">Each have own k8s namespace, own database, cache, etc</li>
+                <li class="fragment">But it can be run as a multi-tenant application</li>
+                <li class="fragment">All k8s configuration owned by Recs.io</li>
+                <li class="fragment">CI/CD - ArgoCD<span class="fragment">, owned by Recs.io</span></li>
+                <li class="fragment">Whole stack can be run locally using k3d</li>
+                <li class="fragment">Including CI/CD🤪</li>
+                <li class="fragment">Monitoring: Prometheus, Grafana, NewRelic, PMM</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="PHP">
+            <h1 class="r-fit-text">PHP Application</h1>
+        </section>
+        <section data-auto-animate data-auto-animate-id="PHP">
+            <h1>PHP Application</h1>
+            <ul>
+                <li>Classic configuration Nginx + PHP-FPM + NewRelic</li>
+                <li class="fragment">Alpine-based docker image</li>
+                <li class="fragment">PHP 8.4 - from packages</li>
+                <li class="fragment">FPM <code>pm.static</code> with 20 workers</li>
+                <li class="fragment">Separate container for Nginx, PHP-FPM, NewRelic</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="PHP">
+            <h1 style="font-size: 1.5em; margin-bottom: 0px;">PHP Application</h1>
+            <img src="assets/php-ver-1.png"/>
+        </section>
+        <section data-auto-animate data-auto-animate-id="scaling">
+            <h1 class="r-fit-text">Scaling application</h1>
+        </section>
+        <section data-auto-animate data-auto-animate-id="scaling">
+            <h1>Scaling application</h1>
+            <ul>
+                <li>Available Options</li>
+                <li class="fragment">Based on CPU</li>
+                <li class="fragment">Based on Request per second</li>
+                <li class="fragment">Custom metrics using KEDA</li>
+                <li class="fragment">Of course, we chose the custom metrics option</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="scaling">
+            <h1>Scaling application</h1>
+            <p>(Dis)advantages of CPU base scaling</p>
+            <ul>
+                <li class="fragment">It is straightforward to implement</li>
+                <li class="fragment">It works with a cpu-based load</li>
+                <li class="fragment">It does not work with a high IO-based load</li>
+                <li class="fragment">Example: It will not scale on high network latency</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="scaling">
+            <h1>Scaling application</h1>
+            <p>(Dis)advantages of RPS base scaling</p>
+            <ul>
+                <li class="fragment">It is straightforward to implement</li>
+                <li class="fragment">It works if you have stable response times</li>
+                <li class="fragment">All endpoints should have similar response times</li>
+                <li class="fragment">It will not scale on high network latency</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="scaling">
+            <h1>Scaling application</h1>
+            <p>We choose to use active PHP-FPM workers as a scaling metric</p>
+            <ul>
+                <li class="fragment">It is a little harder to implement</li>
+                <li class="fragment"><strong>pm=static</strong> and <strong>pm.start_servers=20</strong></li>
+                <li class="fragment">If avg active worker > 15 scale up</li>
+                <li class="fragment">We test this on local k8s cluster using wrk and ab</li>
+                <li class="fragment">It works well<span class="fragment">, with small number of connection</span></li>
+                <li class="fragment">On lots of connection it created a scale bomb 💣</li>
+                <li class="fragment">Unfortunately, we only discovered this in the production environment</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="scaling">
+            <h1>Scaling application</h1>
+            <p>The PHP-FPM counting connection problem</p>
+            <ul>
+                <li class="fragment">PHP-FPM has a problem with counting <strong>active processes</strong></li>
+                <li class="fragment">Example: It could return 3347 when <strong>pm.max_children=20</strong></li>
+                <li class="fragment">After two days of investigation, we found the bug</li>
+                <li class="fragment">It only happens when <strong>fastcgi_keep_conn on</strong> directive in the nginx
+                </li>
+                <li class="fragment">Hot-fix: disable this line in config</li>
+                <li class="fragment">Report bug to PHP: <a href="https://github.com/php/php-src/issues/14212">https://github.com/php/php-src/issues/14212</a>
+                </li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="scaling">
+            <h1>Scaling application</h1>
+            <p>Tuning pod size and scaling params</p>
+            <ul>
+                <li class="fragment">We started with 20 workers on MVP</li>
+                <li class="fragment">It was good when we had response times about 100ms</li>
+                <pre class="fragment"><code>one worker: 1/100ms = 10 req/s
+max per pod: 20 workers * 10 req/s = 200 req/s
+scaling up: 15 workers * 10 req/s = 150 req/s
+1600 req/s / 150 req/s ~= 12 pods</code></pre>
+                <li class="fragment">We made some optimization to code and data structures</li>
+                <li class="fragment">Response time went down to 30-40ms</li>
+                <li class="fragment">And then...</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="scaling">
+            <h1>Kubernetes tango down</h1>
+            <img src="assets/k8s-disaster-2.png" style="height: 450px">
+        </section>
+        <section data-auto-animate data-auto-animate-id="scaling">
+            <h1>Kubernetes tango down</h1>
+            <ul>
+                <li>We lost all of our redis instances</li>
+                <li class="fragment">2 of 3 mongodb node were down</li>
+                <li class="fragment">Only one app pod was serving traffic</li>
+                <li class="fragment">Despite heavy injuries, Recsio was still alive.</li>
+                <li class="fragment">What doesn’t kill us makes us stronger.</li>
+                <li class="fragment">When the dust settled, our app started running faster.</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="scaling">
+            <h1>Kubernetes tango down</h1>
+            <img src="assets/k8s-disaster.png" style="height: 450px">
+        </section>
+        <section data-auto-animate data-auto-animate-id="scaling">
+            <h1>Scaling application</h1>
+            <p>New response times changed everything</p>
+            <ul>
+                <li class="fragment">New response times were ~15ms</li>
+                <li class="fragment">20 workers on one pod was waaaay to much</li>
+                <pre class="fragment"><code>one worker: 1/15ms ~= 65 req/s
+max per pod: 20 workers * 65 req/s = 1300 req/s
+scaling up: 15 workers * 10 req/s = 950 req/s
+1600 req/s / 950 req/s ~= 2 pods</code></pre>
+                <li class="fragment">In theory, we don’t need to scale at all.</li>
+                <li class="fragment">The HA requirements already assumed at least 2 pods.</li>
+                <li class="fragment">But there’s a catch...</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="scaling">
+            <h1>Scaling application</h1>
+            <p>Setting CPU requests and limits</p>
+            <ul>
+                <li class="fragment">1/3 is IO (redis and mognodb) 2/3 is PHP</li>
+                <li class="fragment">We need to do some math again.</li>
+                <pre class="fragment"><code>15 workers * 0.667 ~= 10 cores</code></pre>
+                <li class="fragment">It will be hard to allocate that many resources on a crowded node.</li>
+                <li class="fragment">In case of failure, the remaining pod will get a lot of traffic.</li>
+                <li class="fragment">And the problem of unused resources...</li>
+            </ul>
+        </section>
+        <section>
+            <h1 class="r-fit-text">Cat Head Problem</h1>
+        </section>
+        <section data-transition="none none">
+            <img src="assets/the-curve-cat.jpg" style="height: 650px"/>
+        </section>
+        <section data-transition="none none">
+            <img src="assets/the-curve-2.png" style="height: 650px"/>
+        </section>
+        <section>
+            <h1>Cat Head Problem</h1>
+            <ul>
+                <li>Two peaks: one in the morning, bigger one in the evening.</li>
+                <li class="fragment">Medium traffic during the day.</li>
+                <li class="fragment">Minimal traffic during night hours.</li>
+                <li class="fragment">The difference between the lowest traffic and the peak is 75x.</li>
+                <li class="fragment">We don’t want to pay for 20 cores at night.</li>
+                <li class="fragment">That’s why we had to do the math again...</li>
+            </ul>
+        </section>
+        <section>
+            <h1>Cat Head Problem</h1>
+            <ul>
+                <li>For 6 hours during the day, we have very low traffic.</li>
+                <li class="fragment">We want to pay as little as possible during this period.</li>
+                <li class="fragment">We also want to scale very quickly to meet traffic demands.</li>
+                <li class="fragment">We need a reserve in case of a failure.</li>
+                <li class="fragment">Or in case of a sudden traffic surge.</li>
+                <li class="fragment">So we came up with this...</li>
+            </ul>
+        </section>
+        <section>
+            <h1>Cat Head Problem</h1>
+            <pre><code>#php-fpm.conf
+pm = dynamic
+pm.start_servers = 3
+pm.max_children = 20</code></pre>
+
+            <pre class="fragment"><code>#deployment.yaml
+resources:
+  limits:
+    memory: 164Mi
+  requests:
+    memory: 128Mi
+    cpu: 300m</code></pre>
+        </section>
+        <section>
+            <h1>Cat Head Problem</h1>
+            <ul>
+                <li>Each pod serves around 20 req/s before scaling up.</li>
+                <li class="fragment">At night, we only have two pods.</li>
+                <li class="fragment">At peak load, we expect to have around 80 pods.</li>
+                <li class="fragment">Large reserve - in theory, one pod can handle traffic up to ~200 req/s.</li>
+                <li class="fragment">Losing even a few pods is not a problem.</li>
+                <li class="fragment">The application looks more robust when it has many pods.</li>
+            </ul>
+        </section>
+        <section>
+            <p>Real life example</p>
+            <img src="assets/scaling-connections.png" height="550px">
+        </section>
+        <section data-auto-animate data-auto-animate-id="queue">
+            <h1 class="r-fit-text">The queue</h1>
+        </section>
+        <section data-auto-animate data-auto-animate-id="queue">
+            <h1>The queue</h1>
+            <h2>The only way we feed the app</h2>
+        </section>
+        <section>
+            <h2>The only way we feed the app</h2>
+            <ul>
+                <li>Two queue systems: Kafka and RabbitMQ
+                <li class="fragment">Kafka holds the product data
+                    <ul>
+                        <li class="fragment">Morning burst: about 5M messages</li>
+                        <li class="fragment">Then during the day: about 2–3M messages</li>
+                    </ul>
+                </li>
+                <li class="fragment">RabbitMQ holds product recommendation data
+                    <ul>
+                        <li class="fragment">Morning burst: about 3-4M messages</li>
+                        <li class="fragment">Later - nothing</li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
+        <section>
+            <h2>The only way we feed the app</h2>
+            <ul>
+                <li>For the kafka queue, we have about 1–1.5 hours to process</li>
+                <li class="fragment">That gives about 1000 messages per second</li>
+                <li class="fragment">Dataset: 100+ GB per day (biggest brand 750+ GB)</li>
+                <li class="fragment">For the rabbit queue, we have about 1 hour to process</li>
+                <li class="fragment">That gives about ~1100 messages per second</li>
+                <li class="fragment">Dataset: 15GB per day (now 25GB)</li>
+            </ul>
+        </section>
+        <section>
+            <h1>Chasing a rabbit</h1>
+        </section>
+        <section>
+            <h2>Chasing a rabbit</h2>
+            <ul>
+                <li>Rabbit HA configuration</li>
+                <li class="fragment">Cluster - 3 nodes</li>
+                <li class="fragment">5 - cluster queues, 3 replicas each</li>
+                <li class="fragment">Ram: 1GB</li>
+                <li class="fragment">Storage: 16GB PVC(pd-ssd)</li>
+            </ul>
+        </section>
+        <section>
+            <h2>Chasing a rabbit</h2>
+            <ul>
+                <li>Initial test dump</li>
+                <li class="fragment">1/30 of all data (one market for one brand)</li>
+                <li class="fragment">Seamlessly completed, took only seconds.</li>
+                <li class="fragment">I loaded the data 30 times on a local cluster.</li>
+                <li class="fragment">Took under a minute, also problem-free.</li>
+            </ul>
+        </section>
+        <section>
+            <h2>Chasing a rabbit</h2>
+            <ul>
+                <li>Initial real dump</li>
+                <li class="fragment">15GB of recommendation</li>
+                <li class="fragment">Took under a minute</li>
+                <li class="fragment">But it also took down all RabbitMQ nodes.</li>
+                <li class="fragment">They all crashed due to OOM.</li>
+                <li class="fragment">Increased RAM to 2GB... same result.</li>
+                <li class="fragment">The problem was with PVC performance.</li>
+            </ul>
+        </section>
+        <section>
+            <h2>Chasing a rabbit</h2>
+            <ul>
+                <li>We could have kept increasing the RAM...</li>
+                <li class="fragment">But our rabbits only run for 1 hour a day.</li>
+                <li class="fragment">Instead of paying for more RAM, it's better to find another solution.</li>
+                <li class="fragment">sleep(1) to the rescue.</li>
+                <li class="fragment">We added a sleep(1) after every 5k messages.</li>
+                <li class="fragment">Sometimes the simplest things work best.</li>
+            </ul>
+        </section>
+        <section>
+            <h2>Chasing a rabbit</h2>
+            <ul>
+                <li>Symfony messenger amqp client is very slow</li>
+                <li class="fragment">Inefficiencies of constant polling with get()</li>
+                <li class="fragment">With empty handler, we were able to get up 200msg/s</li>
+                <li class="fragment">With database writes max what we could get 120msg/s</li>
+                <li class="fragment">Adding more consumers didn’t boost performance</li>
+                <li class="fragment">It only added more traffic to RabbitMQ</li>
+                <li class="fragment">First try: planned 1 hour, but it took 6</li>
+            </ul>
+        </section>
+        <section>
+            <h2>Chasing a rabbit</h2>
+            <ul>
+                <li>Switch amqp client to jwage/phpamqplib-messenger</li>
+                <li class="fragment">It’s not a drop-in replacement</li>
+                <li class="fragment">It allows using consume and prefetch features</li>
+                <li class="fragment">Not perfect: you still have to ack every message</li>
+                <li class="fragment">We managed to reach about 250 msg/s</li>
+                <li class="fragment">Now the database became a bottleneck</li>
+            </ul>
+        </section>
+        <section>
+            <h2>Chasing a rabbit</h2>
+            <p>Symfony messenger batch processing - game changer</p>
+            <pre><code>class BatchHandler implements BatchHandlerInterface {
+    use BatchHandlerTrait;
+
+    public function __invoke(Message $message, Acknowledger $ack = null): mixed {
+        return $this->handle($message, $ack);
+    }
+
+    private function process(array $jobs): void {
+        foreach ($jobs as [$message, $ack]) {
+                // ... some code
+                $ack->ack($result);
+        }
+    }
+}</code></pre>
+        </section>
+        <section>
+            <h2>Chasing a rabbit</h2>
+            <p>Symfony messenger batch processing - game changer</p>
+            <ul>
+                <li>BatchHandlerInterface does not speed up processing</li>
+                <li class="fragment">Instead, it allows for the use of bulkWrite in MongoDB.</li>
+                <li class="fragment">This significantly reduces traffic between the consumer and the database.</li>
+                <li class="fragment">Allows ordered=false for parallel writes.</li>
+                <li class="fragment">Also added w=1&journal=false for all consumer.</li>
+                <li class="fragment">We achieved around 450 msg/s.</li>
+                <li class="fragment">With 3 consumers, we achieved the desired performance.</li>
+            </ul>
+        </section>
+        <section>
+            <h2>Chasing a rabbit</h2>
+            <ul>
+                <li>Scaling rabbitmq consumers</li>
+                <li class="fragment">We want to scale to zero, when no messages</li>
+                <li class="fragment">Scaling must be independent for all 5 queues</li>
+                <li class="fragment">Can't use cron, we don't know when we get messages</li>
+                <li class="fragment">We decided to use KEDA - Kubernetes Event-driven Autoscaler.</li>
+                <li class="fragment">Meets all our requirements</li>
+                <li class="fragment">Easy to set up</li>
+                <li class="fragment">It also supports Kafka</li>
+            </ul>
+        </section>
+        <section>
+            <h2>Chasing a rabbit</h2>
+            <p>Example configuration</p>
+            <pre><code class="language-yaml" style="font-size: 0.8em; line-height: 1.3em">apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+spec:
+  maxReplicaCount: 10
+  minReplicaCount: 0
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: product-vectors-consumer
+  triggers:
+      metadata:
+        mode: QueueLength
+        protocol: amqp
+        queueName: product_vectors
+        value: "5000"
+      type: rabbitmq
+</code></pre>
+        </section>
+        <section>
+            <h2>Chasing a rabbit</h2>
+            <img src="assets/keda-scaling.png" style="height: 450px"/>
+        </section>
+        <section>
+            <h2>Chasing a rabbit</h2>
+            <img src="assets/keda-scaling-2.png" style="height: 450px"/>
+        </section>
+        <section>
+            <h2>Chasing a rabbit</h2>
+            <ul>
+                <li>Another problem we encountered was high CPU load in idle.</li>
+                <li class="fragment">A load of 400 millicore (40% CPU) is unusual for an idle state
+
+                </li>
+            </ul>
+            <img class="fragment" src="assets/rabbitmq-high-cpu-idle.png">
+        </section>
+        <section>
+            <h2>Chasing a rabbit</h2>
+            <ul>
+                <li>There was no information in the logs as to what could have caused this condition.</li>
+                <li class="fragment">The first idea was to download metrics too often.</li>
+                <li class="fragment">However, even disabling them did not change much.</li>
+                <li class="fragment">We searched the web and found this error
+                    https://github.com/bitnami/charts/issues/11116
+                </li>
+                <li class="fragment">What cases high CPU usage is CLI tools: rabbitmq-diagnostics in liveness and
+                    readiness probes.
+                </li>
+                <li class="fragment">After changing the way liveness and readiness are checked, CPU usage is back to
+                    normal.
+                </li>
+            </ul>
+        </section>
+        <section>
+            <h2>Chasing a rabbit</h2>
+            <p>Configuration to fix high CPU usage in rabbitmq</p>
+            <pre><code class="language-yaml" style="font-size: 0.8em; line-height: 1.3em">rabbitmq:
+  customReadinessProbe:
+    tcpSocket:
+      port: amqp
+  customLivenessProbe:
+    tcpSocket:
+      port: amqp
+</code></pre>
+        </section>
+        <section>
+            <h2>Chasing a rabbit</h2>
+            <img src="assets/rabbitmq-high-cpu-idle-fix.png">
+        </section>
+        <section>
+            <h1>bitter taste of kafka</h1>
+        </section>
+        <section>
+            <h1>bitter taste of kafka</h1>
+            <ul>
+                <li>Kafka configuration</li>
+                <li class="fragment">Product queue - 32 partition, 3 replicas</li>
+                <li class="fragment">About 19 hours of data</li>
+                <li class="fragment">Managed by another team</li>
+            </ul>
+        </section>
+        <section>
+            <h1>bitter taste of kafka</h1>
+            <ul>
+                <li>Same issue as with rabbitmq - reading message one by one is slow</li>
+                <li class="fragment">We noticed that a large portion of the messages are static.</li>
+                <li class="fragment">Probably archival products?</li>
+                <li class="fragment">So, we decided to skip them during updates.</li>
+                <li class="fragment">We only save if our updatedAt is less than the message's.</li>
+                <li class="fragment">I was implemented, but there was a bug: >= instead of ></li>
+                <li class="fragment">It reduced the number of database writes by over 50%.</li>
+            </ul>
+        </section>
+        <section>
+            <h1>bitter taste of kafka</h1>
+            <p>Know your data!!!</p>
+            <pre><code>  "material": "100% SILIKON",
+  "publicationDate": "2025-02-06",
+  "updatedAt": "2025-05-28T09:33:34", // this is not last update date
+  "sizes": [{
+      "stock": true,
+      "sizeId": 1041,</code></pre>
+            <p class="fragment">For two weeks, we did not update most products.</p>
+        </section>
+        <section>
+            <h1>bitter taste of kafka</h1>
+            <ul>
+                <li>We achieved the desired speed with about 20 consumers</li>
+                <li class="fragment">The number of partitions should be divisible by the number of consumers.</li>
+                <li class="fragment">Otherwise, some partitions will be consumed faster than others.</li>
+                <li class="fragment">However, 32 consumers caused database overload.</li>
+                <li class="fragment">16 consumers didn't provide adequate speed.</li>
+                <li class="fragment">KEDA leaves consumers that do nothing.</li>
+            </ul>
+        </section>
+        <section>
+            <h1>bitter taste of kafka</h1>
+            <ul>
+                <li>Incorrectly selected number of consumers.</li>
+                <li class="fragment">Combined with an incorrectly selected partitioning key</li>
+                <li class="fragment">Leads to a situation where, despite a large number of consumers, the processing speed is slow at the end of the queue.</li>
+            </ul>
+        </section>
+        <section>
+            <h1>bitter taste of kafka</h1>
+            <img src="assets/kafka-topics.png" height="450px"/>
+        </section>
+        <section>
+            <h1>bitter taste of kafka</h1>
+            <ul>
+                <li>In this case, most consumers had assigned only 2 partitions</li>
+                <li class="fragment">These consumers finished their job much faster.</li>
+                <li class="fragment">The consumer assigned three partitions struggled with the task.</li>
+                <li class="fragment">Because there were still over 120,000 messages in the queue.</li>
+                <li class="fragment">KEDA maintained the maximum number of consumers.</li>
+                <li class="fragment">Of which, only one was doing job.</li>
+            </ul>
+        </section>
+        <section>
+            <h1>bitter taste of kafka</h1>
+            <img src="assets/one-working.png" height="450px"/>
+        </section>
+        <section>
+            <h1>bitter taste of kafka</h1>
+            <ul>
+                <li>How to deal with such a problem</li>
+                <li class="fragment">Kafka rebalances when a client joins or disconnects.</li>
+                <li class="fragment">You can restart the client every few minutes or every few messages.</li>
+                <li class="fragment">However, frequent restarts can cause Kubernetes to add a back-off period.</li>
+                <li class="fragment">However, frequent restarts can cause Kubernetes to add a back-off period.</li>
+                <li class="fragment">Fortunately, KEDA has built-in options for monitoring the number of active partitions.</li>
+            </ul>
+        </section>
+        <section>
+            <h1>bitter taste of kafka</h1>
+            <pre><code>triggers:
+    - type: kafka
+      metadata:
+        bootstrapServers: 'kafka'
+        consumerGroup: 'recsio'
+        topic: 'products'
+        # number of replicas will not exceed zero-lag partitions
+        limitToPartitionsWithLag: 'true'</code></pre>
+        </section>
+        <section data-auto-animate data-auto-animate-id="cache">
+            <h1 class="r-fit-text">Cache</h1>
+        </section>
+        <section data-auto-animate data-auto-animate-id="cache">
+            <h1>Cache</h1>
+            <h2>Redis client selection</h2>
+        </section>
+        <section data-auto-animate data-auto-animate-id="cache">
+            <h2>Redis client selection</h2>
+            <uL>
+                <li>Master-slave replication</li>
+                <li class="fragment">Automatic read-write separation</li>
+                <li class="fragment">Must work with symfony cache</li>
+                <li class="fragment">phpRedis is superfast...</li>
+                <li class="fragment">but only support read-write separation for cluster</li>
+                <li class="fragment">So we chose predis support read-write separation for master-slave</li>
+            </uL>
+        </section>
+        <section>
+            <h2>Wrong way to make cache</h2>
+            <p>In the initial phase of our application, we had two problematic queries that took 90% of the time of all
+                queries</p>
+            <uL>
+                <li class="fragment">The first was a query of the type
+                    <pre style="display: inline">IN(id1, ... id200)</pre>
+                </li>
+                <li class="fragment">The second involved selecting approximately 1,500 products based on a complex
+                    filter.
+                </li>
+                <li class="fragment">Each of these queries took 10-30 milliseconds.</li>
+                <li class="fragment">We could cache results for about 5 minutes.</li>
+                <li class="fragment">But this solution wasn't optimal.</li>
+            </uL>
+        </section>
+        <section>
+            <h2>Wrong way to make cache</h2>
+            <ul>
+                <li>Store offers approximately 4.5 million products.</li>
+                <li class="fragment">The cache size exploded, and there were large number of evictions.</li>
+                <li class="fragment">The hit/miss ratio was terrible.</li>
+                <li class="fragment">For popular products, the speedup was indeed noticeable.</li>
+                <li class="fragment">However, for most products, implementing the cache caused a slowdown.</li>
+                <li class="fragment">Cache miss -> database query -> cache store</li>
+            </ul>
+        </section>
+        <section>
+            <h1>Know your data!</h1>
+            <p>After analyzing the data, it turned out that instead of maintaining a cache for individual products, we
+                could recalculate the necessary data for entire product groups.
+                This gave us some hope; the only thing left to do was to see if we could perform these recalculations
+                quickly enough.</p>
+        </section>
+        <section>
+            <h2>Cache done right</h2>
+            <ul>
+                <li>For each store we keep about 80 keys</li>
+                <li class="fragment">For brand its about 2000 keys</li>
+                <li class="fragment">The entire cache takes 25MB RAM / 12,5kb per key</li>
+                <li class="fragment">It takes 13 seconds to generate cache</li>
+                <li class="fragment">We fetch two keys per request</li>
+                <li class="fragment">Depending on the product, the cache is an array containing approximately 100 -
+                    10,000 entries
+                </li>
+                <li class="fragment">To reduce decoding time and data volume, we used igbinary</li>
+                <li class="fragment">This decision caused problems...</li>
+            </ul>
+        </section>
+        <section>
+            <h2>Cache done right</h2>
+            <ul>
+                <li>Despite 100% coverage of the problematic queries, they still sometimes executed.</li>
+                <li class="fragment">It turned out that the cache was not generated for larger tables.</li>
+                <li class="fragment">Symfony cache does not throw exceptions if the cache fails to be written.</li>
+                <li class="fragment">After a little investigation, it turned out that we can't save arrays larger than
+                    3338 entries.
+                </li>
+                <li class="fragment">Later, it turned out that larger arrays can be saved.</li>
+                <li class="fragment">An array can't be saved if it has a key "3338"</li>
+            </ul>
+        </section>
+        <section>
+            <h2>The Hidden Magic of Number 3338</h2>
+            <ul>
+                <li>Why array key 3338 is problematic</li>
+                <li class="fragment">3338 in hex is
+                    <pre style="display: inline; font-size: 1em">0D 0A</pre>
+                </li>
+                <li class="fragment">
+                    <pre style="display: inline; font-size: 1em">0D => 015</pre>
+                    in ASCII is Carriage Return (\r)
+                </li>
+                <li class="fragment">
+                    <pre style="display: inline; font-size: 1em">0A => 012</pre>
+                    in ASCII is Line Feed (\n)
+                </li>
+                <li class="fragment">predis use
+                    <pre style="display: inline; font-size: 1em">\r\n</pre>
+                    as command separator in pipeline
+                </li>
+                <li class="fragment">Reported: <a href="https://github.com/predis/predis/issues/1574">https://github.com/predis/predis/issues/1574</a>
+                </li>
+                <li class="fragment">Fixed not released yet.</li>
+            </ul>
+        </section>
+        <section>
+            <h2>Cache done right<span class="fragment"> - but we can do better</span></h2>
+            <ul>
+                <li class="fragment">We can do it better because the cache size is only 25MB</li>
+                <li class="fragment">So the entire cache will easily fit in the APC</li>
+                <li class="fragment">The only problem is that we cannot save the cache to APC within the cron command.
+                </li>
+                <li class="fragment">We can use Symfony Chain Cache Adapter for this</li>
+                <li class="fragment">And use redis only to distribute keys to application pods</li>
+                <li class="fragment">This solution worked incredibly well</li>
+                <li class="fragment">Even a little too well...</li>
+            </ul>
+        </section>
+        <section>
+            <h2>When hallucinations hit production</h2>
+            <p>Do you see an error in this configuration? This configuration compiles but doesn't work correctly? </p>
+            <pre><code>pools:
+    recommendation.cache:
+        adapters:
+            - {name: cache.adapter.apcu, default_lifetime: 60}
+            - {name: cache.adapter.redis, default_lifetime: 300}</code>
+            </pre>
+            <span class="fragment">Valid one:
+            <pre><code>pools:
+    recommendation.cache:
+        adapters:
+            - {name: cache.adapter.apcu}
+            - {name: cache.adapter.redis}
+        default_lifetime: 60</code>
+            </pre></span>
+        </section>
+        <section>
+            <h2>Cache done better</h2>
+            <ul>
+                <li>This bug remained in production unnoticed for almost two weeks.</li>
+                <li class="fragment">Causing a gradual degradation of recommendation scores.</li>
+                <li class="fragment">Lesson learned: never trust AI.</li>
+                <li class="fragment">Currently, after fixing the bug, Redis has minimal traffic.</li>
+                <li class="fragment">We may completely stop using Redis for caching.</li>
+            </ul>
+        </section>
+        <section>
+            <h2>Cache problems continue</h2>
+            <ul>
+                <li>At first it seemed like everything was working.</li>
+                <li class="fragment">But after a few hours of operation, errors started appearing again.</li>
+                <li class="fragment">This time the APC cache reported that it could not save the key.
+                    <span class="fragment"><pre><code>Failed to save key "valid_skus_v1|xxxxxxx|XXX_PL_PL|Ladies" of type array.</code>
+            </pre></span></li>
+                <li class="fragment">The error description was very misleading, so we first looked for the error in the
+                    code
+                </li>
+            </ul>
+        </section>
+        <section>
+            <h2>Cache problems continue</h2>
+            <ul>
+                <li>The error itself did not cause a significant performance drop.</li>
+                <li class="fragment">But it was clogging up the logs in Kibana.</li>
+                <img class="fragment" src="assets/apcu-cache-error.png" height="350px"/>
+            </ul>
+        </section>
+        <section>
+            <h2>Cache problems continue</h2>
+            <ul>
+                <li>After searching the web, it turned out to be a symptom of memory fragmentation in APC.</li>
+                <li class="fragment">The proposed solution was to increase the memory for the APC.</li>
+                <li class="fragment">We increased the memory and it helped.<span class="fragment">.. for an hour</span>
+                </li>
+                <img class="fragment" src="assets/apcu-cache-error-2.png" height="300px"/>
+            </ul>
+        </section>
+        <section>
+            <h2>Cache problems continue</h2>
+            <ul>
+                <li>Unfortunately, we had to dig deeper.</li>
+                <li class="fragment">Well, we found the solution, just upgrade the APC version to 5.1.25</li>
+                <img class="fragment" src="assets/apcu-fix.png" height="300px"/>
+            </ul>
+        </section>
+        <section>
+            <h2>Cache problems continue</h2>
+            <ul>
+                <li>The solution was so close, yet so far away.</li>
+                <li>As base image we use Alpine 3.21</li>
+                <li class="fragment">There was php84-pecl-apcu package with version 5.1.24</li>
+                <li class="fragment">One option is to upgrade the alpine to 3.22, where APC was at version 5.1.27</li>
+                <li class="fragment">But this involved updating the mongodb extension to version 2.x</li>
+                <li class="fragment">And this one is not supported by Newrelic, so we would lose query monitoring</li>
+            </ul>
+        </section>
+        <section>
+            <p>Missing metrics for mongodb</p>
+            <img src="assets/missing-metrics.png" height="550px">
+        </section>
+        <section>
+            <h2>Cache problems continue</h2>
+            <ul>
+                <li>The second option was to compile APC from the sources.</li>
+                <li class="fragment">We could have used the standard PECL/PEAR method.</li>
+                <li class="fragment">But this solution will be deprecated soon</li>
+                <img class="fragment" src="assets/pecl-deprecate.png" height="300px"/>
+                <li class="fragment">https://wiki.php.net/rfc/deprecate_pear_recommend_composer</li>
+            </ul>
+        </section>
+        <section>
+            <h2>Cache problems continue</h2>
+            <ul>
+                <li>That's why we decided to use PIE</li>
+                <li class="fragment">Unfortunately, Alpine does not provide pie packages.</li>
+                <li class="fragment">That's why we had to do it the old school way.</li>
+                <li class="fragment">Using docker multi-step build.</li>
+            </ul>
+        </section>
+        <section>
+            <h2>Cache problems continue</h2>
+            <pre><code>FROM alpine:3.21 AS php-ext
+
+RUN apk add gcc g++ make autoconf libtool bison re2c pkgconf \
+    php84-dev php84-phar php84-iconv php84-openssl \
+    && wget https://github.com/php/pie/releases/download/1.2.1/pie.phar \
+    && php84 pie.phar install apcu/apcu
+
+FROM alpine:3.21 AS base
+
+COPY --from=php-ext /usr/lib/php84/modules/apcu.so /usr/lib/php84/modules/apcu.so
+...</code>
+            </pre>
+        </section>
+        <section>
+            <h2>Cache problems continue</h2>
+            <p>Ultimately, we managed to save 1ms off the average response time.</p>
+            <img src="assets/apcu-final-fix.png" height="450px"/>
+        </section>
+        <section data-auto-animate data-auto-animate-id="mongo">
+            <h1 class="r-fit-text">Mongo</h1>
+        </section>
+        <section data-auto-animate data-auto-animate-id="mongo">
+            <h1>Mongo</h1>
+            <p>Why we chose mongodb as the database</p>
+            <ul>
+                <li class="fragment">We had the choice between MySQL and MongoDB.</li>
+                <li class="fragment">High performance for writes and reads for PK.</li>
+                <li class="fragment">Easy HA setup with Replicaset</li>
+                <li class="fragment">High data compression</li>
+                <li class="fragment">No schema - good for prototyping.</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="mongo">
+            <h2>Mongo</h2>
+            <ul>
+                <li>Why did we choose version 7.0 instead of 8.0?</li>
+                <li class="fragment">At first, we started with version 8.0 on dev machines.</li>
+                <li class="fragment">Then we prepared a local version on k3d to test replicasets.</li>
+                <li class="fragment">Next, we deployed it on test servers.</li>
+                <li class="fragment">Up to this point, everything worked fine with version 8.0.</li>
+                <li class="fragment">But on production servers, we had an older Mongo operator.</li>
+                <li class="fragment">This operator did not support version 8.0.</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="mongo">
+            <h2>Mongo</h2>
+            <ul>
+                <li>There was no option to quickly upgrade the operator.</li>
+                <li class="fragment">So we had to switch to version 7.0.</li>
+                <li class="fragment">It is a pity, because version 8.0 has many performance improvements.</li>
+            </ul>
+            <img class="fragment" src="assets/mongodb-8.png" height="350px"/>
+        </section>
+        <section data-auto-animate data-auto-animate-id="mongo">
+            <h2>Mongo - lesson learned</h2>
+            <p>Keeping everything in one collection with big documents is not a good idea</p>
+            <ul>
+                <li class="fragment">This design is only good for simple key-value data.</li>
+                <li class="fragment">If a query is not covered by an index, reading can be very expensive.</li>
+                <li class="fragment">Even to get one field, the whole document must be read.</li>
+                <li class="fragment">With big updates, frequent relocation may happen.</li>
+                <li class="fragment">Parallel updates - you must remember about document lock.</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="mongo">
+            <h2>Mongo - lesson learned</h2>
+            <p>Running MongoDB in Kubernetes vs. bare metal</p>
+            <ul>
+                <li class="fragment">Make sure Mongo runs on dedicated CPUs.</li>
+                <li class="fragment">No direct access to fast persistent disks.</li>
+                <li class="fragment">If using PVC, check performance limits.</li>
+                <li class="fragment">Example: on GCP, 32GB pd-ssd gives ~4000 IOPS and 15MB/s.</li>
+                <li class="fragment">Because of this, we had to choose a much bigger disk than we needed.</li>
+                <li class="fragment">Also remember about IOPS limits for the instance.</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="mongo">
+            <h2>Mongo - lesson learned</h2>
+            <ul>
+                <li>IOPS are not the biggest problem.</li>
+                <li class="fragment">The main issue is high latency of such disks.</li>
+                <li class="fragment">Surprisingly, read latency is higher than write latency.</li>
+            </ul>
+            <img class="fragment" src="assets/pvc-latency.png" height="350px">
+        </section>
+        <section data-auto-animate data-auto-animate-id="mongo">
+            <h2>Mongo - lesson learned</h2>
+            <ul>
+                <li>It is crucial that our dataset fits into RAM.</li>
+                <li class="fragment">But what if the dataset does not fit?</li>
+                <li class="fragment">By default, Mongo splits memory: 50% WiredTiger, 50% page cache</li>
+                <li class="fragment">bare metal: reduce WiredTiger cache, Change compression from snappy to zstd</li>
+                <li class="fragment">K8s: Increase WiredTiger to 80%. Hope the node has enough free RAM for page cache
+                </li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="mongo">
+            <h2>What if the dataset does not fit RAM?</h2>
+            <ul>
+                <li>Just reduce your data set</li>
+                <li class="fragment">Remove old data</li>
+                <li class="fragment">Use more compressed data structures</li>
+                <li class="fragment">It's usually not difficult, you just have to do it.</li>
+                <li class="fragment"> In our case, 2 weeks of work was enough</li>
+            </ul>
+            <img class="fragment" src="assets/mongo-size-reduction.png">
+        </section>
+        <section data-auto-animate data-auto-animate-id="mongo">
+            <h2>What if the dataset does not fit RAM?</h2>
+            <ul>
+                <li>Look for free RAM in your cluster</li>
+                <li class="fragment">If your cluster is mainly composed of applications, there will definitely be a lot
+                    of free RAM.
+                </li>
+                <li class="fragment">Ask for more RAM. On GCP, it's 7-8 times cheaper than CPU.</li>
+
+            </ul>
+            <img class="fragment" src="assets/pod-memory-mongo.png">
+        </section>
+        <section data-auto-animate data-auto-animate-id="mongo">
+            <p>Pods memory usage, n1-standard-32 (32 threads, 120GB RAM)</p>
+            <img src="assets/pod-memory.png" height="550px"/>
+        </section>
+        <section>
+            <h2>Mongo - indexes</h2>
+            <ul>
+                <li>How to run simple queries without any disk operations.</li>
+                <li class="fragment">Our case: get all SKUs (single field) of active products.</li>
+                <li class="fragment">Data size: 4.5M documents, 30GB uncompressed size (now 45GB)</li>
+                <li class="fragment">We only get about 0.5% of them, ~25k.</li>
+            </ul>
+            <pre class="fragment"><code class="language-json">{
+    filter: {"brand": "foo", "store": "bar", "isSaleable": true}
+    projection: {"sku": true}
+}</code></pre>
+        </section>
+        <section data-auto-animate data-auto-animate-id="mongo-index">
+            <h2>Mongo - indexes</h2>
+            <pre><code class="language-js">createIndex({"brand": true, "store": true, "isSaleable": true})</code></pre>
+            <img src="assets/index-fetch.png">
+        </section>
+        <section data-auto-animate data-auto-animate-id="mongo-index">
+            <h2>Mongo - indexes</h2>
+            <pre><code
+                    class="language-js">createIndex({"brand": true, "store": true, "isSaleable": true, "sku": true})</code></pre>
+            <img src="assets/index-no-fetch.png">
+        </section>
+        <section>
+            <h2>Mongo - indexes</h2>
+            <ul>
+                <li>Index size reduction</li>
+                <li class="fragment">In our case, only ~20% of products are active.</li>
+                <li class="fragment">The rest are archived products, no stock, or new items.</li>
+                <li class="fragment">Mongo allows creating indexes only on part of a collection.</li>
+                <li class="fragment">To use such an index, the query must match the index filter.</li>
+                <li class="fragment">This reduces the amount of RAM needed for indexes.</li>
+                <li class="fragment">Indexes are not updated if the write does not match them.</li>
+            </ul>
+        </section>
+        <section>
+            <h2>Mongo - indexes</h2>
+            <pre><code class="language-js">createIndex(
+    {"brand": true, "store": true, "sku": true},
+    {"partialFilterExpression": { "isSaleable": true } }
+)</code></pre>
+            <p>In our case the size reduction is about 10 times</p>
+            <img src="assets/partial-index.png">
+        </section>
+        <section>
+            <h2>Mongo - in hell </h2>
+            <ul>
+                <li>Why do we need to query and cache thousands of SKUs?</li>
+                <li class="fragment">All recommendations come from an external system as a list of SKUs.</li>
+                <li class="fragment">For each product, we get several vectors, each with 100–1500 SKUs.</li>
+                <li class="fragment">Our system must constantly calculate which SKUs are "buyable".</li>
+                <li class="fragment">Because these lists are random, we can only select them using query IN(...).</li>
+            </ul>
+        </section>
+        <section>
+            <h2>Mongo - indexes</h2>
+            <p>Here is an example query that returns active SKUs for a given vector.</p>
+            <pre><code class="language-json">"filter": {
+    "brand": "foo",
+    "store": "bar",
+    "isSaleable": true,
+    "sku": { "$in": ["SKU-0001", ... "SKU-2000"] },
+"projection": { "sku" : true} </code></pre>
+            <p class="fragment">With a few SKUs in IN(), the query works fine. But with 1000 SKUs in IN(), the query is
+                not efficient.</p>
+        </section>
+        <section>
+            <h2>Mongo - in hell </h2>
+            <ul>
+                <li>How did we solve this problem?</li>
+                <li class="fragment">A cron job query all “buyable” SKUs and stores the result in Redis.</li>
+                <li class="fragment">From Redis, we sync the list of active SKUs to APCu cache.</li>
+                <li class="fragment">Our system must constantly calculate which SKUs are "buyable".</li>
+                <li class="fragment">When showing recommendations for a product, we get recommendation vectors from
+                    MongoDB.
+                </li>
+                <li class="fragment">Then we use array_intersect to compare both lists.</li>
+            </ul>
+            <pre class="fragment"><code
+                    class="language-php">$validSKUs = array_intersect($similarSKUs, $allValidSKUs);</code></pre>
+        </section>
+        <section>
+            <h2>Mongo - arrrrrrrrrrrrrays</h2>
+            <img src="assets/large-array.png">
+        </section>
+        <section>
+            <h2>Mongo - arrrrrrrrrrrrrays</h2>
+            <ul>
+                <li>With large arrays, write speed was not good enough.</li>
+                <li class="fragment">This is because whole arrays were updated, not single elements.</li>
+                <li class="fragment">So instead of arrays
+                    <pre><code
+                            class="language-json">{"similarItems": ["SKU-001", "SKU-002",..., "SKU-500"]}</code></pre>
+                </li>
+                <li class="fragment">we used a string field with implode function.
+                    <pre><code class="language-json">{"similarItems": "SKU-001,SKU-002,SKU-500"}</code></pre>
+                </li>
+            </ul>
+        </section>
+        <section>
+            <h2>MongoDB ODM</h2>
+            <h1 class="r-fit-text fragment">Don't use it</h1>
+        </section>
+        <section>
+            <h2>Bitnami charts</h2>
+            <ul>
+                <li>Starting Aug 28, Bitnami is changing its free container images and Helm charts.</li>
+                <li class="fragment">Before: many free images with versions were available.</li>
+                <li class="fragment">Change: most old images move to Legacy repo (no updates).</li>
+                <li class="fragment">Only a few “community” images stay free (latest only).</li>
+                <li class="fragment">Secure, supported images move to paid Bitnami Secure Images.</li>
+                <li class="fragment">For us: this affects RabbitMQ and Redis containers.</li>
+                <li class="fragment">That's why we prayed that there would be no new security holes in these images.
+                </li>
+            </ul>
+        </section>
+        <section>
+            <h2>Bitnami charts</h2>
+            <ul>
+                <li>But apparently we didn't pray enough.</li>
+                <li class="fragment">On October 10, a security flaw appears that allows remote code execution
+                    <img src="assets/redis-cve.png" height="360px"/>
+                </li>
+            </ul>
+        </section>
+        <section>
+            <h2>Bitnami charts</h2>
+            <ul>
+                <li>We had two options to solve this problem</li>
+                <li class="fragment">First, using bitnami/redis:latest, but then we lose control of the version used on
+                    the production machine.
+                </li>
+                <li class="fragment">Second, find an image that can be inserted instead of the original bitnami.</li>
+                <li class="fragment">Luckily the official Redis image worked without any changes.</li>
+                <li class="fragment">However, you cannot use the *-alpine version because the bitnami startup script
+                    requires bash.
+                </li>
+                <li class="fragment">Changing the configuration was also simple.</li>
+            </ul>
+        </section>
+        <section>
+            <h2>Bitnami charts</h2>
+            <p>A small change in configuration allowed us to continue working</p>
+            <pre><code class="language-yaml">redis:
+  architecture: replication
+  image:
+    registry: internal.docker.proxy
+    repository: redis #------ this line ----#
+    tag: 8.2.2-bookworm
+...</code></pre>
+        </section>
+        <section data-auto-animate data-auto-animate-id="costs">
+            <h1 class="r-fit-text">Costs and results</h1>
+        </section>
+        <section data-auto-animate data-auto-animate-id="costs">
+            <h1>Costs and results</h1>
+            <ul>
+                <li>Our goal was to keep costs for the largest brand below €2,000 per month.</li>
+                <li class="fragment">Costs were estimated mainly based on similar sized projects
+                    <ul>
+                        <li class="fragment">App: €1500 (php, redis, rabbitmq)</li>
+                        <li class="fragment">Database: €550 (mongodb cluster)</li>
+                    </ul>
+                </li>
+                <li class="fragment">Monitoring and network traffic costs were not estimated</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="costs">
+            <h1>Costs breakdown</h1>
+            <ul>
+                <li>Static:
+                    <ul>
+                        <li>PVCs (disks)</li>
+                    </ul>
+                </li>
+                <li class="fragment">Dynamic:
+                    <ul>
+                        <li>CPU and RAM</li>
+                        <li>Networking</li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="costs">
+            <h1>Costs breakdown</h1>
+            <h2>PVC</h2>
+            <ul>
+                <li>64GB for rabbitmq ~€10 x 3 = €30</li>
+                <li class="fragment">200GB for mongodb ~€32 x 3 = €96</li>
+                <li class="fragment">Total: €130/month</li>
+                <li class="fragment">Total: €0,18/h</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="costs">
+            <h2>Requested CPU during day</h2>
+            <img src="assets/cpu-usage.png" height="550px" width="100%"/>
+        </section>
+        <section data-auto-animate data-auto-animate-id="costs">
+            <h2>CPU</h2>
+            <ul>
+                <li>Baseline: ~6CPU x €23.5 = €140/m, ~€0.20/h</li>
+                <li class="fragment">Web: 1-10 CPU</li>
+                <li class="fragment">Consumers: 0-5 CPU</li>
+                <li class="fragment">Total:
+                    <ul>
+                        <li>min: ~€164/m, ~€0.22/h</li>
+                        <li>avg: ~€235/m, ~€0.32/h</li>
+                        <li>max: ~€352/m, ~€0.48/h</li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="costs">
+            <h2>Requested RAM during day</h2>
+            <img src="assets/memory-usage.png" height="550px" width="100%"/>
+        </section>
+        <section data-auto-animate data-auto-animate-id="costs">
+            <h2>RAM</h2>
+            <ul>
+                <li>Baseline: ~70GB x €3.1 = €217/m, ~€0.30/h</li>
+                <li class="fragment">APP: 1-5GB</li>
+                <li class="fragment">Total:
+                    <ul>
+                        <li>min: ~€216/m, ~€0.30/h</li>
+                        <li>avg: ~€232/m, ~€0.32/h</li>
+                        <li>max: ~€248/m, ~€0.34/h</li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="costs">
+            <h2>Total computing costs</h2>
+            <table style="width: 100%; font-size: 0.8em;">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>CPU (core)</th>
+                    <th>RAM (GiB)</th>
+                    <th style="text-align: right;">CPU/d [€]
+                    </th>
+                    <th style="text-align: right;">RAM/d [€]
+                    </th>
+                    <th style="text-align: right;">PVC/d [€]
+                    </th>
+                    <th style="text-align: right;"><strong
+                    >Total/d [€]</strong></th>
+                    <th style="text-align: right;"><strong
+                    >Total/h [€]</strong></th>
+                    <th style="text-align: right;"><strong
+                    >Total/m [€]</strong></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td><strong>Minimal</strong></td>
+                    <td>7</td>
+                    <td>70</td>
+                    <td style="text-align: right;">5.48</td>
+                    <td style="text-align: right;">7.23</td>
+                    <td style="text-align: right;">4.33</td>
+                    <td style="text-align: right;"><strong
+                    >17.04</strong></td>
+                    <td style="text-align: right;"><strong
+                    >0.71</strong></td>
+                    <td style="text-align: right;"><strong
+                    >512</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>Avg</strong></td>
+                    <td>10</td>
+                    <td>75</td>
+                    <td style="text-align: right;">7.83</td>
+                    <td style="text-align: right;">7.75</td>
+                    <td style="text-align: right;">4.33</td>
+                    <td style="text-align: right;"><strong
+                    >19.91</strong></td>
+                    <td style="text-align: right;"><strong
+                    >0.83</strong></td>
+                    <td style="text-align: right;"><strong
+                    >598</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>Max&nbsp;App</strong></td>
+                    <td>15</td>
+                    <td>80</td>
+                    <td style="text-align: right;">11.75</td>
+                    <td style="text-align: right;">8.27</td>
+                    <td style="text-align: right;">4.33</td>
+                    <td style="text-align: right;"><strong
+                    >24.35</strong></td>
+                    <td style="text-align: right;"><strong
+                    >1.01</strong></td>
+                    <td style="text-align: right;"><strong
+                    >731</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>Max&nbsp;consumers</strong></td>
+                    <td>25</td>
+                    <td>85</td>
+                    <td style="text-align: right;">19.58</td>
+                    <td style="text-align: right;">8.78</td>
+                    <td style="text-align: right;">4.33</td>
+                    <td style="text-align: right;"><strong
+                    >32.69</strong></td>
+                    <td style="text-align: right;"><strong
+                    >1.36</strong></td>
+                    <td style="text-align: right;"><strong
+                    >980</strong></td>
+                </tr>
+                </tbody>
+            </table>
+            <p class="fragment">
+                Scaling only web app gives minimal savings <strong>~€130</strong> per month.
+                Greater savings are achieved by scaling consumers <strong>~€380</strong>.
+            </p>
+        </section>
+        <section data-auto-animate data-auto-animate-id="costs">
+            <h2>Wasted resources</h2>
+            <ul>
+                <li>Even with such aggressive scaling, a lot of resources are still wasted</li>
+                <li class="fragment">Mongodb needs to have plenty of CPU for morning writes</li>
+                <li class="fragment">Rabbitmq requires a minimum of 2 GB RAM to accept data from DS</li>
+            </ul>
+            <img class="fragment" src="assets/wasted.png" height="370px">
+        </section>
+        <section data-auto-animate data-auto-animate-id="costs">
+            <h2>Wasted resources</h2>
+            <ul>
+                <li>Even at the highest load, there are still a lot of unused resources</li>
+            </ul>
+            <img src="assets/wasted-2.png">
+        </section>
+        <section data-auto-animate data-auto-animate-id="costs">
+            <h2>How much do we save at the end of the day?</h2>
+            <h1 class="fragment r-fit-text">Nothing</h1>
+        </section>
+        <section data-auto-animate data-auto-animate-id="costs">
+            <h2>How much do we save at the end of the day?</h2>
+            <p>Here is a chart showing how the number of nodes in the cluster changes during the day</p>
+            <img src="assets/cluster-size.png">
+        </section>
+        <section data-auto-animate data-auto-animate-id="costs">
+            <h2>How much do we save at the end of the day?</h2>
+            <p>The same chart but for the whole month</p>
+            <img src="assets/cluster-size-2.png">
+            <p>Only 3 times, during the whole month, the cluster decreased</p>
+        </section>
+        <section data-auto-animate data-auto-animate-id="costs">
+            <h2>How much do we save at the end of the day?</h2>
+            <ul>
+                <li>And this is really big money</li>
+                <li class="fragment">Each node is an n1-standard-32, 32 CPU, 120G RAM</li>
+                <li class="fragment">Each node cost around ~€1100/m<span
+                        class="fragment">, with my discount ~€777/m</span></li>
+                <li class="fragment">Total cost: ~€71.5k/m, with discount ~€50k/m</li>
+                <li class="fragment">And this is just one of our three clusters</li>
+                <li class="fragment">You should consider whether it is worth going with k8s, sometimes Compute Engine
+                    with autoscaler is better.
+                </li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="costs">
+            <h1>Networking cost</h1>
+            <ul>
+                <li>On an average day, we serve approximately 16.5M recommendations</li>
+                <li class="fragment">Each request is approximately 35kb of data</li>
+                <li class="fragment">This gives us about 560GB of data per day</li>
+                <li class="fragment">And approximately 16TB of data per month.</li>
+                <li class="fragment">1GiB egress costs around €0.085</li>
+                <li class="fragment">16TiB costs around ~€1300</li>
+                <li class="fragment">Twice as much as our application cost without any scaling</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="costs">
+            <h1>Networking cost</h1>
+            <ul>
+                <li>How to limit the amount of outgoing data</li>
+                <li class="fragment">By enabling compression for json responses for php</li>
+                <li class="fragment">Configuration is simple and has minimal impact on response time</li>
+            </ul>
+            <pre class="fragment"><code class="language-yaml">server {
+        gzip on;
+        gzip_vary on;
+        gzip_min_length 1024;
+        gzip_comp_level 6;
+        gzip_types
+            application/json
+        ...
+    }</code></pre>
+        </section>
+        <section data-auto-animate data-auto-animate-id="costs">
+            <h1>Networking cost</h1>
+            <ul>
+                <li>Compression results:</li>
+                <li class="fragment">Response size from 35kb -> 3.6kb</li>
+                <li class="fragment">Monthly transfer from 16TB -> 1.8TB</li>
+                <li class="fragment">Monthly transfer cost from ~€1300 -> ~€160</li>
+                <li class="fragment">Adding few config lines, we reduced the egress costs by <strong>8x</strong></li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="revenue">
+            <h1 class="r-fit-text">Does it generate revenue?</h1>
+        </section>
+        <section data-auto-animate data-auto-animate-id="revenue">
+            <h1>Does it generate revenue?</h1>
+            <ul>
+                <li>It took 3 months to prepare the MVP.</li>
+                <li class="fragment">3 months to complete the AB test in one market and one brand</li>
+                <li class="fragment">Over 3 months of delay. The main problems were:
+                    <ul>
+                        <li>Analytics</li>
+                        <li class="fragment">Long gaps between mobile app releases</li>
+                        <li class="fragment">Constant personnel changes in the team</li>
+                        <li class="fragment">Code freeze, holidays, a lot of dependencies</li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="revenue">
+            <h1>Does it generate revenue?</h1>
+            <h2>First attempt - total failure</h2>
+            <ul>
+                <li class="fragment">There were tree indicators of the project's success
+                    <ul>
+                        <li class="fragment">System maintenance costs less than €2000 euros</li>
+                        <li class="fragment">Number of recommendation clicks no worse than 0.5%</li>
+                        <li class="fragment">Average revenue per order not less than 0.5%</li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="revenue">
+            <h1>Does it generate revenue?</h1>
+            <h2>First attempt - total failure</h2>
+            <ul>
+                <li>After two weeks of testing, the results were very poor</li>
+                <li class="fragment">Click ration was 14% worse than competition</li>
+                <li class="fragment">But average revenue per order +0.3%.</li>
+                <li class="fragment">System maintenance costs well below €2000.</li>
+                <li class="fragment">The app was able to handle the required traffic.</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="revenue">
+            <h2>First attempt - total failure</h2>
+            <ul>
+                <li>Main problem, mobile app was showing only first page.
+                    <img src="assets/only-first-page.png">
+                </li>
+                <li class="fragment">The cause was a typo in the header name</li>
+                <li class="fragment">It was a simple mistake, but we had to wait two weeks for the next version to be
+                    released.
+                </li>
+                <li class="fragment">Lesson learned: only first page of recommendation is important</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="revenue">
+            <h1>Does it generate revenue?</h1>
+            <h2>Second attempt - minor failure</h2>
+            <ul>
+                <li>After two weeks of testing, the results were still poor</li>
+                <li class="fragment">Click ration was ok, but user distribution was -3% for Recsio</li>
+                <li class="fragment">Sample Ratio Mismatch (SRM) was not meet, test was not statically correct</li>
+                <li class="fragment">But average revenue per order was again +0.3%.</li>
+                <li class="fragment">Lesson learned, 60 pixels is a lot</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="revenue">
+            <h2>Second attempt - minor failure</h2>
+            <table>
+                <tbody>
+                <tr>
+                    <td style="vertical-align: top">
+                        <ul>
+                            <li>All because the event displaying the recommendation was sent at a different time</li>
+                            <li class="fragment">The difference was about 60 px</li>
+                            <li class="fragment">Fix was easy, but we have to wait for next mobile app release</li>
+                        </ul>
+                    </td>
+                    <td width="300px">
+                        <img src="assets/event-line.png">
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
+        <section data-auto-animate data-auto-animate-id="revenue">
+            <h1>Does it generate revenue?</h1>
+            <h2>Third attempt - better failure</h2>
+            <ul>
+                <li>We didn't have time to wait for the app to be released, so we decided to only test it on the web.</li>
+                <li class="fragment">Click ratio was ok, but user distribution was +2% for Recsio</li>
+                <li class="fragment">SRM was not meet, test was not statically correct</li>
+                <li class="fragment">But average revenue per order was again +0.3%.</li>
+                <li class="fragment">Lesson learned, sometimes you have to believe that you can do something better than others.</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="revenue">
+            <h2>Third attempt - better failure</h2>
+            <ul>
+                <li>The response times of the competing solution were much higher and sometimes the recommendations did not display </li>
+            </ul>
+            <img src="assets/response-times-1.png">
+        </section>
+        <section data-auto-animate data-auto-animate-id="revenue">
+            <h2>Third attempt - better failure</h2>
+            <ul>
+                <li>The response times of the competing solution were much higher and sometimes the recommendations did not display </li>
+            </ul>
+            <img src="assets/response-times-2.png" height="250px">
+            <p>On the mobile apps, this effect was not as visible because the traffic goes through the mobileAPI.</p>
+        </section>
+        <section data-auto-animate data-auto-animate-id="revenue">
+            <h1>Does it generate revenue?</h1>
+            <h2>Final attempt</h2>
+            <ul>
+                <li>As the new app has already been released, we decided to check if the traffic will be distributed correctly.</li>
+                <li class="fragment">Finally good news
+                    <img src="assets/good-news.png">
+                </li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="revenue">
+            <h1>Does it generate revenue?</h1>
+            <h2>Final attempt</h2>
+            <ul>
+                <li>We fixed all analytics problems</li>
+                <li class="fragment">We've changed the algorithm to show more similar products</li>
+                <li class="fragment">Finally, SRM was meet, test was statically correct!</li>
+                <li class="fragment">Click ratio was 0.2% better than control</li>
+                <li class="fragment">Revenue Per User +1%</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="revenue">
+            <h1>Does it generate revenue?</h1>
+            <h2>Final attempt</h2>
+            <ul>
+                <li>But what do all these parameters really mean?</li>
+                <li class="fragment">Average basket value changed by PLN 0.40 (€0.09)</li>
+                <li class="fragment">The results are only for the Android mobile app - about 70% of traffic</li>
+                <li class="fragment">For Android, it is about 19M PLN (€4,5M) more revenue than control</li>
+                <li class="fragment">If web and iOS behave similarly, approx total profit PLN 28M (€6.6M)</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="revenue">
+            <h1>Does it generate revenue?</h1>
+            <h2>Income that cannot be measured</h2>
+            <ul>
+                <li>First FE app, not released from monorepo (3 deploy windows, 40 min deploy)</li>
+                <li class="fragment">First app, that use advanced auto scaling</li>
+                <li class="fragment">Real-time user event tracking (new in the company)</li>
+                <li class="fragment">Track product popularity in real time (once a day)</li>
+            </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="questions">
+            <h1 class="r-fit-text">Questions?</h1>
+        </section>
+        <section data-auto-animate data-auto-animate-id="questions">
+            <h1>Questions?</h1>
+            <img src="assets/qrcode.svg" height="450px">
+        </section>
+    </div>
+</div>
+<script src="/dist/reveal.js"></script>
+<script src="/dist/plugin/notes/notes.js"></script>
+<script src="/dist/plugin/markdown/markdown.js"></script>
+<script src="/dist/plugin/highlight/highlight.js"></script>
+<script>
+    Reveal.initialize({
+        width: 1280,
+        hash: true,
+        slideNumber: 'c/t',
+        plugins: [RevealMarkdown, RevealHighlight, RevealNotes]
+    });
+</script>
+</body>
+</html>
