@@ -394,6 +394,58 @@ Our Docker images are still:
 - **Vulnerable** — every dependency is a potential attack surface<!-- .element: class="fragment" -->
 
 We containerised the mess. We didn't remove it.<!-- .element: class="fragment" -->
+
+---
+
+## Does it have to be this way? <!-- .element: class="r-fit-text" -->
+
+---
+
+### Node.js
+
+```javascript
+const http = require('http');
+http.createServer((req, res) => {
+  res.end('Hello World');
+}).listen(3000);
+```
+
+```bash
+node server.js
+# Done. No nginx. No fpm.
+```
+
+Simpler architecture — but still ships with `node_modules` 📦<!-- .element: class="fragment" -->
+
+---
+
+### Go
+
+```go
+func main() {
+    http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+        fmt.Fprintln(w, "Hello World")
+    })
+    http.ListenAndServe(":3000", nil)
+}
+```
+
+```bash
+go build -o app
+./app   # one binary, zero dependencies
+```
+
+No dependencies. Small image. Fast startup. Fast execution.<!-- .element: class="fragment" -->
+
+---
+
+### Why is PHP different?
+
+PHP was designed as CGI — **request → process → die**<!-- .element: class="fragment" -->
+
+nginx and php-fpm are a workaround for that limitation.<!-- .element: class="fragment" -->
+
+**But does it have to stay that way?**<!-- .element: class="fragment" -->
 - Heavy base images — `php:8.3-fpm` is ~490MB of Debian<!-- .element: class="fragment" -->
 - Docker alone didn't solve clustering — Docker Swarm came later<!-- .element: class="fragment" -->
 - Databases still often run on bare metal — scaling requires planning<!-- .element: class="fragment" -->
