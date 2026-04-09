@@ -747,3 +747,35 @@ Symfony + statically compiled PHP + FROM scratch — yes, but:
 ⚠️ Cache must be pre-warmed before building the image<!-- .element: class="fragment" -->
 ⚠️ Writing to disk can be tricky — e.g. logs go to a shared file across workers<!-- .element: class="fragment" -->
 ⚠️ Some extensions require separate compilation<!-- .element: class="fragment" -->
+
+---
+
+## Summary <!-- .element: class="r-fit-text" -->
+
+---
+
+### 20 years in 30 minutes
+
+| Era | Deploy | Image |
+|---|---|---|
+| FTP | manually | — |
+| Scripts | rsync + bash | — |
+| Ansible | playbook | — |
+| Docker | nginx + fpm | ~490 MB |
+| Kubernetes | pods + sidecars | ~490 MB |
+| Workerman | `php start.php` | ~50 MB |
+| FROM scratch | one binary | ~30 MB |
+
+---
+
+### This presentation runs on Workerman + FROM scratch
+
+How big is this image?<!-- .element: class="fragment" -->
+
+**~3 MB**<!-- .element: class="fragment" -->
+
+[TODO: Docker Hub link]<!-- .element: class="fragment" -->
+
+---
+
+# Q&A <!-- .element: class="r-fit-text" -->
