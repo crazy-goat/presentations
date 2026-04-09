@@ -50,6 +50,7 @@ Polish e-commerce platform — classic FTP era
 - Set permissions, configure DB, set up paths manually<!-- .element: class="fragment" -->
 - Updates delivered as `.diff` files (unified diff format)<!-- .element: class="fragment" -->
 - A PHP script parsed and applied the diff — basically `patch`, but in PHP, in the browser<!-- .element: class="fragment" -->
+- Hotfixes and debugging: upload the fixed file directly via FTP<!-- .element: class="fragment" -->
 
 ---
 
@@ -61,6 +62,7 @@ Polish e-commerce platform — classic FTP era
 - Updates: upgrade individual modules, not the whole shop<!-- .element: class="fragment" -->
 - File integrity check before install — **did not overwrite client customizations**<!-- .element: class="fragment" -->
 - Custom plugin system, built on Symfony 1.0<!-- .element: class="fragment" -->
+- Fixes and debugging: delivered as a PEAR package update, not raw FTP<!-- .element: class="fragment" -->
 
 Note: This was ahead of its time — essentially a package manager + installer + update system built in 2008.
 
