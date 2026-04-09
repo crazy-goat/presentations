@@ -69,6 +69,23 @@ Note: This was ahead of its time — essentially a package manager + installer +
 
 ---
 
+### The pain
+
+- No versioning — "I overwrote prod"<!-- .element: class="fragment" -->
+- No rollback<!-- .element: class="fragment" -->
+- Binary vs ASCII transfer mode — corrupted files, broken encodings<!-- .element: class="fragment" -->
+- File permissions — chmod everything via FTP client<!-- .element: class="fragment" -->
+- Symlinks — FTP doesn't support them<!-- .element: class="fragment" -->
+- "Works on my machine"<!-- .element: class="fragment" -->
+
+---
+
+### Think this era is over?
+
+Think again.
+
+There are entire armies of WordPress sites still maintained exactly this way.<!-- .element: class="fragment" -->
+
 ---
 
 ## Era: Own scripts <!-- .element: class="r-fit-text" -->
@@ -109,14 +126,3 @@ ssh user@prod "cd /var/www/app && php bin/console cache:clear"
 - No documentation, no standards — every company had their own<!-- .element: class="fragment" -->
 - Bus factor: 1 — only the author knew how it worked<!-- .element: class="fragment" -->
 - Written in whatever the author liked — Ruby, Perl, Bash, Make...<!-- .element: class="fragment" -->
-
----
-
-### The pain
-
-- No versioning — "I overwrote prod"<!-- .element: class="fragment" -->
-- No rollback<!-- .element: class="fragment" -->
-- Binary vs ASCII transfer mode — corrupted files, broken encodings<!-- .element: class="fragment" -->
-- File permissions — chmod everything via FTP client<!-- .element: class="fragment" -->
-- Symlinks — FTP doesn't support them<!-- .element: class="fragment" -->
-- "Works on my machine"<!-- .element: class="fragment" -->
