@@ -256,3 +256,63 @@ Data recovered. Migrated to an LXC container. Ran on a cluster.<!-- .element: cl
 Eventually replaced with a self-hosted GitLab.<!-- .element: class="fragment" -->
 
 **Lesson:** if you can't recreate it, you can't recover it.<!-- .element: class="fragment" -->
+
+---
+
+## Era: Docker <!-- .element: class="r-fit-text" -->
+
+---
+
+### The big shift
+
+Application and environment packaged together — **the image is the deployment artifact.**<!-- .element: class="fragment" -->
+
+```dockerfile
+FROM php:8.3-fpm
+COPY . /var/www/app
+RUN composer install --no-dev
+```
+
+```yaml
+# docker-compose.yml
+services:
+  nginx:
+    image: nginx:alpine
+  php:
+    build: .
+```
+
+---
+
+### Architecture
+
+```
+┌─────────────────────────────────────┐
+│           docker-compose            │
+│                                     │
+│  ┌─────────────┐  ┌──────────────┐  │
+│  │    nginx    │  │   php-fpm    │  │
+│  │  :80/:443   │──│   :9000      │  │
+│  └─────────────┘  └──────────────┘  │
+└─────────────────────────────────────┘
+```
+
+---
+
+### What got better
+
+- Dev = prod — same image, same behaviour<!-- .element: class="fragment" -->
+- Onboarding: `docker compose up` instead of 2-3 days<!-- .element: class="fragment" -->
+- Rollback = pull previous image tag<!-- .element: class="fragment" -->
+- Environment isolation per project<!-- .element: class="fragment" -->
+- Abandoned system? Just keep the image.<!-- .element: class="fragment" -->
+
+---
+
+### The pain
+
+- Two processes to manage: nginx + php-fpm<!-- .element: class="fragment" -->
+- Heavy base images — `php:8.3-fpm` is ~490MB of Debian<!-- .element: class="fragment" -->
+- Docker alone didn't solve clustering — Docker Swarm came later<!-- .element: class="fragment" -->
+- Databases still often run on bare metal — scaling requires planning<!-- .element: class="fragment" -->
+- New tooling to learn: Dockerfile, networking, volumes, compose...<!-- .element: class="fragment" -->
