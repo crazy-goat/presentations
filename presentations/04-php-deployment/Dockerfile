@@ -8,25 +8,24 @@ RUN apk add --no-cache curl && \
 
 WORKDIR /app
 
-# Download micro.sfx (minimal build — no OS, no shell, just PHP)
 RUN ARCH=$([ "$TARGETARCH" = "arm64" ] && echo "aarch64" || echo "x86_64") && \
     curl -fsSL "https://dl.static-php.dev/static-php-cli/minimal/php-${PHP_MICRO_VERSION}-micro-linux-${ARCH}.tar.gz" \
     -o micro.tar.gz && \
     tar -xzf micro.tar.gz && \
-    mv micro.sfx build/php.micro.sfx && \
+    mkdir -p build && \
+    mv micro.sfx build/php8.3.micro.sfx && \
     rm micro.tar.gz
 
-COPY server/composer.json ./
+COPY webman/composer.json webman/composer.lock ./
 RUN composer install --no-dev --optimize-autoloader --no-interaction --quiet
 
-COPY server/ ./
+COPY webman/ ./
 
-RUN php -d phar.readonly=0 ./vendor/bin/webman build:bin
+RUN php -d phar.readonly=0 build-phar.php
 
 FROM scratch
 
 COPY --from=builder /app/build/webman.bin /webman
-COPY slides/ /slides/
 
 EXPOSE 8080
 ENTRYPOINT ["/webman", "start"]

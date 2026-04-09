@@ -11,9 +11,10 @@ run:
 	docker run --rm --name presentation-$(NAME) -p 3210:8080 crazygoat/presentation-$(NAME):latest
 
 run-dev:
-	docker run --rm --name presentation-$(NAME) -p 3210:8080 \
-		-v $(PWD)/slides:/slides \
-		crazygoat/presentation-$(NAME):latest
+	cd webman && PORT=3210 php start.php start
+
+stop-dev:
+	cd webman && php start.php stop
 
 clean:
 	docker stop presentation-$(NAME) || true
