@@ -196,3 +196,35 @@ FTP, scripts, Ansible — three different eras, one shared flaw:
 - Dev environment looked nothing like prod<!-- .element: class="fragment" -->
 - Setting up a new dev environment: 2-3 days of README spelunking<!-- .element: class="fragment" -->
 - Abandoned systems were nearly impossible to recreate<!-- .element: class="fragment" -->
+
+---
+
+### Real world: The forgotten microservice
+
+A microservice. Running on bare metal. On a very old Ubuntu.<!-- .element: class="fragment" -->
+
+Need to update the LDAP extension.<!-- .element: class="fragment" -->
+App refuses to run on anything newer.<!-- .element: class="fragment" -->
+Must compile on the existing OS.<!-- .element: class="fragment" -->
+
+---
+
+### Real world: The forgotten microservice
+
+No package mirror available for that Ubuntu version.<!-- .element: class="fragment" -->
+
+Found one mirror. In Portugal.<!-- .element: class="fragment" -->
+Download time estimate: **7 days**.<!-- .element: class="fragment" -->
+
+It would have been faster to fly there with a hard drive.<!-- .element: class="fragment" -->
+
+---
+
+### Real world: The forgotten microservice
+
+Solution:<!-- .element: class="fragment" -->
+- Build a local mirror from what was on disk<!-- .element: class="fragment" -->
+- Rebuild the extension inside an LXC container<!-- .element: class="fragment" -->
+- Ship the container<!-- .element: class="fragment" -->
+
+The app was eventually replaced.<!-- .element: class="fragment" -->
