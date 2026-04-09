@@ -645,11 +645,24 @@ ENTRYPOINT ["/php", "/app/start.php"]
 
 ---
 
+### What's in the image
+
+Only two things:
+
+- The `php` binary<!-- .element: class="fragment" -->
+- Your application files<!-- .element: class="fragment" -->
+
+Nothing else.<!-- .element: class="fragment" -->
+
+---
+
 ### Security bonus
 
 No shell means no shell exploits.<!-- .element: class="fragment" -->
 No package manager means no supply chain attacks through the OS.<!-- .element: class="fragment" -->
-The only thing running is your application.<!-- .element: class="fragment" -->
+
+But — you can still `docker exec` into the container and use the PHP binary to run arbitrary code.<!-- .element: class="fragment" -->
+The attack surface is smaller, not zero.<!-- .element: class="fragment" -->
 - Heavy base images — `php:8.3-fpm` is ~490MB of Debian<!-- .element: class="fragment" -->
 - Docker alone didn't solve clustering — Docker Swarm came later<!-- .element: class="fragment" -->
 - Databases still often run on bare metal — scaling requires planning<!-- .element: class="fragment" -->
