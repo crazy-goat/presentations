@@ -32,9 +32,21 @@ Note: Deliberately not revealing the ending in the agenda.
 
 ---
 
+### First deployment
+
+- Upload `app.tar.gz` via FTP<!-- .element: class="fragment" -->
+- But how do you unpack it? No SSH access...<!-- .element: class="fragment" -->
+- Solution: `deploy.php` — a script that unpacks the archive<!-- .element: class="fragment" -->
+- Run it in the browser. Done. **Now delete it** (or forget — security nightmare)<!-- .element: class="fragment" -->
+- On larger projects: request timeout halfway through 🙃<!-- .element: class="fragment" -->
+
+---
+
 ### The pain
 
 - No versioning — "I overwrote prod"<!-- .element: class="fragment" -->
 - No rollback<!-- .element: class="fragment" -->
 - Binary vs ASCII transfer mode — corrupted files, broken encodings<!-- .element: class="fragment" -->
+- File permissions — chmod everything via FTP client<!-- .element: class="fragment" -->
+- Symlinks — FTP doesn't support them<!-- .element: class="fragment" -->
 - "Works on my machine"<!-- .element: class="fragment" -->
