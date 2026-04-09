@@ -132,3 +132,51 @@ ssh user@prod "cd /var/www/app && php bin/console cache:clear"
 ### 🙋 Quick question
 
 Anyone here still maintaining a large project with heavily customised deploy scripts?
+
+---
+
+## Era: Ansible <!-- .element: class="r-fit-text" -->
+
+---
+
+### How it works
+
+```yaml
+- name: Deploy PHP app
+  hosts: production
+  tasks:
+    - name: Pull latest release
+      git:
+        repo: git@github.com:org/app.git
+        dest: /var/www/releases/{{ release_name }}
+    - name: Install dependencies
+      composer:
+        working_dir: /var/www/releases/{{ release_name }}
+    - name: Run migrations
+      command: php bin/console doctrine:migrations:migrate --no-interaction
+      args:
+        chdir: /var/www/releases/{{ release_name }}
+    - name: Switch symlink
+      file:
+        src: /var/www/releases/{{ release_name }}
+        dest: /var/www/current
+        state: link
+```
+
+---
+
+### What got better
+
+- Multiple releases kept on server — rollback = flip a symlink<!-- .element: class="fragment" -->
+- Run migrations on one node first, then roll out code<!-- .element: class="fragment" -->
+- Rolling release — replace nodes one at a time, zero downtime<!-- .element: class="fragment" -->
+- Native multi-node support out of the box<!-- .element: class="fragment" -->
+
+---
+
+### The pain
+
+- Server must have PHP, nginx, php-fpm installed and configured<!-- .element: class="fragment" -->
+- Environments drift over time — "works on staging, fails on prod"<!-- .element: class="fragment" -->
+- Requires SSH access and **Python** on every target server<!-- .element: class="fragment" -->
+- Why do I need Python on a PHP server?<!-- .element: class="fragment" -->
