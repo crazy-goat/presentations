@@ -69,6 +69,32 @@ Note: This was ahead of its time — essentially a package manager + installer +
 
 ---
 
+---
+
+## Era: Own scripts <!-- .element: class="r-fit-text" -->
+
+---
+
+### deploy.sh
+
+```bash
+#!/bin/bash
+rsync -avz --exclude='.git' ./ user@prod:/var/www/app/
+ssh user@prod "cd /var/www/app && php bin/console cache:clear"
+```
+
+---
+
+### The pain
+
+- Hard to test outside your own dev environment<!-- .element: class="fragment" -->
+- No documentation, no standards — every company had their own<!-- .element: class="fragment" -->
+- Bus factor: 1 — only the author knew how it worked<!-- .element: class="fragment" -->
+- Written in whatever the author liked — Ruby, Perl, Bash, Make...<!-- .element: class="fragment" -->
+- "Works on my machine"<!-- .element: class="fragment" -->
+
+---
+
 ### The pain
 
 - No versioning — "I overwrote prod"<!-- .element: class="fragment" -->
