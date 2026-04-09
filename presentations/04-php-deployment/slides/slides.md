@@ -180,3 +180,16 @@ Anyone here still maintaining a large project with heavily customised deploy scr
 - Environments drift over time — "works on staging, fails on prod"<!-- .element: class="fragment" -->
 - Requires SSH access and **Python** on every target server<!-- .element: class="fragment" -->
 - Why do I need Python on a PHP server?<!-- .element: class="fragment" -->
+
+---
+
+### The common problem
+
+FTP, scripts, Ansible — three different eras, one shared flaw:
+
+**The application and the environment were managed separately.**<!-- .element: class="fragment" -->
+
+- App updated regularly — environment left to age on its own<!-- .element: class="fragment" -->
+- Dev team owned the code, ops team owned the server<!-- .element: class="fragment" -->
+- Every upgrade became a negotiation<!-- .element: class="fragment" -->
+- "It worked last time we deployed..."<!-- .element: class="fragment" -->
