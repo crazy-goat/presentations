@@ -1,25 +1,42 @@
-FROM alpine:3.21 AS base
-RUN apk add --no-cache nginx wget \
-    && wget https://github.com/ochinchina/supervisord/releases/download/v0.7.3/supervisord_0.7.3_Linux_64-bit.tar.gz \
-    && tar -xvf supervisord_0.7.3_Linux_64-bit.tar.gz \
-    && cp supervisord_0.7.3_Linux_64-bit/supervisord /usr/bin/supervisord \
-    && rm -rf supervisord_0.7.3_Linux_64-bit supervisord_0.7.3_Linux_64-bit.tar.gz \
-    && apk del wget
+# Stage 1: install PHP dependencies and build PHAR
+FROM php:8.3-cli-alpine AS builder
 
-COPY config/nginx/default.conf /etc/nginx/http.d/default.conf
-COPY config/supervisor/conf.d/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+RUN apk add --no-cache curl && \
+    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-COPY slides /var/www/slides
+WORKDIR /app
 
-WORKDIR /var/www/slides
+COPY server/composer.json ./
+RUN composer install --no-dev --optimize-autoloader --no-interaction --quiet
 
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+COPY server/server.php server/build-phar.php ./
 
-FROM base AS dev
-COPY config/supervisor/conf.d/supervisord-dev.conf /etc/supervisor/conf.d/supervisord.conf
-ENV CI=true
+RUN mkdir /build && \
+    php -d phar.readonly=0 build-phar.php
 
-WORKDIR /var/www/slides
-RUN apk add --no-cache npm
+# Stage 2: download micro.sfx (static PHP binary stub)
+FROM alpine:3.21 AS micro
 
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+ARG MICRO_URL=https://github.com/crazywhalecc/static-php-cli/releases/download/2.4.0/php-8.3-micro-linux-x86_64-normal.tar.gz
+
+RUN apk add --no-cache wget && \
+    wget -q -O /tmp/micro.tar.gz "${MICRO_URL}" && \
+    tar -xzf /tmp/micro.tar.gz -C /tmp && \
+    chmod +x /tmp/micro.sfx
+
+# Stage 3: combine micro.sfx + app.phar into single binary
+FROM alpine:3.21 AS combiner
+
+COPY --from=micro /tmp/micro.sfx /micro.sfx
+COPY --from=builder /build/app.phar /app.phar
+
+RUN cat /micro.sfx /app.phar > /presentation && chmod +x /presentation
+
+# Stage 4: final scratch image
+FROM scratch
+
+COPY --from=combiner /presentation /presentation
+COPY slides/ /slides/
+
+EXPOSE 8080
+ENTRYPOINT ["/presentation"]
