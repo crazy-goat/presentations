@@ -321,6 +321,67 @@ In practice: nginx + php-fpm bundled in **one container**, managed by supervisor
 ### 🙋 Quick question
 
 Anyone running PHP production images **larger than 1GB**?
+
+---
+
+## Era: Kubernetes <!-- .element: class="r-fit-text" -->
+
+---
+
+### What Docker alone doesn't solve
+
+Clustering & availability:
+
+- Run across multiple nodes<!-- .element: class="fragment" -->
+- Automatic failover — dead container? K8s restarts it<!-- .element: class="fragment" -->
+- Self-healing, health checks built in<!-- .element: class="fragment" -->
+
+---
+
+### What Docker alone doesn't solve
+
+Scaling & traffic:
+
+- Horizontal Pod Autoscaler — scale on CPU/memory/custom metrics<!-- .element: class="fragment" -->
+- Built-in load balancing between pods<!-- .element: class="fragment" -->
+- Rolling deployments — zero downtime out of the box<!-- .element: class="fragment" -->
+- Service discovery<!-- .element: class="fragment" -->
+
+---
+
+### What Docker alone doesn't solve
+
+CI/CD & GitOps:
+
+- ArgoCD / Flux watch your git repo<!-- .element: class="fragment" -->
+- Push to git = deploy to cluster<!-- .element: class="fragment" -->
+- Declarative config — cluster state is always in sync with repo<!-- .element: class="fragment" -->
+
+---
+
+### Architecture: PHP in Kubernetes
+
+In K8s "one process per container" is the right way — nginx is back as a sidecar
+
+```
+┌─────────────────────────────────────┐
+│                 Pod                 │
+│  ┌──────────────┐ ┌──────────────┐  │
+│  │    nginx     │ │   php-fpm    │  │
+│  │   sidecar    │ │  container   │  │
+│  └──────────────┘ └──────────────┘  │
+└─────────────────────────────────────┘
+```
+
+---
+
+### The pain
+
+- Enormous complexity — needs a dedicated platform team<!-- .element: class="fragment" -->
+- Three screens of YAML to deploy Hello World<!-- .element: class="fragment" -->
+- The tooling ecosystem is itself complex: ArgoCD, Flux, Helm, Kustomize...<!-- .element: class="fragment" -->
+- Networking, storage, ingress — each is its own rabbit hole<!-- .element: class="fragment" -->
+- Overkill for small projects<!-- .element: class="fragment" -->
 - Heavy base images — `php:8.3-fpm` is ~490MB of Debian<!-- .element: class="fragment" -->
 - Docker alone didn't solve clustering — Docker Swarm came later<!-- .element: class="fragment" -->
 - Databases still often run on bare metal — scaling requires planning<!-- .element: class="fragment" -->
