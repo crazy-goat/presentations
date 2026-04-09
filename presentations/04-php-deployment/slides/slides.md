@@ -498,7 +498,10 @@ A proof of concept. Not a solution.<!-- .element: class="fragment" -->
 
 - CPU-intensive operations block the entire event loop<!-- .element: class="fragment" -->
 
-A valid approach — but a hard sell for existing codebases.<!-- .element: class="fragment" -->
+A valid approach — but not ideal:<!-- .element: class="fragment" -->
+
+- Still requires a full PHP runtime with all its dependencies<!-- .element: class="fragment" -->
+- Not all workloads are a good fit<!-- .element: class="fragment" -->
 - Heavy base images — `php:8.3-fpm` is ~490MB of Debian<!-- .element: class="fragment" -->
 - Docker alone didn't solve clustering — Docker Swarm came later<!-- .element: class="fragment" -->
 - Databases still often run on bare metal — scaling requires planning<!-- .element: class="fragment" -->
