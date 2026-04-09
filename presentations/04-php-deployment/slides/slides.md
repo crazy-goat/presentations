@@ -1,17 +1,19 @@
 # Running PHP Apps <!-- .element: class="r-fit-text" -->
 # FROM scratch <!-- .element: class="r-fit-text" style="font-style:italic" -->
 
-Note: Gra słów — FROM scratch to Docker instruction i "od zera" jednocześnie.
+*20 years of PHP deployment mistakes, so you don't have to make them.*
+
+Note: Play on words — FROM scratch is both a Docker instruction and starting from zero.
 
 ---
 
 ## Agenda
 
-1. Historia deploymentu PHP
-2. Czy PHP musi tak działać?<!-- .element: class="fragment" -->
-3. Alternatywne runtimes<!-- .element: class="fragment" -->
-4. Mniejsze obrazy<!-- .element: class="fragment" -->
+1. History of PHP deployment
+2. Does PHP have to work this way?<!-- .element: class="fragment" -->
+3. Alternative runtimes<!-- .element: class="fragment" -->
+4. Smaller images<!-- .element: class="fragment" -->
 5. FROM scratch<!-- .element: class="fragment" -->
-6. 🐉 Tu są smoki<!-- .element: class="fragment" -->
+6. 🐉 Here be dragons<!-- .element: class="fragment" -->
 
-Note: Celowo nie zdradzamy końca w agendzie.
+Note: Deliberately not revealing the ending in the agenda.
