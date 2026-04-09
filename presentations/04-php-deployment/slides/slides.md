@@ -446,6 +446,30 @@ PHP was designed as CGI — **request → process → die**<!-- .element: class=
 nginx and php-fpm are a workaround for that limitation.<!-- .element: class="fragment" -->
 
 **But does it have to stay that way?**<!-- .element: class="fragment" -->
+
+---
+
+## php -S <!-- .element: class="r-fit-text" -->
+
+---
+
+### PHP has a built-in web server
+
+```bash
+php -S 0.0.0.0:8080 public/index.php
+```
+
+It works. No nginx. No php-fpm.<!-- .element: class="fragment" -->
+
+---
+
+### But...
+
+- Single-threaded — one request at a time<!-- .element: class="fragment" -->
+- PHP docs: **"not designed to be used on a public network"**<!-- .element: class="fragment" -->
+- Development only<!-- .element: class="fragment" -->
+
+A proof of concept. Not a solution.<!-- .element: class="fragment" -->
 - Heavy base images — `php:8.3-fpm` is ~490MB of Debian<!-- .element: class="fragment" -->
 - Docker alone didn't solve clustering — Docker Swarm came later<!-- .element: class="fragment" -->
 - Databases still often run on bare metal — scaling requires planning<!-- .element: class="fragment" -->
