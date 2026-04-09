@@ -473,6 +473,30 @@ It works. No nginx. No php-fpm.<!-- .element: class="fragment" -->
 Architecturally simpler — but PHP still drags along a full runtime and its dependencies.<!-- .element: class="fragment" -->
 
 A proof of concept. Not a solution.<!-- .element: class="fragment" -->
+
+---
+
+## ReactPHP / AmPHP <!-- .element: class="r-fit-text" -->
+
+---
+
+### Event loop in PHP
+
+- Long-running PHP process — code loaded once, not per request<!-- .element: class="fragment" -->
+- One process handles many concurrent connections<!-- .element: class="fragment" -->
+- No nginx. No php-fpm.<!-- .element: class="fragment" -->
+- Performance comparable to Node.js<!-- .element: class="fragment" -->
+
+---
+
+### The trade-off
+
+- Callback hell / promise chains — async all the way down<!-- .element: class="fragment" -->
+- Can't use blocking PHP functions — `file_get_contents`, standard PDO...<!-- .element: class="fragment" -->
+- Requires rewriting the entire application<!-- .element: class="fragment" -->
+- Steep learning curve for PHP developers<!-- .element: class="fragment" -->
+
+A valid approach — but a hard sell for existing codebases.<!-- .element: class="fragment" -->
 - Heavy base images — `php:8.3-fpm` is ~490MB of Debian<!-- .element: class="fragment" -->
 - Docker alone didn't solve clustering — Docker Swarm came later<!-- .element: class="fragment" -->
 - Databases still often run on bare metal — scaling requires planning<!-- .element: class="fragment" -->
