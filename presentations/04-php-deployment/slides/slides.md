@@ -1,7 +1,7 @@
 # Running PHP Apps <!-- .element: class="r-fit-text" -->
 # FROM scratch <!-- .element: class="r-fit-text" style="font-style:italic" -->
 
-*20 years of PHP deployment mistakes, so you don't have to make them.*
+*From green meadows of FTP to the dungeons where dragons live.*
 
 Note: Play on words — FROM scratch is both a Docker instruction and starting from zero.
 
