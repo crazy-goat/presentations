@@ -468,6 +468,7 @@ It works. No nginx. No php-fpm.<!-- .element: class="fragment" -->
 
 - Single-threaded — one request at a time<!-- .element: class="fragment" -->
 - PHP docs: **"not designed to be used on a public network"**<!-- .element: class="fragment" -->
+- Still the classic PHP model — state cleared after every request<!-- .element: class="fragment" -->
 - Development only<!-- .element: class="fragment" -->
 
 Architecturally simpler — but PHP still drags along a full runtime and its dependencies.<!-- .element: class="fragment" -->
@@ -497,6 +498,7 @@ A proof of concept. Not a solution.<!-- .element: class="fragment" -->
 - Steep learning curve for PHP developers<!-- .element: class="fragment" -->
 
 - CPU-intensive operations block the entire event loop<!-- .element: class="fragment" -->
+- Long-running processes — not all libraries and frameworks are designed for this<!-- .element: class="fragment" -->
 
 A valid approach — but not ideal:<!-- .element: class="fragment" -->
 
