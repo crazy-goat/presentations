@@ -228,3 +228,31 @@ Solution:<!-- .element: class="fragment" -->
 - Ship the container<!-- .element: class="fragment" -->
 
 The app was eventually replaced.<!-- .element: class="fragment" -->
+
+---
+
+### Real world: Gerrit on bare metal
+
+The entire organisation's source code. CI. Everything.<!-- .element: class="fragment" -->
+On a single physical server. Struggling for a long time.<!-- .element: class="fragment" -->
+Updates failing. Nobody wanted to touch it.<!-- .element: class="fragment" -->
+
+---
+
+### Real world: Gerrit on bare metal
+
+Power outage in the server room.<!-- .element: class="fragment" -->
+Server does not come back up.<!-- .element: class="fragment" -->
+
+Need to recover data from the disks — but the hardware RAID is model-specific.<!-- .element: class="fragment" -->
+Had to find a **donor machine with identical RAID hardware** just to read the disks.<!-- .element: class="fragment" -->
+
+---
+
+### Real world: Gerrit on bare metal
+
+Data recovered. Migrated to an LXC container. Ran on a cluster.<!-- .element: class="fragment" -->
+
+Eventually replaced with a self-hosted GitLab.<!-- .element: class="fragment" -->
+
+**Lesson:** if you can't recreate it, you can't recover it.<!-- .element: class="fragment" -->
