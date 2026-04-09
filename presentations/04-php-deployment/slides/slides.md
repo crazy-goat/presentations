@@ -599,6 +599,57 @@ To run a PHP application, do we need:
 - System libraries we never call directly?<!-- .element: class="fragment" -->
 
 Or do we just need... PHP?<!-- .element: class="fragment" -->
+
+---
+
+## Statically compiled PHP <!-- .element: class="r-fit-text" -->
+
+---
+
+### static-php-cli
+
+Compile PHP with all extensions baked in — no shared libraries, no OS dependencies.
+
+```bash
+bin/spc build "bcmath,curl,openssl,pdo,pdo_mysql,zip" \
+    --build-cli
+```
+
+Result: a single `php` binary that runs anywhere.<!-- .element: class="fragment" -->
+
+---
+
+### FROM scratch
+
+```dockerfile
+FROM scratch
+COPY --from=builder /app/php /php
+COPY --from=builder /app /app
+ENTRYPOINT ["/php", "/app/start.php"]
+```
+
+- Zero OS<!-- .element: class="fragment" -->
+- Zero shell<!-- .element: class="fragment" -->
+- Zero attack surface<!-- .element: class="fragment" -->
+
+---
+
+### How small can we go?
+
+| Image | Size |
+|---|---|
+| `php:8.3` (Debian) | ~580 MB |
+| `php:8.3-slim` | ~180 MB |
+| `php:8.3-alpine` | ~50 MB |
+| `FROM scratch` | ~30 MB |
+
+---
+
+### Security bonus
+
+No shell means no shell exploits.<!-- .element: class="fragment" -->
+No package manager means no supply chain attacks through the OS.<!-- .element: class="fragment" -->
+The only thing running is your application.<!-- .element: class="fragment" -->
 - Heavy base images — `php:8.3-fpm` is ~490MB of Debian<!-- .element: class="fragment" -->
 - Docker alone didn't solve clustering — Docker Swarm came later<!-- .element: class="fragment" -->
 - Databases still often run on bare metal — scaling requires planning<!-- .element: class="fragment" -->
