@@ -561,6 +561,31 @@ php start.php start
 No nginx. No php-fpm. Synchronous code. Fast.
 
 Now let's talk about what we're still carrying around.<!-- .element: class="fragment" -->
+
+---
+
+## How much are we carrying? <!-- .element: class="r-fit-text" -->
+
+---
+
+### Image sizes
+
+| Image | Size |
+|---|---|
+| `php:8.3` (Debian) | ~580 MB |
+| `php:8.3-slim` | ~180 MB |
+| `php:8.3-alpine` | ~50 MB |
+| `FROM scratch` | ??? |
+
+---
+
+### What's hiding in there
+
+- A full operating system<!-- .element: class="fragment" -->
+- Package manager, shell, system tools<!-- .element: class="fragment" -->
+- Every installed package is a potential attack vector<!-- .element: class="fragment" -->
+
+We only need PHP. So why are we shipping an OS?<!-- .element: class="fragment" -->
 - Heavy base images — `php:8.3-fpm` is ~490MB of Debian<!-- .element: class="fragment" -->
 - Docker alone didn't solve clustering — Docker Swarm came later<!-- .element: class="fragment" -->
 - Databases still often run on bare metal — scaling requires planning<!-- .element: class="fragment" -->
