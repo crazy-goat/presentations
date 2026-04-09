@@ -126,3 +126,9 @@ ssh user@prod "cd /var/www/app && php bin/console cache:clear"
 - No documentation, no standards — every company had their own<!-- .element: class="fragment" -->
 - Bus factor: 1 — only the author knew how it worked<!-- .element: class="fragment" -->
 - Written in whatever the author liked — Ruby, Perl, Bash, Make...<!-- .element: class="fragment" -->
+
+---
+
+### 🙋 Quick question
+
+Anyone here still maintaining a large project with heavily customised deploy scripts?
