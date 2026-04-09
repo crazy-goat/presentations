@@ -382,6 +382,7 @@ In K8s "one process per container" is the right way — nginx is back as a sidec
 - The tooling ecosystem is itself complex: ArgoCD, Flux, Helm, Kustomize...<!-- .element: class="fragment" -->
 - Networking, storage, ingress — each is its own rabbit hole<!-- .element: class="fragment" -->
 - Overkill for small projects<!-- .element: class="fragment" -->
+- You *can* throw more pods at a slow PHP app — but that's treating the symptom, not the cause<!-- .element: class="fragment" -->
 
 ---
 
