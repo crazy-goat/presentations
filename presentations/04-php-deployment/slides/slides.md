@@ -87,11 +87,14 @@ ssh user@prod "cd /var/www/app && php bin/console cache:clear"
 
 ### The pain
 
+- How do you sync to multiple servers?<!-- .element: class="fragment" -->
+- Migrations — where do you run them? On which server? Before or after rsync?<!-- .element: class="fragment" -->
+- High PR volume — who triggers the deploy? When?<!-- .element: class="fragment" -->
+- Night deploys — "let's do it at 2am when traffic is low"<!-- .element: class="fragment" -->
 - Hard to test outside your own dev environment<!-- .element: class="fragment" -->
 - No documentation, no standards — every company had their own<!-- .element: class="fragment" -->
 - Bus factor: 1 — only the author knew how it worked<!-- .element: class="fragment" -->
 - Written in whatever the author liked — Ruby, Perl, Bash, Make...<!-- .element: class="fragment" -->
-- "Works on my machine"<!-- .element: class="fragment" -->
 
 ---
 
