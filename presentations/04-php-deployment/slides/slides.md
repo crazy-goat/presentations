@@ -723,3 +723,27 @@ The Go dream, in PHP.<!-- .element: class="fragment" -->
 - Not all extensions can be compiled statically<!-- .element: class="fragment" -->
 - Example: **New Relic** — requires a dynamic `.so` library, won't work here<!-- .element: class="fragment" -->
 - Still experimental territory<!-- .element: class="fragment" -->
+
+---
+
+## Symfony on scratch <!-- .element: class="r-fit-text" -->
+
+---
+
+### Does it work with a full framework?
+
+Symfony + statically compiled PHP + FROM scratch — yes, but:
+
+- Requires an adapter to boot Symfony inside Workerman<!-- .element: class="fragment" -->
+- e.g. [crazy-goat/workerman-bundle](https://github.com/crazy-goat/workerman-bundle)<!-- .element: class="fragment" -->
+- Unusual startup model — not `php bin/console server:run`<!-- .element: class="fragment" -->
+
+---
+
+### What works, what doesn't
+
+✅ Routing, controllers, Twig, Doctrine<!-- .element: class="fragment" -->
+✅ FROM scratch image<!-- .element: class="fragment" -->
+⚠️ Cache must be pre-warmed before building the image<!-- .element: class="fragment" -->
+⚠️ Writing to disk can be tricky — e.g. logs go to a shared file across workers<!-- .element: class="fragment" -->
+⚠️ Some extensions require separate compilation<!-- .element: class="fragment" -->
