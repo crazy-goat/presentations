@@ -469,6 +469,8 @@ It works. No nginx. No php-fpm.<!-- .element: class="fragment" -->
 - PHP docs: **"not designed to be used on a public network"**<!-- .element: class="fragment" -->
 - Development only<!-- .element: class="fragment" -->
 
+Architecturally simpler — but PHP still drags along a full runtime and its dependencies.<!-- .element: class="fragment" -->
+
 A proof of concept. Not a solution.<!-- .element: class="fragment" -->
 - Heavy base images — `php:8.3-fpm` is ~490MB of Debian<!-- .element: class="fragment" -->
 - Docker alone didn't solve clustering — Docker Swarm came later<!-- .element: class="fragment" -->
