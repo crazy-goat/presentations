@@ -586,6 +586,19 @@ Now let's talk about what we're still carrying around.<!-- .element: class="frag
 - Every installed package is a potential attack vector<!-- .element: class="fragment" -->
 
 We only need PHP. So why are we shipping an OS?<!-- .element: class="fragment" -->
+
+---
+
+### Do we really need all of this?
+
+To run a PHP application, do we need:
+
+- A full Linux distribution?<!-- .element: class="fragment" -->
+- A shell?<!-- .element: class="fragment" -->
+- A package manager?<!-- .element: class="fragment" -->
+- System libraries we never call directly?<!-- .element: class="fragment" -->
+
+Or do we just need... PHP?<!-- .element: class="fragment" -->
 - Heavy base images — `php:8.3-fpm` is ~490MB of Debian<!-- .element: class="fragment" -->
 - Docker alone didn't solve clustering — Docker Swarm came later<!-- .element: class="fragment" -->
 - Databases still often run on bare metal — scaling requires planning<!-- .element: class="fragment" -->
