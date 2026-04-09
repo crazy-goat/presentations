@@ -193,3 +193,6 @@ FTP, scripts, Ansible — three different eras, one shared flaw:
 - Dev team owned the code, ops team owned the server<!-- .element: class="fragment" -->
 - Every upgrade became a negotiation<!-- .element: class="fragment" -->
 - "It worked last time we deployed..."<!-- .element: class="fragment" -->
+- Dev environment looked nothing like prod<!-- .element: class="fragment" -->
+- Setting up a new dev environment: 2-3 days of README spelunking<!-- .element: class="fragment" -->
+- Abandoned systems were nearly impossible to recreate<!-- .element: class="fragment" -->
