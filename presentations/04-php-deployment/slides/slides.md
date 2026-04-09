@@ -42,6 +42,30 @@ Note: Deliberately not revealing the ending in the agenda.
 
 ---
 
+### Real world: Sote ~2005
+
+Polish e-commerce platform — classic FTP era
+
+- Installation: upload `sote.tar.gz`, run install script in browser<!-- .element: class="fragment" -->
+- Set permissions, configure DB, set up paths manually<!-- .element: class="fragment" -->
+- Updates delivered as `.diff` files (unified diff format)<!-- .element: class="fragment" -->
+- A PHP script parsed and applied the diff — basically `patch`, but in PHP, in the browser<!-- .element: class="fragment" -->
+
+---
+
+### Real world: Sote 5.0 ~2008
+
+- Installation: copy a single `installer.php` to the server, open in browser<!-- .element: class="fragment" -->
+- It downloads the package itself, checks dependencies, runs setup<!-- .element: class="fragment" -->
+- Modular architecture — PEAR packages (Composer didn't exist yet)<!-- .element: class="fragment" -->
+- Updates: upgrade individual modules, not the whole shop<!-- .element: class="fragment" -->
+- File integrity check before install — **did not overwrite client customizations**<!-- .element: class="fragment" -->
+- Custom plugin system, built on Symfony 1.0<!-- .element: class="fragment" -->
+
+Note: This was ahead of its time — essentially a package manager + installer + update system built in 2008.
+
+---
+
 ### The pain
 
 - No versioning — "I overwrote prod"<!-- .element: class="fragment" -->
