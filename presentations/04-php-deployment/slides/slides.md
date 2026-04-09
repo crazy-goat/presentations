@@ -382,6 +382,18 @@ In K8s "one process per container" is the right way — nginx is back as a sidec
 - The tooling ecosystem is itself complex: ArgoCD, Flux, Helm, Kustomize...<!-- .element: class="fragment" -->
 - Networking, storage, ingress — each is its own rabbit hole<!-- .element: class="fragment" -->
 - Overkill for small projects<!-- .element: class="fragment" -->
+
+---
+
+### We solved deployment. But...
+
+Our Docker images are still:
+
+- **Heavy** — hundreds of megabytes of OS, libraries, tools<!-- .element: class="fragment" -->
+- **Complex** — nginx, php-fpm, supervisord, dozens of system packages<!-- .element: class="fragment" -->
+- **Vulnerable** — every dependency is a potential attack surface<!-- .element: class="fragment" -->
+
+We containerised the mess. We didn't remove it.<!-- .element: class="fragment" -->
 - Heavy base images — `php:8.3-fpm` is ~490MB of Debian<!-- .element: class="fragment" -->
 - Docker alone didn't solve clustering — Docker Swarm came later<!-- .element: class="fragment" -->
 - Databases still often run on bare metal — scaling requires planning<!-- .element: class="fragment" -->
