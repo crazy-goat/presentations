@@ -496,6 +496,8 @@ A proof of concept. Not a solution.<!-- .element: class="fragment" -->
 - Requires rewriting the entire application<!-- .element: class="fragment" -->
 - Steep learning curve for PHP developers<!-- .element: class="fragment" -->
 
+- CPU-intensive operations block the entire event loop<!-- .element: class="fragment" -->
+
 A valid approach — but a hard sell for existing codebases.<!-- .element: class="fragment" -->
 - Heavy base images — `php:8.3-fpm` is ~490MB of Debian<!-- .element: class="fragment" -->
 - Docker alone didn't solve clustering — Docker Swarm came later<!-- .element: class="fragment" -->
