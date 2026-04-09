@@ -504,6 +504,55 @@ A valid approach — but not ideal:<!-- .element: class="fragment" -->
 
 - Still requires a full PHP runtime with all its dependencies<!-- .element: class="fragment" -->
 - Not all workloads are a good fit<!-- .element: class="fragment" -->
+
+---
+
+## Workerman <!-- .element: class="r-fit-text" -->
+
+---
+
+### Multi-process, synchronous PHP
+
+- Battle-tested in production — massively popular in China<!-- .element: class="fragment" -->
+- Multi-process model — each worker is a separate PHP process<!-- .element: class="fragment" -->
+- Synchronous code — write normal PHP, no async, no callbacks<!-- .element: class="fragment" -->
+- **Webman** — HTTP framework built on top of Workerman<!-- .element: class="fragment" -->
+
+---
+
+### How it looks
+
+```php
+// Normal synchronous PHP — no async required
+public function index(Request $request): Response
+{
+    $users = User::all();
+    return response()->json($users);
+}
+```
+
+```bash
+php start.php start
+# Workers: 4 processes
+# Listening: http://0.0.0.0:8787
+```
+
+---
+
+### What you gain
+
+- No nginx. No php-fpm.<!-- .element: class="fragment" -->
+- Application code loaded once per worker — not on every request<!-- .element: class="fragment" -->
+- ~10x faster than traditional php-fpm<!-- .element: class="fragment" -->
+
+---
+
+### Limitations
+
+- Existing libraries work without modifications — but watch out for memory leaks<!-- .element: class="fragment" -->
+- Long-running processes need careful state management<!-- .element: class="fragment" -->
+- Not all frameworks work out-of-the-box — Symfony requires adapters<!-- .element: class="fragment" -->
+- Simple apps: use Webman directly<!-- .element: class="fragment" -->
 - Heavy base images — `php:8.3-fpm` is ~490MB of Debian<!-- .element: class="fragment" -->
 - Docker alone didn't solve clustering — Docker Swarm came later<!-- .element: class="fragment" -->
 - Databases still often run on bare metal — scaling requires planning<!-- .element: class="fragment" -->
