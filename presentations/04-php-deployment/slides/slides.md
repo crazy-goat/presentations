@@ -315,6 +315,10 @@ In practice: nginx + php-fpm bundled in **one container**, managed by supervisor
 
 - nginx + php-fpm in one container — need supervisord or s6 to manage both processes<!-- .element: class="fragment" -->
 - Bundling everything together makes images large and complex<!-- .element: class="fragment" -->
+- Heavy base images — `php:8.3-fpm` is ~490MB of Debian<!-- .element: class="fragment" -->
+- Docker alone didn't solve clustering — Docker Swarm came later<!-- .element: class="fragment" -->
+- Databases still often run on bare metal — scaling requires planning<!-- .element: class="fragment" -->
+- New tooling to learn: Dockerfile, networking, volumes, compose...<!-- .element: class="fragment" -->
 
 ---
 
@@ -663,7 +667,17 @@ No package manager means no supply chain attacks through the OS.<!-- .element: c
 
 But — you can still `docker exec` into the container and use the PHP binary to run arbitrary code.<!-- .element: class="fragment" -->
 The attack surface is smaller, not zero.<!-- .element: class="fragment" -->
-- Heavy base images — `php:8.3-fpm` is ~490MB of Debian<!-- .element: class="fragment" -->
-- Docker alone didn't solve clustering — Docker Swarm came later<!-- .element: class="fragment" -->
-- Databases still often run on bare metal — scaling requires planning<!-- .element: class="fragment" -->
-- New tooling to learn: Dockerfile, networking, volumes, compose...<!-- .element: class="fragment" -->
+
+---
+
+## 🐉 Here be dragons <!-- .element: class="r-fit-text" -->
+
+---
+
+### What this means in practice
+
+- Works in my environment — your mileage may vary<!-- .element: class="fragment" -->
+- Not battle-tested in large production projects<!-- .element: class="fragment" -->
+- Hard to integrate into standard CI/CD pipelines<!-- .element: class="fragment" -->
+- Limited community support and documentation<!-- .element: class="fragment" -->
+- Use with care. Not a drop-in for production tomorrow.<!-- .element: class="fragment" -->
