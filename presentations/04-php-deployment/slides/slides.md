@@ -85,6 +85,20 @@ ssh user@prod "cd /var/www/app && php bin/console cache:clear"
 
 ---
 
+### Real world: Komputronik.pl ~2015
+
+- CI on Jenkins — pull from git to **stage**, run tests<!-- .element: class="fragment" -->
+- Tests pass → rsync to **4 prod instances**, sequentially from stage<!-- .element: class="fragment" -->
+- Mandatory cache clear after each deploy<!-- .element: class="fragment" -->
+- ~10 deploys per day<!-- .element: class="fragment" -->
+- Revert: `git revert` + redeploy<!-- .element: class="fragment" -->
+- DB migrations run at night — no instant DDL in MySQL back then<!-- .element: class="fragment" -->
+- Deploy access: **wizards only** — not everyone had the power<!-- .element: class="fragment" -->
+- Script in Bash... with fragments in Ruby<!-- .element: class="fragment" -->
+- Debugging: SSH directly into prod<!-- .element: class="fragment" -->
+
+---
+
 ### The pain
 
 - How do you sync to multiple servers?<!-- .element: class="fragment" -->
