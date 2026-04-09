@@ -553,6 +553,14 @@ php start.php start
 - Long-running processes need careful state management<!-- .element: class="fragment" -->
 - Not all frameworks work out-of-the-box — Symfony requires adapters<!-- .element: class="fragment" -->
 - Simple apps: use Webman directly<!-- .element: class="fragment" -->
+
+---
+
+### We have performance. We have simplicity.
+
+No nginx. No php-fpm. Synchronous code. Fast.
+
+Now let's talk about what we're still carrying around.<!-- .element: class="fragment" -->
 - Heavy base images — `php:8.3-fpm` is ~490MB of Debian<!-- .element: class="fragment" -->
 - Docker alone didn't solve clustering — Docker Swarm came later<!-- .element: class="fragment" -->
 - Databases still often run on bare metal — scaling requires planning<!-- .element: class="fragment" -->
