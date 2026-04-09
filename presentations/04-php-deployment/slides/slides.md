@@ -26,7 +26,8 @@ Note: Deliberately not revealing the ending in the agenda.
 
 ### How it looked
 
-- FileZilla open on production
+- Zend IDE / Eclipse with built-in FTP sync
+- FileZilla open on production<!-- .element: class="fragment" -->
 - Upload file by file<!-- .element: class="fragment" -->
 - Pray nobody else is editing the same file<!-- .element: class="fragment" -->
 
