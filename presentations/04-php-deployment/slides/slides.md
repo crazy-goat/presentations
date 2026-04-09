@@ -681,3 +681,45 @@ The attack surface is smaller, not zero.<!-- .element: class="fragment" -->
 - Hard to integrate into standard CI/CD pipelines<!-- .element: class="fragment" -->
 - Limited community support and documentation<!-- .element: class="fragment" -->
 - Use with care. Not a drop-in for production tomorrow.<!-- .element: class="fragment" -->
+
+---
+
+## Webman as a single binary <!-- .element: class="r-fit-text" -->
+
+---
+
+### PHP + Workerman + app = one file
+
+```bash
+# static-php-cli builds PHP as a self-executing stub (micro)
+bin/spc build "bcmath,curl,openssl,pdo,pdo_mysql" \
+    --build-micro
+
+# Bundle app.phar into the binary
+cat micro.sfx app.phar > myapp
+chmod +x myapp
+
+./myapp
+# Listening: http://0.0.0.0:8787
+```
+
+---
+
+### Deploy = copy one file
+
+```dockerfile
+FROM scratch
+COPY myapp /myapp
+ENTRYPOINT ["/myapp"]
+```
+
+The Go dream, in PHP.<!-- .element: class="fragment" -->
+
+---
+
+### Limitations
+
+- PHP compilation takes time — but compile once, reuse until extensions change<!-- .element: class="fragment" -->
+- Not all extensions can be compiled statically<!-- .element: class="fragment" -->
+- Example: **New Relic** — requires a dynamic `.so` library, won't work here<!-- .element: class="fragment" -->
+- Still experimental territory<!-- .element: class="fragment" -->
