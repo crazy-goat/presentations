@@ -286,15 +286,17 @@ services:
 
 ### Architecture
 
+In practice: nginx + php-fpm bundled in **one container**, managed by supervisord
+
 ```
-┌─────────────────────────────────────┐
-│           docker-compose            │
-│                                     │
-│  ┌─────────────┐  ┌──────────────┐  │
-│  │    nginx    │  │   php-fpm    │  │
-│  │  :80/:443   │──│   :9000      │  │
-│  └─────────────┘  └──────────────┘  │
-└─────────────────────────────────────┘
+┌──────────────────────────────────┐
+│          one container           │
+│                                  │
+│  ┌──────────┐   ┌─────────────┐  │
+│  │  nginx   │   │   php-fpm   │  │
+│  └──────────┘   └─────────────┘  │
+│        supervisord               │
+└──────────────────────────────────┘
 ```
 
 ---
@@ -311,7 +313,7 @@ services:
 
 ### The pain
 
-- Two processes to manage: nginx + php-fpm<!-- .element: class="fragment" -->
+- nginx + php-fpm in one container — need supervisord or s6 to manage both processes<!-- .element: class="fragment" -->
 - Heavy base images — `php:8.3-fpm` is ~490MB of Debian<!-- .element: class="fragment" -->
 - Docker alone didn't solve clustering — Docker Swarm came later<!-- .element: class="fragment" -->
 - Databases still often run on bare metal — scaling requires planning<!-- .element: class="fragment" -->
