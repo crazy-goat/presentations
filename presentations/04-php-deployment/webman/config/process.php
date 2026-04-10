@@ -22,7 +22,7 @@ return [
     'webman' => [
         'handler' => Http::class,
         'listen' => 'http://0.0.0.0:' . (getenv('PORT') ?: 8080),
-        'count' => 1,
+        'count' => 16,
         'user' => '',
         'group' => '',
         'reusePort' => false,
