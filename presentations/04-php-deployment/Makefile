@@ -22,7 +22,7 @@ push: build
 	docker push crazygoat/presentation-$(NAME):latest
 
 run:
-	docker run --rm --name presentation-$(NAME) -p 3210:8080 crazygoat/presentation-$(NAME):latest
+	docker run --rm --name presentation-$(NAME) -p 8080:8080 crazygoat/presentation-$(NAME):latest
 
 run-dev:
 	cd webman && PORT=3210 php start.php start
