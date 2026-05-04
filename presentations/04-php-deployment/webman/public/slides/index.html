@@ -10,159 +10,296 @@
     <link rel="stylesheet" href="dist/code.css">
     <link rel="stylesheet" href="dist/theme/beige.css" id="theme">
     <link rel="stylesheet" href="dist/plugin/highlight/github-light-default.css">
+    <style>
+        .reveal :not(pre) > code {
+            background: rgba(139, 116, 61, .12);
+            border: 1px solid rgba(139, 116, 61, .3);
+            border-radius: 4px;
+            padding: .1em .35em;
+            font-size: .9em;
+            color: #5a4a1f;
+        }
+
+        .reveal .slides section.chapter {
+            display: flex !important;
+            flex-direction: column;
+            justify-content: space-evenly;
+            min-height: 100vh !important;
+        }
+
+        .reveal .slides section.chapter h1 {
+            margin: 0;
+            font-size: clamp(4em, 28vh, 16em);
+        }
+
+        .reveal .slides section.chapter h2 {
+            font-size: clamp(1.4em, 6vh, 3em);
+            margin: 0;
+        }
+
+        .reveal .slides section.chapter h2 {
+            font-size: clamp(1.2em, 5vh, 2.5em);
+            margin: 0;
+        }
+
+        .corner-img {
+            position: fixed;
+            z-index: 100;
+            opacity: 0.8;
+            display: none;
+            pointer-events: none;
+        }
+
+        body.show-corner-images .corner-img {
+            display: block;
+        }
+
+        .corner-img--eclipse {
+            top: 50px;
+            left: 0;
+            width: 540px;
+            transform: rotate(-15deg);
+            z-index: 0;
+        }
+
+        .corner-img--filezilla {
+            top: 80px;
+            right: 0;
+            width: 660px;
+            transform: rotate(15deg);
+            z-index: 0;
+            display: none !important;
+        }
+
+        body.show-filezilla .corner-img--filezilla {
+            display: block !important;
+        }
+    </style>
 </head>
 <body>
+<img src="assets/eclipse.png" class="corner-img corner-img--eclipse" alt="">
+<img src="assets/filezilla-1.webp" class="corner-img corner-img--filezilla" alt="">
+
 <div class="reveal">
-<div class="slides">
+    <div class="slides">
 
-<!-- TITLE -->
-<section>
-    <h1 class="r-fit-text">Running PHP Apps</h1>
-    <h1 class="r-fit-text" style="font-style:italic">FROM scratch</h1>
-    <p><em>From green meadows of FTP to the dungeons where dragons live.</em></p>
-    <aside class="notes">Play on words — FROM scratch is both a Docker instruction and starting from zero.</aside>
-</section>
+        <!-- TITLE -->
+        <section>
+            <h2>Running PHP Apps</h2>
+            <h1 class="r-fit-text" style="font-style:italic">FROM scratch</h1>
+            <p style="text-align:left"><em>From green meadows of FTP</em></p>
+            <p style="text-align:right"><em>to the dungeons where YAML dragons live.</em></p>
+            <aside class="notes">Play on words — FROM scratch is both a Docker instruction and starting from zero.
+            </aside>
+        </section>
 
-<!-- AGENDA -->
-<section>
-    <h2>Agenda</h2>
-    <ol>
-        <li>History of PHP deployment</li>
-        <li class="fragment">Does PHP have to work this way?</li>
-        <li class="fragment">Alternative runtimes</li>
-        <li class="fragment">Smaller images</li>
-        <li class="fragment">FROM scratch</li>
-        <li class="fragment">🐉 Here be dragons</li>
-    </ol>
-    <aside class="notes">Deliberately not revealing the ending in the agenda.</aside>
-</section>
+        <!-- AGENDA -->
+        <section>
+            <h2>Agenda</h2>
+            <ol>
+                <li>History of PHP deployment</li>
+                <li class="fragment">Trying to fix an overly complex stack</li>
+                <li class="fragment">Alternative runtimes</li>
+                <li class="fragment">Smaller images</li>
+                <li class="fragment">What if we started from scratch?</li>
+                <li class="fragment">🐉 Here be dragons</li>
+            </ol>
+            <aside class="notes">Deliberately not revealing the ending in the agenda.</aside>
+        </section>
 
-<!-- ERA: FTP -->
-<section>
-    <h2 class="r-fit-text">Era: FTP</h2>
-</section>
+        <!-- ERA: FTP -->
+        <section class="chapter">
+            <h1>FTP</h1>
+            <h2 class="fragment">The Dark Ages</h2>
+        </section>
 
-<section>
-    <h3>How it looked</h3>
-    <ul>
-        <li>Zend IDE / Eclipse with built-in FTP sync</li>
-        <li class="fragment">FileZilla open on production</li>
-        <li class="fragment">Upload file by file</li>
-        <li class="fragment">Pray nobody else is editing the same file</li>
-    </ul>
-</section>
+        <section style="position: relative;">
+            <h3>How it looked</h3>
+            <ul style="position: relative; z-index: 1;">
+                <li>Zend IDE / Eclipse with built-in FTP sync</li>
+                <li class="fragment">FileZilla open on production</li>
+                <li class="fragment">Upload file by file</li>
+                <li class="fragment">Pray nobody else is editing the same file</li>
+                <li class="fragment">Wonder why ą, ę, ó turned into ??? on the server</li>
+            </ul>
+        </section>
 
-<section>
-    <h3>First deployment</h3>
-    <ul>
-        <li class="fragment">Upload <code>app.tar.gz</code> via FTP</li>
-        <li class="fragment">But how do you unpack it? No SSH access...</li>
-        <li class="fragment">Solution: <code>deploy.php</code> — a script that unpacks the archive</li>
-        <li class="fragment">Run it in the browser. Done. <strong>Now delete it</strong> (or forget — security nightmare)</li>
-        <li class="fragment">On larger projects: request timeout halfway through 🙃</li>
-    </ul>
-</section>
+        <section>
+            <h3>First deployment</h3>
+            <ul>
+                <li class="fragment">Upload <code>app.tar.gz</code> via FTP</li>
+                <li class="fragment">But how do you unpack it? No SSH access...</li>
+                <li class="fragment">Solution: <code>deploy.php</code> — a script that unpacks the archive</li>
+                <li class="fragment">Run it in the browser. Done. <strong>Now delete it</strong> (or forget — security
+                    nightmare)
+                </li>
+                <li class="fragment">On larger projects: request timeout halfway through 🙃</li>
+            </ul>
+        </section>
 
-<section>
-    <h3>Real world: Sote ~2005</h3>
-    <p>Polish e-commerce platform — classic FTP era</p>
-    <ul>
-        <li class="fragment">Installation: upload <code>sote.tar.gz</code>, run install script in browser</li>
-        <li class="fragment">Set permissions, configure DB, set up paths manually</li>
-        <li class="fragment">Updates delivered as <code>.diff</code> files (unified diff format)</li>
-        <li class="fragment">A PHP script parsed and applied the diff — basically <code>patch</code>, but in PHP, in the browser</li>
-        <li class="fragment">Hotfixes and debugging: upload the fixed file directly via FTP</li>
-    </ul>
-</section>
+        <section>
+            <h3>Real world: Sote (2005)</h3>
+            <p>Polish e-commerce platform — classic FTP era</p>
+            <ul>
+                <li class="fragment">Installation: upload <code>sote.tar.gz</code>, run install script in browser</li>
+                <li class="fragment">Set permissions, configure DB, set up paths manually</li>
+                <li class="fragment">Updates delivered as <code>.diff</code> files (unified diff format)</li>
+                <li class="fragment">A PHP script parsed and applied the diff — basically <code>patch</code>, but in
+                    PHP, in the browser
+                </li>
+                <li class="fragment">Hotfixes and debugging: upload the fixed file directly via FTP</li>
+            </ul>
+        </section>
 
-<section>
-    <h3>Real world: Sote 5.0 ~2008</h3>
-    <ul>
-        <li class="fragment">Installation: copy a single <code>installer.php</code> to the server, open in browser</li>
-        <li class="fragment">It downloads the package itself, checks dependencies, runs setup</li>
-        <li class="fragment">Modular architecture — PEAR packages (Composer didn't exist yet)</li>
-        <li class="fragment">Updates: upgrade individual modules, not the whole shop</li>
-        <li class="fragment">File integrity check before install — <strong>did not overwrite client customizations</strong></li>
-        <li class="fragment">Custom plugin system, built on Symfony 1.0</li>
-        <li class="fragment">Fixes and debugging: delivered as a PEAR package update, not raw FTP</li>
-    </ul>
-    <aside class="notes">This was ahead of its time — essentially a package manager + installer + update system built in 2008.</aside>
-</section>
+        <section>
+            <h3>Real world: Sote 5.0 (2008)</h3>
+            <ul>
+                <li class="fragment">Installation: copy a single <code>installer.php</code></li>
+                <li class="fragment">It downloads the package itself, checks dependencies, runs setup</li>
+                <li class="fragment">Modular architecture — PEAR packages (Composer didn't exist yet)</li>
+                <li class="fragment">Updates: upgrade individual modules</li>
+                <li class="fragment">File integrity check — <strong>did not overwrite client customizations</strong>
+                </li>
+                <li class="fragment">Custom plugin system, built on Symfony 1.0</li>
+                <li class="fragment">Fixes and debugging: delivered as a PEAR package update, not raw FTP</li>
+            </ul>
+            <aside class="notes">This was ahead of its time — essentially a package manager + installer + update system
+                built in 2008.
+            </aside>
+        </section>
 
-<section>
-    <h3>The pain</h3>
-    <ul>
-        <li class="fragment">No versioning — "I overwrote prod"</li>
-        <li class="fragment">No rollback</li>
-        <li class="fragment">Binary vs ASCII transfer mode — corrupted files, broken encodings</li>
-        <li class="fragment">File permissions — chmod everything via FTP client</li>
-        <li class="fragment">Symlinks — FTP doesn't support them</li>
-        <li class="fragment">"Works on my machine"</li>
-    </ul>
-</section>
+        <section>
+            <h3>The pain</h3>
+            <ul>
+                <li class="fragment">No versioning — "I overwrote prod"</li>
+                <li class="fragment">No rollback</li>
+                <li class="fragment">Binary vs ASCII transfer mode — corrupted files, broken encodings</li>
+                <li class="fragment">File permissions — chmod everything via FTP client</li>
+                <li class="fragment">Symlinks — FTP doesn't support them</li>
+                <li class="fragment">"Works on my machine"</li>
+            </ul>
+        </section>
 
-<section>
-    <h3>Think this era is over?</h3>
-    <p>Think again.</p>
-    <p class="fragment">There are entire armies of WordPress sites still maintained exactly this way.</p>
-</section>
+        <section>
+            <h2>Think this era is over?</h2>
+            <p class="fragment">Think again.</p>
+            <p class="fragment">There are entire armies of WordPress sites still maintained exactly this way.</p>
+        </section>
 
-<!-- ERA: OWN SCRIPTS -->
-<section>
-    <h2 class="r-fit-text">Era: Own scripts</h2>
-</section>
+        <!-- ERA: OWN SCRIPTS -->
+        <section class="chapter">
+            <h1>Scripts</h1>
+            <h2 class="fragment">Trust Me Bro</h2>
+        </section>
 
-<section>
-    <h3>deploy.sh</h3>
-    <pre><code class="language-bash" data-trim>
+        <section>
+            <h3>FTP wasn't enough for larger projects</h3>
+            <p>So we had to upgrade our tools</p>
+            <table class="fragment" style="font-size: 0.8em;">
+                <thead>
+                <tr>
+                    <th>Before</th>
+                    <th>After</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>FTP upload</td>
+                    <td><code>rsync</code></td>
+                </tr>
+                <tr class="fragment">
+                    <td>unzip via PHP</td>
+                    <td><code>git pull</code></td>
+                </tr>
+                <tr class="fragment">
+                    <td>FileZilla</td>
+                    <td>SSH + Bash</td>
+                </tr>
+                <tr class="fragment">
+                    <td>Manual steps</td>
+                    <td>Shell scripts</td>
+                </tr>
+                </tbody>
+            </table>
+            <p class="fragment"><em>Progress! 🎉</em></p>
+        </section>
+
+        <section>
+            <h3>Not so much</h3>
+            <pre style="font-size: 0.5em;"><code class="language-bash" data-trim>
 #!/bin/bash
-rsync -avz --exclude='.git' ./ user@prod:/var/www/app/
-ssh user@prod "cd /var/www/app && php bin/console cache:clear"
+# TODO: fix permissions on prod3
+# FIXME: cache:clear sometimes hangs
+# NOTE: prod2 is slow, needs extra sleep
+
+for SERVER in prod1 prod2 prod3 prod4; do
+    rsync -avz --exclude='.git' ./ $SERVER:/var/www/app/
+    ssh $SERVER "chmod -R 777 var/cache var/logs"
+    ssh $SERVER "php bin/console cache:clear || cache:clear"
+    ssh $SERVER "sudo service php-fpm restart" || echo "PANIC!"
+    [ "$SERVER" = "prod2" ] && sleep 10 || sleep 3
+    curl -s http://$SERVER/health | grep -q "OK" || exit 1
+done
+echo "Deploy done! ☕" | mail -s "OK" team@company.com
     </code></pre>
-</section>
+        </section>
 
-<section>
-    <h3>Real world: Komputronik.pl ~2015</h3>
-    <ul>
-        <li class="fragment">CI on Jenkins — pull from git to <strong>stage</strong>, run tests</li>
-        <li class="fragment">Tests pass → rsync to <strong>4 prod instances</strong>, sequentially from stage</li>
-        <li class="fragment">Mandatory cache clear after each deploy</li>
-        <li class="fragment">~10 deploys per day</li>
-        <li class="fragment">Revert: <code>git revert</code> + redeploy</li>
-        <li class="fragment">DB migrations run at night — no instant DDL in MySQL back then</li>
-        <li class="fragment">Deploy access: <strong>wizards only</strong> — not everyone had the power</li>
-        <li class="fragment">Script in Bash... with fragments in Ruby</li>
-        <li class="fragment">Debugging: SSH directly into prod</li>
-    </ul>
-</section>
+        <section>
+            <h3>Real world: Komputronik.pl (2015)</h3>
+            <ul>
+                <li class="fragment">CI on Jenkins — pull from git to <strong>stage</strong>, run tests</li>
+                <li class="fragment">Tests pass → rsync to <strong>4 prod instances</strong>, sequentially from stage
+                </li>
+                <li class="fragment">Mandatory cache clear after each deploy</li>
+                <li class="fragment">~10 deploys per day</li>
+                <li class="fragment">Revert: <code>git revert</code> + redeploy</li>
+                <li class="fragment">DB migrations run at night — no instant DDL in MySQL back then</li>
+                <li class="fragment">Deploy access: <strong>wizards only</strong> — not everyone had the power</li>
+                <li class="fragment">Script in Bash... with fragments in Ruby</li>
+                <li class="fragment">Debugging: SSH directly into prod</li>
+            </ul>
+        </section>
 
-<section>
-    <h3>The pain</h3>
-    <ul>
-        <li class="fragment">How do you sync to multiple servers?</li>
-        <li class="fragment">Migrations — where do you run them? On which server? Before or after rsync?</li>
-        <li class="fragment">High PR volume — who triggers the deploy? When?</li>
-        <li class="fragment">Night deploys — "let's do it at 2am when traffic is low"</li>
-        <li class="fragment">Hard to test outside your own dev environment</li>
-        <li class="fragment">No documentation, no standards — every company had their own</li>
-        <li class="fragment">Bus factor: 1 — only the author knew how it worked</li>
-        <li class="fragment">Written in whatever the author liked — Ruby, Perl, Bash, Make...</li>
-    </ul>
-</section>
+        <section>
+            <h3>The pain</h3>
+            <ul>
+                <li class="fragment">How do you sync to multiple servers?</li>
+                <li class="fragment">Migrations — where do you run them? On which server? Before or after rsync?</li>
+                <li class="fragment">High PR volume — who triggers the deploy? When?</li>
+                <li class="fragment">Night deploys — "let's do it at 2am when traffic is low"</li>
+                <li class="fragment">Hard to test outside your own dev environment</li>
+                <li class="fragment">No documentation, no standards — every company had their own</li>
+                <li class="fragment">Bus factor: 1 — only the author knew how it worked</li>
+                <li class="fragment">Written in whatever the author liked — Ruby, Perl, Bash, Make...</li>
+            </ul>
+        </section>
 
-<section>
-    <h3>🙋 Quick question</h3>
-    <p>Anyone here still maintaining a large project with heavily customised deploy scripts?</p>
-</section>
+        <section>
+            <h3>🙋 Quick question</h3>
+            <p>Anyone here still maintaining a large project with heavily customised deploy scripts?</p>
+        </section>
 
-<!-- ERA: ANSIBLE -->
-<section>
-    <h2 class="r-fit-text">Era: Ansible</h2>
-</section>
+        <!-- ERA: ANSIBLE -->
+        <section class="chapter">
+            <h1>Ansible</h1>
+            <h2 class="fragment">Order from Chaos</h2>
+        </section>
 
-<section>
-    <h3>How it works</h3>
-    <pre><code class="language-yaml" data-trim>
+        <section>
+            <h3>Something was still missing</h3>
+            <ul>
+                <li class="fragment">A <strong>standard way</strong> to deploy code</li>
+                <li class="fragment">Works for <strong>most projects</strong> out of the box</li>
+                <li class="fragment"><strong>Documentation</strong> that actually makes sense</li>
+                <li class="fragment"><strong>Community support</strong> — answers on StackOverflow</li>
+                <li class="fragment">Not reinventing the wheel <em>every single time</em></li>
+            </ul>
+            <p class="fragment">so we ended with yaml...</p>
+        </section>
+
+        <section>
+            <h3>How it works</h3>
+            <pre style="font-size: 0.4em;"><code class="language-yaml" style="max-height: 600px" data-trim>
 - name: Deploy PHP app
   hosts: production
   tasks:
@@ -183,106 +320,110 @@ ssh user@prod "cd /var/www/app && php bin/console cache:clear"
         dest: /var/www/current
         state: link
     </code></pre>
-</section>
+        </section>
 
-<section>
-    <h3>What got better</h3>
-    <ul>
-        <li class="fragment">Multiple releases kept on server — rollback = flip a symlink</li>
-        <li class="fragment">Run migrations on one node first, then roll out code</li>
-        <li class="fragment">Rolling release — replace nodes one at a time, zero downtime</li>
-        <li class="fragment">Native multi-node support out of the box</li>
-    </ul>
-</section>
+        <section>
+            <h3>What got better</h3>
+            <ul>
+                <li class="fragment">Multiple releases kept on server — rollback = flip a symlink</li>
+                <li class="fragment">Run migrations on one node first, then roll out code</li>
+                <li class="fragment">Rolling release — replace nodes one at a time, zero downtime</li>
+                <li class="fragment">Native multi-node support out of the box</li>
+            </ul>
+        </section>
 
-<section>
-    <h3>The pain</h3>
-    <ul>
-        <li class="fragment">Server must have PHP, nginx, php-fpm installed and configured</li>
-        <li class="fragment">Environments drift over time — "works on staging, fails on prod"</li>
-        <li class="fragment">Requires SSH access and <strong>Python</strong> on every target server</li>
-        <li class="fragment">Why do I need Python on a PHP server?</li>
-    </ul>
-</section>
+        <section>
+            <h3>The pain</h3>
+            <ul>
+                <li class="fragment">Server must have PHP, nginx, php-fpm installed and configured</li>
+                <li class="fragment">Environments drift over time — "works on staging, fails on prod"</li>
+                <li class="fragment">Requires SSH access and <strong>Python</strong> on every target server</li>
+                <li class="fragment">Why do I need Python on a PHP server?</li>
+            </ul>
+        </section>
 
-<section>
-    <h3>The common problem</h3>
-    <p>FTP, scripts, Ansible — three different eras, one shared flaw:</p>
-    <p class="fragment"><strong>The application and the environment were managed separately.</strong></p>
-    <ul>
-        <li class="fragment">App updated regularly — environment left to age on its own</li>
-        <li class="fragment">Dev team owned the code, ops team owned the server</li>
-        <li class="fragment">Every upgrade became a negotiation</li>
-        <li class="fragment">"It worked last time we deployed..."</li>
-        <li class="fragment">Dev environment looked nothing like prod</li>
-        <li class="fragment">Setting up a new dev environment: 2–3 days of README spelunking</li>
-        <li class="fragment">Abandoned systems were nearly impossible to recreate</li>
-    </ul>
-</section>
+        <section>
+            <h3>The common problem</h3>
+            <p>FTP, scripts, Ansible - The application and the environment were managed separately.</strong></p>
+            <ul style="font-size: 0.8em">
+                <li class="fragment">App updated regularly — environment left to age on its own</li>
+                <li class="fragment">Dev team owned the code, ops team owned the server</li>
+                <li class="fragment">Every upgrade became a negotiation</li>
+                <li class="fragment">Dev environment looked nothing like prod</li>
+                <li class="fragment">Onboarding new dev: 2–7 days of pain</li>
+                <li class="fragment">Abandoned systems were nearly impossible to recreate</li>
+            </ul>
+        </section>
 
-<section>
-    <h3>Real world: The forgotten microservice</h3>
-    <p class="fragment">A microservice. Running on bare metal. On a very old Ubuntu.</p>
-    <p class="fragment">Need to update the LDAP extension.</p>
-    <p class="fragment">App refuses to run on anything newer.</p>
-    <p class="fragment">Must compile on the existing OS.</p>
-</section>
+        <section>
+            <h3>Real world: The forgotten microservice</h3>
+            <p class="fragment">A microservice, bare metal. On an ancient Ubuntu.</p>
+            <p class="fragment">Need to update the LDAP extension.</p>
+            <p class="fragment">App refuses to run on anything newer.</p>
+            <p class="fragment">Must compile on the existing OS.</p>
+        </section>
 
-<section>
-    <h3>Real world: The forgotten microservice</h3>
-    <p class="fragment">No package mirror available for that Ubuntu version.</p>
-    <p class="fragment">Found one mirror. In Portugal.</p>
-    <p class="fragment">Download time estimate: <strong>7 days</strong>.</p>
-    <p class="fragment">It would have been faster to fly there with a hard drive.</p>
-</section>
+        <section>
+            <h3>Real world: The forgotten microservice</h3>
+            <p class="fragment">No package mirror available for that Ubuntu version.</p>
+            <p class="fragment">Found one outdated mirror – in Portugal.</p>
+            <p class="fragment">Download time estimate: <strong>7 days</strong>.</p>
+            <p class="fragment">It would have been faster to fly there with a hard drive.</p>
+        </section>
 
-<section>
-    <h3>Real world: The forgotten microservice</h3>
-    <p class="fragment">Solution:</p>
-    <ul>
-        <li class="fragment">Build a local mirror from what was on disk</li>
-        <li class="fragment">Rebuild the extension inside an LXC container</li>
-        <li class="fragment">Ship the container</li>
-    </ul>
-    <p class="fragment">The app was eventually replaced.</p>
-</section>
+        <section>
+            <h3>Real world: The forgotten microservice</h3>
+            <p>Solution:</p>
+            <ul>
+                <li class="fragment">Create a LXC image from a hard drive</li>
+                <li class="fragment">Build a local mirror of ubuntu</li>
+                <li class="fragment">Rebuild the extension inside an LXC container</li>
+                <li class="fragment">Ship the container</li>
+                <li class="fragment">The whole process took a few days</li>
+            </ul>
+            <p class="fragment">The app was eventually replaced.</p>
+        </section>
 
-<section>
-    <h3>Real world: Gerrit on bare metal</h3>
-    <p class="fragment">The entire organisation's source code. CI. Everything.</p>
-    <p class="fragment">On a single physical server. Struggling for a long time.</p>
-    <p class="fragment">Updates failing. Nobody wanted to touch it.</p>
-</section>
+        <section>
+            <h3>Real world: Gerrit on bare metal</h3>
+            <p class="fragment">The entire organisation's source code. CI. Everything.</p>
+            <p class="fragment">On a single physical server. Struggling for a long time.</p>
+            <p class="fragment">Updates failing. Nobody wanted to touch it.</p>
+        </section>
 
-<section>
-    <h3>Real world: Gerrit on bare metal</h3>
-    <p class="fragment">Power outage in the server room.</p>
-    <p class="fragment">Server does not come back up.</p>
-    <p class="fragment">Need to recover data from the disks — but the hardware RAID is model-specific.</p>
-    <p class="fragment">Had to find a <strong>donor machine with identical RAID hardware</strong> just to read the disks.</p>
-</section>
+        <section>
+            <h3>Real world: Gerrit on bare metal</h3>
+            <p class="fragment">Power outage in the server room.</p>
+            <p class="fragment">Server does not come back up.</p>
+            <p class="fragment">Need to recover data from the disks — but the hardware RAID is model-specific.</p>
+            <p class="fragment">Had to find a <strong>donor machine with identical RAID hardware</strong> just to read
+                the disks.</p>
+        </section>
 
-<section>
-    <h3>Real world: Gerrit on bare metal</h3>
-    <p class="fragment">Data recovered. Migrated to an LXC container. Ran on a cluster.</p>
-    <p class="fragment">Eventually replaced with a self-hosted GitLab.</p>
-    <p class="fragment"><strong>Lesson:</strong> if you can't recreate it, you can't recover it.</p>
-</section>
+        <section>
+            <h3>Real world: Gerrit on bare metal</h3>
+            <p class="fragment">Data recovered using the similar server.</p>
+            <p class="fragment">Migrated to an LXC container. Ran on a cluster.</p>
+            <p class="fragment">Eventually replaced with a self-hosted GitLab.</p>
+            <p class="fragment"><strong>Lesson:</strong> if you can't recreate it, you can't recover it.</p>
+        </section>
 
-<!-- ERA: DOCKER -->
-<section>
-    <h2 class="r-fit-text">Era: Docker</h2>
-</section>
+        <!-- ERA: DOCKER -->
+        <section class="chapter">
+            <h1>Docker</h1>
+            <h2 class="fragment">The Container Revolution</h2>
+        </section>
 
-<section>
-    <h3>The big shift</h3>
-    <p class="fragment">Application and environment packaged together — <strong>the image is the deployment artifact.</strong></p>
-    <pre class="fragment"><code class="language-dockerfile" data-trim>
+        <section>
+            <h3>The big shift</h3>
+            <p class="fragment">Application and environment packaged together — <strong>the image is the deployment
+                artifact.</strong></p>
+            <pre class="fragment"><code class="language-dockerfile" data-trim>
 FROM php:8.3-fpm
 COPY . /var/www/app
 RUN composer install --no-dev
     </code></pre>
-    <pre class="fragment"><code class="language-yaml" data-trim>
+            <pre class="fragment"><code class="language-yaml" data-trim>
 # docker-compose.yml
 services:
   nginx:
@@ -290,12 +431,12 @@ services:
   php:
     build: .
     </code></pre>
-</section>
+        </section>
 
-<section>
-    <h3>Architecture</h3>
-    <p>In practice: nginx + php-fpm bundled in <strong>one container</strong>, managed by supervisord</p>
-    <pre><code data-trim>
+        <section>
+            <h3>Architecture</h3>
+            <p>In practice: nginx + php-fpm bundled in <strong>one container</strong>, managed by supervisord</p>
+            <pre><code data-trim>
 ┌──────────────────────────────────┐
 │          one container           │
 │                                  │
@@ -305,76 +446,77 @@ services:
 │        supervisord               │
 └──────────────────────────────────┘
     </code></pre>
-</section>
+        </section>
 
-<section>
-    <h3>What got better</h3>
-    <ul>
-        <li class="fragment">Dev = prod — same image, same behaviour</li>
-        <li class="fragment">Onboarding: <code>docker compose up</code> instead of 2–3 days</li>
-        <li class="fragment">Rollback = pull previous image tag</li>
-        <li class="fragment">Environment isolation per project</li>
-        <li class="fragment">Abandoned system? Just keep the image.</li>
-    </ul>
-</section>
+        <section>
+            <h3>What got better</h3>
+            <ul>
+                <li class="fragment">Dev = prod — same image, same behaviour<span class="fragment">*</span></li>
+                <li class="fragment">Onboarding: <code>docker compose up</code> instead of 2–3 days</li>
+                <li class="fragment">Rollback = pull previous image tag</li>
+                <li class="fragment">Environment isolation per project</li>
+                <li class="fragment">Abandoned system? Run CI every week to check if it still builds.</li>
+            </ul>
+        </section>
 
-<section>
-    <h3>The pain</h3>
-    <ul>
-        <li class="fragment">nginx + php-fpm in one container — need supervisord or s6 to manage both processes</li>
-        <li class="fragment">Bundling everything together makes images large and complex</li>
-        <li class="fragment">Heavy base images — <code>php:8.3-fpm</code> is ~490 MB of Debian</li>
-        <li class="fragment">Docker alone didn't solve clustering — Docker Swarm came later</li>
-        <li class="fragment">Databases still often run on bare metal — scaling requires planning</li>
-        <li class="fragment">New tooling to learn: Dockerfile, networking, volumes, compose...</li>
-    </ul>
-</section>
+        <section>
+            <h3>The pain</h3>
+            <ul style="font-size: 0.8em">
+                <li class="fragment">nginx + php-fpm in one container — need supervisord</li>
+                <li class="fragment">Bundling everything together makes images large and complex</li>
+                <li class="fragment">Heavy base images — <code>php:8.3-fpm</code> is ~490 MB of Debian</li>
+                <li class="fragment">Docker alone didn't solve clustering — Docker Swarm came later</li>
+                <li class="fragment">Databases still often run on bare metal — scaling requires planning</li>
+                <li class="fragment">New tooling to learn: Dockerfile, networking, volumes, compose...</li>
+            </ul>
+        </section>
 
-<section>
-    <h3>🙋 Quick question</h3>
-    <p>Anyone running PHP production images <strong>larger than 1 GB</strong>?</p>
-</section>
+        <section>
+            <h3>🙋 Quick question</h3>
+            <p>Anyone running PHP production images <br/><strong>larger than 1 GB</strong>?</p>
+        </section>
 
-<!-- ERA: KUBERNETES -->
-<section>
-    <h2 class="r-fit-text">Era: Kubernetes</h2>
-</section>
+        <!-- ERA: KUBERNETES -->
+        <section class="chapter">
+            <h1>Kubernetes</h1>
+            <h2 class="fragment">YAML All the Way Down</h2>
+        </section>
 
-<section>
-    <h3>What Docker alone doesn't solve</h3>
-    <p>Clustering &amp; availability:</p>
-    <ul>
-        <li class="fragment">Run across multiple nodes</li>
-        <li class="fragment">Automatic failover — dead container? K8s restarts it</li>
-        <li class="fragment">Self-healing, health checks built in</li>
-    </ul>
-</section>
+        <section>
+            <h3>What Docker alone doesn't solve</h3>
+            <p>Clustering &amp; availability:</p>
+            <ul>
+                <li class="fragment">Run across multiple nodes</li>
+                <li class="fragment">Automatic failover — dead container? K8s restarts it</li>
+                <li class="fragment">Self-healing, health checks built in</li>
+            </ul>
+        </section>
 
-<section>
-    <h3>What Docker alone doesn't solve</h3>
-    <p>Scaling &amp; traffic:</p>
-    <ul>
-        <li class="fragment">Horizontal Pod Autoscaler — scale on CPU/memory/custom metrics</li>
-        <li class="fragment">Built-in load balancing between pods</li>
-        <li class="fragment">Rolling deployments — zero downtime out of the box</li>
-        <li class="fragment">Service discovery</li>
-    </ul>
-</section>
+        <section>
+            <h3>What Docker alone doesn't solve</h3>
+            <p>Scaling &amp; traffic:</p>
+            <ul>
+                <li class="fragment">Horizontal Pod Autoscaler — scale on CPU/memory/custom metrics</li>
+                <li class="fragment">Built-in load balancing between pods</li>
+                <li class="fragment">Rolling deployments — zero downtime out of the box</li>
+                <li class="fragment">Service discovery</li>
+            </ul>
+        </section>
 
-<section>
-    <h3>What Docker alone doesn't solve</h3>
-    <p>CI/CD &amp; GitOps:</p>
-    <ul>
-        <li class="fragment">ArgoCD / Flux watch your git repo</li>
-        <li class="fragment">Push to git = deploy to cluster</li>
-        <li class="fragment">Declarative config — cluster state is always in sync with repo</li>
-    </ul>
-</section>
+        <section>
+            <h3>What Docker alone doesn't solve</h3>
+            <p>CI/CD &amp; GitOps:</p>
+            <ul>
+                <li class="fragment">ArgoCD / Flux watch your git repo</li>
+                <li class="fragment">Push to git = deploy to cluster</li>
+                <li class="fragment">Declarative config — cluster state is always in sync with repo</li>
+            </ul>
+        </section>
 
-<section>
-    <h3>Architecture: PHP in Kubernetes</h3>
-    <p>In K8s "one process per container" is the right way — nginx is back as a sidecar</p>
-    <pre><code data-trim>
+        <section>
+            <h3>Architecture: PHP in Kubernetes</h3>
+            <p>In K8s "one process per container" is the right way — nginx is back as a sidecar</p>
+            <pre><code data-trim>
 ┌─────────────────────────────────────┐
 │                 Pod                 │
 │  ┌──────────────┐ ┌──────────────┐  │
@@ -383,54 +525,61 @@ services:
 │  └──────────────┘ └──────────────┘  │
 └─────────────────────────────────────┘
     </code></pre>
-</section>
+        </section>
 
-<section>
-    <h3>The pain</h3>
-    <ul>
-        <li class="fragment">Enormous complexity — needs a dedicated platform team</li>
-        <li class="fragment">Three screens of YAML to deploy Hello World</li>
-        <li class="fragment">The tooling ecosystem is itself complex: ArgoCD, Flux, Helm, Kustomize...</li>
-        <li class="fragment">Networking, storage, ingress — each is its own rabbit hole</li>
-        <li class="fragment">Overkill for small projects</li>
-        <li class="fragment">You <em>can</em> throw more pods at a slow PHP app — but that's treating the symptom, not the cause</li>
-    </ul>
-</section>
+        <section>
+            <h3>The pain</h3>
+            <ul>
+                <li class="fragment">Enormous complexity — needs a dedicated platform team</li>
+                <li class="fragment">Three screens of YAML to deploy Hello World</li>
+                <li class="fragment">The tooling ecosystem is itself complex: ArgoCD, Flux, Helm, Kustomize...</li>
+                <li class="fragment">Networking, storage, ingress — each is its own rabbit hole</li>
+                <li class="fragment">Overkill for small projects</li>
+                <li class="fragment">You <em>can</em> drop whole project in seconds with help of AI.</li>
+            </ul>
+        </section>
 
-<section>
-    <h3>We solved deployment. But...</h3>
-    <p>Our Docker images are still:</p>
-    <ul>
-        <li class="fragment"><strong>Heavy</strong> — hundreds of megabytes of OS, libraries, tools</li>
-        <li class="fragment"><strong>Complex</strong> — nginx, php-fpm, supervisord, dozens of system packages</li>
-        <li class="fragment"><strong>Vulnerable</strong> — every dependency is a potential attack surface</li>
-    </ul>
-    <p class="fragment">We containerised the mess. We didn't remove it.</p>
-</section>
+        <section>
+            <h3>🙋 Quick question</h3>
+            <p>Has anyone maintained a project where devops only gave them k8s namespace – a real green field
+                project?</p>
+        </section>
 
-<!-- DOES IT HAVE TO BE THIS WAY? -->
-<section>
-    <h2 class="r-fit-text">Does it have to be this way?</h2>
-</section>
+        <section>
+            <h3>We solved deployment. But...</h3>
+            <p>Our Docker images are still:</p>
+            <ul>
+                <li class="fragment"><strong>Heavy</strong> — hundreds of megabytes of OS, libraries, tools</li>
+                <li class="fragment"><strong>Complex</strong> — nginx, php-fpm, supervisord, dozens of system packages
+                </li>
+                <li class="fragment"><strong>Vulnerable</strong> — every dependency is a potential attack surface</li>
+            </ul>
+            <p class="fragment">We containerised the mess. We didn't remove it.</p>
+        </section>
 
-<section>
-    <h3>Node.js</h3>
-    <pre><code class="language-javascript" data-trim>
+        <!-- DOES IT HAVE TO BE THIS WAY? -->
+        <section>
+            <h1 class="r-fit-text">Does it have to be this way?</h1>
+        </section>
+
+        <section>
+            <h3>Node.js</h3>
+            <pre><code class="language-javascript" data-trim>
 const http = require('http');
 http.createServer((req, res) => {
   res.end('Hello World');
 }).listen(3000);
     </code></pre>
-    <pre><code class="language-bash" data-trim>
+            <pre><code class="language-bash" data-trim>
 node server.js
 # Done. No nginx. No fpm.
     </code></pre>
-    <p class="fragment">Simpler architecture — but still ships with <code>node_modules</code> 📦</p>
-</section>
+            <p class="fragment">Simpler architecture — but still ships with <code>node_modules</code> 📦</p>
+        </section>
 
-<section>
-    <h3>Go</h3>
-    <pre><code class="language-go" data-trim>
+        <section>
+            <h3>Go</h3>
+            <pre><code class="language-go" data-trim>
 func main() {
     http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
         fmt.Fprintln(w, "Hello World")
@@ -438,95 +587,101 @@ func main() {
     http.ListenAndServe(":3000", nil)
 }
     </code></pre>
-    <pre><code class="language-bash" data-trim>
+            <pre><code class="language-bash" data-trim>
 go build -o app
 ./app   # one binary, zero dependencies
     </code></pre>
-    <p class="fragment">No dependencies. Small image. Fast startup. Fast execution.</p>
-</section>
+            <p class="fragment">No dependencies. Small image. Fast startup. Fast execution.</p>
+        </section>
 
-<section>
-    <h3>Why is PHP different?</h3>
-    <p class="fragment">PHP was designed as CGI — <strong>request → process → die</strong></p>
-    <p class="fragment">nginx and php-fpm are a workaround for that limitation.</p>
-    <p class="fragment"><strong>But does it have to stay that way?</strong></p>
-</section>
+        <section>
+            <h3>Why is PHP different?</h3>
+            <p class="fragment">PHP was designed as CGI — <strong>request → process → die</strong></p>
+            <p class="fragment">apache/nginx + php-fpm became the standard architecture for this model.</p>
+            <p class="fragment"><strong>But does it have to stay that way?</strong></p>
+        </section>
 
-<!-- PHP -S -->
-<section>
-    <h2 class="r-fit-text">php -S</h2>
-</section>
+        <!-- PHP -S -->
+        <section>
+            <h1 class="r-fit-text">php -S</h1>
+        </section>
 
-<section>
-    <h3>PHP has a built-in web server</h3>
-    <pre><code class="language-bash" data-trim>
+        <section>
+            <h3>PHP has a built-in web server</h3>
+            <pre><code class="language-bash" data-trim>
 php -S 0.0.0.0:8080 public/index.php
     </code></pre>
-    <p class="fragment">It works. No nginx. No php-fpm.</p>
-</section>
+            <p class="fragment">It works. No nginx. No php-fpm.</p>
+        </section>
 
-<section>
-    <h3>But...</h3>
-    <ul>
-        <li class="fragment">Single-threaded — one request at a time</li>
-        <li class="fragment">PHP docs: <strong>"not designed to be used on a public network"</strong></li>
-        <li class="fragment">Still the classic PHP model — state cleared after every request</li>
-        <li class="fragment">Development only</li>
-    </ul>
-    <p class="fragment">Architecturally simpler — but PHP still drags along a full runtime and its dependencies.</p>
-    <p class="fragment">A proof of concept. Not a solution.</p>
-</section>
+        <section>
+            <h3>But...</h3>
+            <ul>
+                <li class="fragment">Single-threaded — one request at a time</li>
+                <li class="fragment">PHP docs: <strong>"not designed to be used on a public network"</strong></li>
+                <li class="fragment">Still the classic PHP model — state cleared after every request</li>
+                <li class="fragment">Development only</li>
+            </ul>
+            <p class="fragment">Architecturally simpler — but PHP still drags along a full runtime and its
+                dependencies.</p>
+            <p class="fragment">A proof of concept. Not a solution.</p>
+        </section>
 
-<!-- REACTPHP / AMPHP -->
-<section>
-    <h2 class="r-fit-text">ReactPHP / AmPHP</h2>
-</section>
+        <!-- REACTPHP / AMPHP -->
+        <section>
+            <h1 class="r-fit-text">ReactPHP / AmPHP</h1>
+        </section>
 
-<section>
-    <h3>Event loop in PHP</h3>
-    <ul>
-        <li class="fragment">Long-running PHP process — code loaded once, not per request</li>
-        <li class="fragment">One process handles many concurrent connections</li>
-        <li class="fragment">No nginx. No php-fpm.</li>
-        <li class="fragment">Performance comparable to Node.js</li>
-    </ul>
-</section>
+        <section>
+            <h3>Event loop in PHP</h3>
+            <ul>
+                <li class="fragment">Long-running PHP process — code loaded once, not per request</li>
+                <li class="fragment">One process handles many concurrent connections</li>
+                <li class="fragment">No nginx. No php-fpm.</li>
+                <li class="fragment">Performance comparable to Node.js</li>
+            </ul>
+        </section>
 
-<section>
-    <h3>The trade-off</h3>
-    <ul>
-        <li class="fragment">Callback hell / promise chains — async all the way down</li>
-        <li class="fragment">Can't use blocking PHP functions — <code>file_get_contents</code>, standard PDO...</li>
-        <li class="fragment">Requires rewriting the entire application</li>
-        <li class="fragment">Steep learning curve for PHP developers</li>
-        <li class="fragment">CPU-intensive operations block the entire event loop</li>
-        <li class="fragment">Long-running processes — not all libraries and frameworks are designed for this</li>
-    </ul>
-    <p class="fragment">A valid approach — but not ideal:</p>
-    <ul>
-        <li class="fragment">Still requires a full PHP runtime with all its dependencies</li>
-        <li class="fragment">Not all workloads are a good fit</li>
-    </ul>
-</section>
+        <section>
+            <h3>The trade-off</h3>
+            <ul>
+                <li class="fragment">Callback hell / promise chains — async all the way down</li>
+                <li class="fragment">Can't use blocking PHP functions — <code>file_get_contents</code>, standard PDO...
+                </li>
+                <li class="fragment">Requires rewriting the entire application</li>
+                <li class="fragment">Steep learning curve for PHP developers</li>
+                <li class="fragment">CPU-intensive operations block the entire event loop</li>
+            </ul>
+        </section>
 
-<!-- WORKERMAN -->
-<section>
-    <h2 class="r-fit-text">Workerman</h2>
-</section>
+        <section>
+            <h3>A valid approach — but not ideal:</h3>
+            <ul>
+                <li class="fragment">Long-running processes — not all libraries and frameworks are designed for this
+                </li>
+                <li class="fragment">Still requires a full PHP runtime with all its dependencies</li>
+                <li class="fragment">Not all workloads are a good fit</li>
+            </ul>
+        </section>
 
-<section>
-    <h3>Multi-process, synchronous PHP</h3>
-    <ul>
-        <li class="fragment">Battle-tested in production — massively popular in China</li>
-        <li class="fragment">Multi-process model — each worker is a separate PHP process</li>
-        <li class="fragment">Synchronous code — write normal PHP, no async, no callbacks</li>
-        <li class="fragment"><strong>Webman</strong> — HTTP framework built on top of Workerman</li>
-    </ul>
-</section>
+        <!-- WORKERMAN -->
+        <section>
+            <h1 class="r-fit-text">Workerman</h1>
+        </section>
 
-<section>
-    <h3>How it looks</h3>
-    <pre><code class="language-php" data-trim>
+        <section>
+            <h3>Multi-process, synchronous PHP</h3>
+            <ul>
+                <li class="fragment">Battle-tested in production — massively popular in China</li>
+                <li class="fragment">Multi-process model — each worker is a separate PHP process</li>
+                <li class="fragment">Synchronous code — write normal PHP, no async, no callbacks</li>
+                <li class="fragment"><strong>Webman</strong> — HTTP framework built on top of Workerman</li>
+            </ul>
+        </section>
+
+        <section>
+            <h3>How it looks</h3>
+            <pre><code class="language-php" data-trim>
 // Normal synchronous PHP — no async required
 public function index(Request $request): Response
 {
@@ -534,256 +689,333 @@ public function index(Request $request): Response
     return response()->json($users);
 }
     </code></pre>
-    <pre><code class="language-bash" data-trim>
+            <pre><code class="language-bash" data-trim>
 php start.php start
 # Workers: 4 processes
 # Listening: http://0.0.0.0:8787
     </code></pre>
-</section>
+        </section>
 
-<section>
-    <h3>What you gain</h3>
-    <ul>
-        <li class="fragment">No nginx. No php-fpm.</li>
-        <li class="fragment">Application code loaded once per worker — not on every request</li>
-        <li class="fragment">~10x faster than traditional php-fpm</li>
-    </ul>
-</section>
+        <section>
+            <h3>What you gain</h3>
+            <ul>
+                <li class="fragment">No nginx. No php-fpm.</li>
+                <li class="fragment">Application code loaded once per worker — not on every request</li>
+                <li class="fragment">~10x faster than traditional php-fpm</li>
+            </ul>
+        </section>
 
-<section>
-    <h3>Limitations</h3>
-    <ul>
-        <li class="fragment">Existing libraries work without modifications — but watch out for memory leaks</li>
-        <li class="fragment">Long-running processes need careful state management</li>
-        <li class="fragment">Not all frameworks work out-of-the-box — Symfony requires adapters</li>
-        <li class="fragment">Simple apps: use Webman directly</li>
-    </ul>
-</section>
+        <section>
+            <h3>Limitations</h3>
+            <ul>
+                <li class="fragment">Existing libraries work without modifications — but watch out for memory leaks</li>
+                <li class="fragment">Long-running processes need careful state management</li>
+                <li class="fragment">Not all frameworks work out-of-the-box — Symfony requires adapters</li>
+                <li class="fragment">Simple apps: use Webman directly</li>
+            </ul>
+        </section>
 
-<section>
-    <h3>We have performance. We have simplicity.</h3>
-    <p>No nginx. No php-fpm. Synchronous code. Fast.</p>
-    <p class="fragment">Now let's talk about what we're still carrying around.</p>
-</section>
+        <section>
+            <h3>With simplicity comes performance</h3>
+            <p>No nginx. No php-fpm. Synchronous code. Fast.</p>
+            <img src="assets/speed-1.png"/>
+            <img src="assets/speed-2.png"/>
+        </section>
 
-<!-- HOW MUCH ARE WE CARRYING? -->
-<section>
-    <h2 class="r-fit-text">How much are we carrying?</h2>
-</section>
+        <!-- HOW MUCH ARE WE CARRYING? -->
+        <section>
+            <h1 class="r-fit-text">How much are we carrying?</h1>
+        </section>
 
-<section>
-    <h3>Image sizes</h3>
-    <table>
-        <thead><tr><th>Image</th><th>Size</th></tr></thead>
-        <tbody>
-            <tr><td><code>php:8.3</code> (Debian)</td><td>~580 MB</td></tr>
-            <tr><td><code>php:8.3-slim</code></td><td>~180 MB</td></tr>
-            <tr><td><code>php:8.3-alpine</code></td><td>~50 MB</td></tr>
-            <tr><td><code>FROM scratch</code></td><td>???</td></tr>
-        </tbody>
-    </table>
-</section>
+        <section>
+            <h3>Image sizes</h3>
+            <table>
+                <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Size</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td><code>php:8.3</code> (Debian)</td>
+                    <td>~580 MB</td>
+                </tr>
+                <tr>
+                    <td><code>php:8.3-slim</code></td>
+                    <td>~180 MB</td>
+                </tr>
+                <tr>
+                    <td><code>php:8.3-alpine</code></td>
+                    <td>~50 MB</td>
+                </tr>
+                <tr>
+                    <td><code>FROM scratch</code></td>
+                    <td>???</td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
 
-<section>
-    <h3>What's hiding in there</h3>
-    <ul>
-        <li class="fragment">A full operating system</li>
-        <li class="fragment">Package manager, shell, system tools</li>
-        <li class="fragment">Every installed package is a potential attack vector</li>
-    </ul>
-    <p class="fragment">We only need PHP. So why are we shipping an OS?</p>
-</section>
+        <section>
+            <h3>What's hiding in there</h3>
+            <ul>
+                <li class="fragment">A full operating system</li>
+                <li class="fragment">Package manager, shell, system tools</li>
+                <li class="fragment">Every installed package is a potential attack vector</li>
+            </ul>
+            <p class="fragment">We only need PHP. So why are we shipping an OS?</p>
+        </section>
 
-<section>
-    <h3>Do we really need all of this?</h3>
-    <p>To run a PHP application, do we need:</p>
-    <ul>
-        <li class="fragment">A full Linux distribution?</li>
-        <li class="fragment">A shell?</li>
-        <li class="fragment">A package manager?</li>
-        <li class="fragment">System libraries we never call directly?</li>
-    </ul>
-    <p class="fragment">Or do we just need... PHP?</p>
-</section>
+        <section>
+            <h3>Do we really need all of this?</h3>
+            <p>To run a PHP application, do we need:</p>
+            <ul>
+                <li class="fragment">A full Linux distribution?</li>
+                <li class="fragment">A shell?</li>
+                <li class="fragment">A package manager?</li>
+                <li class="fragment">System libraries we never call directly?</li>
+            </ul>
+            <p class="fragment">Or do we just need... PHP?</p>
+        </section>
 
-<!-- STATICALLY COMPILED PHP -->
-<section>
-    <h2 class="r-fit-text">Statically compiled PHP</h2>
-</section>
+        <!-- STATICALLY COMPILED PHP -->
+        <section>
+            <h1 class="r-fit-text">Statically compiled PHP</h1>
+        </section>
 
-<section>
-    <h3>static-php-cli</h3>
-    <p>Compile PHP with all extensions baked in — no shared libraries, no OS dependencies.</p>
-    <pre><code class="language-bash" data-trim>
+        <section>
+            <h3>static-php-cli</h3>
+            <p>Compile PHP with all extensions baked in — no shared libraries, no OS dependencies.</p>
+            <pre><code class="language-bash" data-trim>
 bin/spc build "bcmath,curl,openssl,pdo,pdo_mysql,zip" \
     --build-cli
     </code></pre>
-    <p class="fragment">Result: a single <code>php</code> binary that runs anywhere.</p>
-</section>
+            <p class="fragment">Result: a single <code>php</code> binary that runs anywhere.</p>
+        </section>
 
-<section>
-    <h3>FROM scratch</h3>
-    <pre><code class="language-dockerfile" data-trim>
+        <section>
+            <h3>FROM scratch</h3>
+            <pre><code class="language-dockerfile" data-trim>
 FROM scratch
-COPY --from=builder /app/php /php
+COPY --from=builder /build/php /php
 COPY --from=builder /app /app
 ENTRYPOINT ["/php", "/app/start.php"]
     </code></pre>
-    <ul>
-        <li class="fragment">Zero OS</li>
-        <li class="fragment">Zero shell</li>
-        <li class="fragment">Zero attack surface</li>
-    </ul>
-</section>
+            <ul>
+                <li class="fragment">Zero OS</li>
+                <li class="fragment">Zero shell</li>
+                <li class="fragment">Zero attack surface</li>
+            </ul>
+        </section>
 
-<section>
-    <h3>How small can we go?</h3>
-    <table>
-        <thead><tr><th>Image</th><th>Size</th></tr></thead>
-        <tbody>
-            <tr><td><code>php:8.3</code> (Debian)</td><td>~580 MB</td></tr>
-            <tr><td><code>php:8.3-slim</code></td><td>~180 MB</td></tr>
-            <tr><td><code>php:8.3-alpine</code></td><td>~50 MB</td></tr>
-            <tr><td><code>FROM scratch</code></td><td>~30 MB</td></tr>
-        </tbody>
-    </table>
-</section>
+        <section>
+            <h3>How small can we go?</h3>
+            <table>
+                <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Size</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td><code>php:8.3</code> (Debian)</td>
+                    <td>~580 MB</td>
+                </tr>
+                <tr>
+                    <td><code>php:8.3-slim</code></td>
+                    <td>~180 MB</td>
+                </tr>
+                <tr>
+                    <td><code>php:8.3-alpine</code></td>
+                    <td>~50 MB</td>
+                </tr>
+                <tr>
+                    <td><code>FROM scratch</code></td>
+                    <td>~3 MB</td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
 
-<section>
-    <h3>What's in the image</h3>
-    <p>Only two things:</p>
-    <ul>
-        <li class="fragment">The <code>php</code> binary</li>
-        <li class="fragment">Your application files</li>
-    </ul>
-    <p class="fragment">Nothing else.</p>
-</section>
+        <section>
+            <h3>What's in the image</h3>
+            <p>Only two things:</p>
+            <ul>
+                <li class="fragment">The <code>php</code> binary</li>
+                <li class="fragment">Your application files</li>
+            </ul>
+            <p class="fragment">Nothing else.</p>
+        </section>
 
-<section>
-    <h3>Security bonus</h3>
-    <p class="fragment">No shell means no shell exploits.</p>
-    <p class="fragment">No package manager means no supply chain attacks through the OS.</p>
-    <p class="fragment">But — you can still <code>docker exec</code> into the container and use the PHP binary to run arbitrary code.</p>
-    <p class="fragment">The attack surface is smaller, not zero.</p>
-</section>
+        <section>
+            <h3>Security bonus</h3>
+            <p class="fragment">No shell means no shell exploits.</p>
+            <p class="fragment">No package manager means no supply chain attacks through the OS.</p>
+            <p class="fragment">But — you can still <code>docker exec</code> into the container and use the PHP binary
+                to run arbitrary code.</p>
+            <p class="fragment">The attack surface is smaller, not zero.</p>
+        </section>
 
-<!-- HERE BE DRAGONS -->
-<section>
-    <h2 class="r-fit-text">🐉 Here be dragons</h2>
-</section>
+        <!-- SYMFONY ON SCRATCH -->
+        <section>
+            <h1 class="r-fit-text">Symfony on scratch</h1>
+        </section>
 
-<section>
-    <h3>What this means in practice</h3>
-    <ul>
-        <li class="fragment">Works in my environment — your mileage may vary</li>
-        <li class="fragment">Not battle-tested in large production projects</li>
-        <li class="fragment">Hard to integrate into standard CI/CD pipelines</li>
-        <li class="fragment">Limited community support and documentation</li>
-        <li class="fragment">Use with care. Not a drop-in for production tomorrow.</li>
-    </ul>
-</section>
+        <section>
+            <h3>Does it work with a full framework?</h3>
+            <p>Symfony + statically compiled PHP + FROM scratch — yes, but:</p>
+            <ul>
+                <li class="fragment">Requires an adapter to boot Symfony inside Workerman</li>
+                <li class="fragment">e.g. <a href="https://github.com/crazy-goat/workerman-bundle">crazy-goat/workerman-bundle</a>
+                </li>
+                <li class="fragment">Unusual startup model — not <code>php bin/console server:run</code></li>
+            </ul>
+        </section>
 
-<!-- WEBMAN AS A SINGLE BINARY -->
-<section>
-    <h2 class="r-fit-text">Webman as a single binary</h2>
-</section>
+        <section>
+            <h3>What works, what doesn't</h3>
+            <ul>
+                <li class="fragment">✅ Routing, controllers, Twig</li>
+                <li class="fragment">⚠️ logs can produce OOMs (monolog, doctrine logs)</li>
+                <li class="fragment">⚠️ monitoring – you need write your own stuff</li>
+                <li class="fragment">⚠️ Users/permission, basic files that usually exist</li>
+                <li class="fragment">⚠️ Some things can work different - phpinfo()</li>
+            </ul>
+        </section>
+        <section>
+            <h3 class="r-fit-text">Symfony on scratch</h3>
+            <img src="assets/size-1.png"/>
+        </section>
+        <!-- HERE BE DRAGONS -->
+        <section>
+            <h1 class="r-fit-text">🐉 Here be dragons</h1>
+        </section>
 
-<section>
-    <h3>PHP + Workerman + app = one file</h3>
-    <pre><code class="language-bash" data-trim>
+        <section>
+            <h3>🐉 Here be dragons</h3>
+            <ul>
+                <li class="fragment">Works in my environment - don't use on prod</li>
+                <li class="fragment">Not battle-tested in large production projects</li>
+                <li class="fragment">Hard to integrate into standard CI/CD pipelines</li>
+                <li class="fragment">Limited community support and documentation</li>
+                <li class="fragment">Use with care. Not a drop-in for production tomorrow.</li>
+            </ul>
+        </section>
+
+        <!-- WEBMAN AS A SINGLE BINARY -->
+        <section>
+            <h1 class="r-fit-text">Webman as a single binary</h1>
+        </section>
+
+        <section>
+            <h3>PHP + Webman + app = one file</h3>
+            <pre><code class="language-bash" data-trim>
 # static-php-cli builds PHP as a self-executing stub (micro)
 bin/spc build "bcmath,curl,openssl,pdo,pdo_mysql" \
     --build-micro
 
 # Bundle app.phar into the binary
-cat micro.sfx app.phar > myapp
+php webman build:bin
 chmod +x myapp
 
-./myapp
+./myapp start
 # Listening: http://0.0.0.0:8787
     </code></pre>
-</section>
+        </section>
 
-<section>
-    <h3>Deploy = copy one file</h3>
-    <pre><code class="language-dockerfile" data-trim>
+        <section>
+            <h3>Deploy = copy one file</h3>
+            <pre><code class="language-dockerfile" data-trim>
 FROM scratch
 COPY myapp /myapp
 ENTRYPOINT ["/myapp"]
     </code></pre>
-    <p class="fragment">The Go dream, in PHP.</p>
-</section>
+            <p class="fragment">The Go dream, in PHP.</p>
+        </section>
 
-<section>
-    <h3>Limitations</h3>
-    <ul>
-        <li class="fragment">PHP compilation takes time — but compile once, reuse until extensions change</li>
-        <li class="fragment">Not all extensions can be compiled statically</li>
-        <li class="fragment">Example: <strong>New Relic</strong> — requires a dynamic <code>.so</code> library, won't work here</li>
-        <li class="fragment">Still experimental territory</li>
-    </ul>
-</section>
+        <section>
+            <h3>Limitations</h3>
+            <ul>
+                <li class="fragment">PHP compilation takes time — but compile once, reuse until extensions change</li>
+                <li class="fragment">Not all extensions can be compiled statically</li>
+                <li class="fragment">Example: <strong>New Relic</strong> — requires a dynamic <code>.so</code> library,
+                    won't work here
+                </li>
+                <li class="fragment">Still experimental territory</li>
+            </ul>
+        </section>
 
-<!-- SYMFONY ON SCRATCH -->
-<section>
-    <h2 class="r-fit-text">Symfony on scratch</h2>
-</section>
+        <!-- SUMMARY -->
+        <section>
+            <h1 class="r-fit-text">Summary</h1>
+        </section>
 
-<section>
-    <h3>Does it work with a full framework?</h3>
-    <p>Symfony + statically compiled PHP + FROM scratch — yes, but:</p>
-    <ul>
-        <li class="fragment">Requires an adapter to boot Symfony inside Workerman</li>
-        <li class="fragment">e.g. <a href="https://github.com/crazy-goat/workerman-bundle">crazy-goat/workerman-bundle</a></li>
-        <li class="fragment">Unusual startup model — not <code>php bin/console server:run</code></li>
-    </ul>
-</section>
+        <section>
+            <h3>20 years in 30 minutes</h3>
+            <table style="font-size: 0.8em">
+                <thead>
+                <tr>
+                    <th>Era</th>
+                    <th>Deploy</th>
+                    <th>Image</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>FTP</td>
+                    <td>manually</td>
+                    <td>—</td>
+                </tr>
+                <tr>
+                    <td>Scripts</td>
+                    <td>rsync + bash</td>
+                    <td>—</td>
+                </tr>
+                <tr>
+                    <td>Ansible</td>
+                    <td>playbook</td>
+                    <td>—</td>
+                </tr>
+                <tr>
+                    <td>Docker</td>
+                    <td>nginx + fpm</td>
+                    <td>~490 MB</td>
+                </tr>
+                <tr>
+                    <td>Kubernetes</td>
+                    <td>pods + sidecars</td>
+                    <td>~490 MB</td>
+                </tr>
+                <tr>
+                    <td>Symfony FROM scratch</td>
+                    <td>php + source</td>
+                    <td>~5 MB</td>
+                </tr>
+                <tr>
+                    <td>Workerman</td>
+                    <td><code>one binary</code></td>
+                    <td>~3 MB</td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
 
-<section>
-    <h3>What works, what doesn't</h3>
-    <ul>
-        <li class="fragment">✅ Routing, controllers, Twig, Doctrine</li>
-        <li class="fragment">✅ FROM scratch image</li>
-        <li class="fragment">⚠️ Cache must be pre-warmed before building the image</li>
-        <li class="fragment">⚠️ Writing to disk can be tricky — e.g. logs go to a shared file across workers</li>
-        <li class="fragment">⚠️ Some extensions require separate compilation</li>
-    </ul>
-</section>
+        <section>
+            <h3>This presentation runs on Workerman + FROM scratch</h3>
+            <p class="fragment">How big is this image?</p>
+            <p class="fragment"><strong>~6 MB</strong></p>
+            <p class="fragment"><a href="https://hub.docker.com/r/crazygoat/presentation-04-php-deployment">crazygoat/presentation-04-php-deployment</a>
+            </p>
+        </section>
 
-<!-- SUMMARY -->
-<section>
-    <h2 class="r-fit-text">Summary</h2>
-</section>
+        <!-- Q&A -->
+        <section>
+            <h1 class="r-fit-text">Q&amp;A</h1>
+        </section>
 
-<section>
-    <h3>20 years in 30 minutes</h3>
-    <table>
-        <thead><tr><th>Era</th><th>Deploy</th><th>Image</th></tr></thead>
-        <tbody>
-            <tr><td>FTP</td><td>manually</td><td>—</td></tr>
-            <tr><td>Scripts</td><td>rsync + bash</td><td>—</td></tr>
-            <tr><td>Ansible</td><td>playbook</td><td>—</td></tr>
-            <tr><td>Docker</td><td>nginx + fpm</td><td>~490 MB</td></tr>
-            <tr><td>Kubernetes</td><td>pods + sidecars</td><td>~490 MB</td></tr>
-            <tr><td>Workerman</td><td><code>php start.php</code></td><td>~50 MB</td></tr>
-            <tr><td>FROM scratch</td><td>one binary</td><td>~30 MB</td></tr>
-        </tbody>
-    </table>
-</section>
-
-<section>
-    <h3>This presentation runs on Workerman + FROM scratch</h3>
-    <p class="fragment">How big is this image?</p>
-    <p class="fragment"><strong>~5 MB</strong></p>
-    <p class="fragment"><a href="https://hub.docker.com/r/crazygoat/presentation-04-php-deployment">crazygoat/presentation-04-php-deployment</a></p>
-</section>
-
-<!-- Q&A -->
-<section>
-    <h1 class="r-fit-text">Q&amp;A</h1>
-</section>
-
-</div>
+    </div>
 </div>
 <script src="dist/reveal.js"></script>
 <script src="dist/plugin/notes/notes.js"></script>
@@ -794,8 +1026,27 @@ ENTRYPOINT ["/myapp"]
         progress: true,
         center: true,
         hash: true,
-        plugins: [ RevealHighlight, RevealNotes ]
+        slideNumber: 'c/t',
+        plugins: [RevealHighlight, RevealNotes]
     });
+
+    // Show corner images only on slide #3 (index 3 = "How it looked")
+    // Filezilla appears with fragment "FileZilla open on production" (fragment index 0)
+    function updateCornerImages() {
+        const indices = Reveal.getIndices();
+        const isSlide3 = indices.h === 3;
+        const showFilezilla = isSlide3 && indices.f >= 0;
+
+        document.body.classList.toggle('show-corner-images', isSlide3);
+        document.body.classList.toggle('show-filezilla', showFilezilla);
+    }
+
+    Reveal.on('slidechanged', updateCornerImages);
+    Reveal.on('fragmentshown', updateCornerImages);
+    Reveal.on('fragmenthidden', updateCornerImages);
+
+    // Set initial state
+    updateCornerImages();
 </script>
 </body>
 </html>

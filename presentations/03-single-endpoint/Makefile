@@ -6,7 +6,7 @@ build:
 	docker build --target base --progress=plain -t crazygoat/presentation-$(NAME):latest .
 
 push: build
-	docker push crazygoat/presentation-$(NAME):decodo
+	docker push crazygoat/presentation-$(NAME):latest
 
 build-dev:
 	docker build --target dev --progress=plain -t crazygoat/presentation-$(NAME):dev .

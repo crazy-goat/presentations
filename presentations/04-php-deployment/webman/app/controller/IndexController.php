@@ -28,11 +28,12 @@ class IndexController
   }
   .card {
     text-align: center;
-    max-width: 600px;
-    padding: 3rem 2rem;
+    width: 90vw;
+    max-width: 900px;
+    padding: 4vh 2rem;
   }
   h1 {
-    font-size: 2.5rem;
+    font-size: clamp(2rem, 6vw, 5rem);
     font-weight: 700;
     margin-bottom: 1rem;
     line-height: 1.2;
@@ -45,8 +46,8 @@ class IndexController
   }
   p {
     color: #aaa;
-    font-size: 1.1rem;
-    margin-bottom: 2.5rem;
+    font-size: clamp(1rem, 2vw, 1.4rem);
+    margin-bottom: 4vh;
     line-height: 1.6;
   }
   a.btn {
@@ -54,26 +55,26 @@ class IndexController
     background: #7ec8e3;
     color: #1a1a2e;
     font-weight: 700;
-    font-size: 1.1rem;
-    padding: .9rem 2.5rem;
+    font-size: clamp(1rem, 2vw, 1.3rem);
+    padding: clamp(.7rem, 1.5vh, 1.1rem) clamp(1.5rem, 4vw, 3rem);
     border-radius: 6px;
     text-decoration: none;
     transition: opacity .15s;
   }
   a.btn:hover { opacity: .85; }
   .meta {
-    margin-top: 2rem;
-    font-size: .85rem;
+    margin-top: 3vh;
+    font-size: clamp(.75rem, 1.2vw, 1rem);
     color: #555;
   }
 </style>
 </head>
 <body>
 <div class="card">
-  <h1>Running PHP Apps <code>FROM scratch</code></h1>
+  <h1>Running PHP Apps<br><code>FROM scratch</code></h1>
   <p>An epic journey through 20 years of PHP deployment — from FTP to a statically compiled binary in a scratch image the size of a decent espresso.</p>
   <a class="btn" href="/slides/">Start presentation</a>
-  <div class="meta">Powered by Workerman &amp; PHP micro.sfx</div>
+  <div class="meta">Powered by Workerman &amp; PHP micro.sfx &mdash; created by Piotr Hałas</div>
 </div>
 </body>
 </html>
