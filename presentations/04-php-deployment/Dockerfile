@@ -25,8 +25,6 @@ RUN php -d phar.readonly=0 build-phar.php
 
 FROM scratch
 
-COPY --from=builder /etc/passwd /etc/passwd
-COPY --from=builder /etc/group /etc/group
 COPY --from=builder /app/build/webman.bin /webman
 
 EXPOSE 8080
