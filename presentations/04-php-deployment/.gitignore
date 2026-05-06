@@ -1,1 +1,5 @@
 slides/node_modules
+/webman/build/runtime/cache/framework/finder/php_files_6e04fea781b486a3c23856269e7ca877711cbb420fab635a0c30b15cb29f861a.php
+/webman/build/php8.3.micro.sfx
+/webman/build/webman.bin
+/webman/build/webman.phar
